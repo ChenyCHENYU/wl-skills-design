@@ -34,7 +34,7 @@
   },
   "scripts": {
     "cz": "cz",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "publishConfig": {
     "access": "public"
