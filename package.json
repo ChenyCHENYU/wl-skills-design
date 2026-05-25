@@ -1,6 +1,6 @@
 {
   "name": "@agile-team/wl-skills-design",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "产品设计 AI 技能包 — 6 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目",
   "main": "./bin/wl-skills-design.js",
   "bin": {
