@@ -1,0 +1,17 @@
+---
+description: "产品设计 AI 技能规范（流程图 / 原型 / 数据库 / 接口 / 代码设计，由 wl-skills-design 维护）"
+globs:
+  - "**/*.drawio"
+  - "**/*.md"
+  - "**/*.axure"
+  - "**/*.sql"
+  - "**/*.yaml"
+  - "**/*.yml"
+alwaysApply: true
+---
+
+<!-- Cursor MDC 规则文件。由 wl-skills-design 维护，请勿手动编辑正文内容。 -->
+<!-- 源文件：.github/copilot-instructions.md -->
+
+---
+

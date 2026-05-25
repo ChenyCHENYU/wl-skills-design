@@ -1,0 +1,508 @@
+# draw.io 流程图绘制规范
+
+> **wl-skills-design · requirements/flowchart**  
+> 本文档是唯一权威规范来源，工具无关。所有 AI 工具读取此文件作为执行依据。
+
+---
+
+## 一、画布基础设置
+
+```xml
+<mxGraphModel
+  dx="1665" dy="849"
+  grid="1" gridSize="10" guides="1"
+  tooltips="1" connect="1" arrows="1" fold="1"
+  page="1" pageScale="1"
+  pageWidth="1169" pageHeight="827"
+  math="0" shadow="0">
+```
+
+| 参数 | 值 | 说明 |
+|------|----|------|
+| gridSize | 10 | 网格 10px，所有坐标对齐到 10px |
+| pageWidth × pageHeight | 1169 × 827 | 横版 A4；竖版流程改 827 × 1169 |
+| shadow | 0 | 禁止阴影 |
+| math | 0 | 禁止数学公式 |
+
+**多 Tab 规则**：Tab 1 固定为「流程标准定义」图例页（用 `skeleton.drawio` 中的图例页），Tab 2 起为实际流程。
+
+---
+
+## 二、泳道容器结构
+
+### 2.1 外层主容器（流程总标题）
+
+```xml
+<mxCell id="outer"
+  value="&lt;p style=&quot;line-height: 130%;&quot;&gt;
+         &lt;font style=&quot;font-size: 22px;&quot;&gt;[流程名称]（[流程编码]）&lt;/font&gt;
+         &lt;/p&gt;"
+  style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;
+         startSize=30;
+         gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;
+         fontSize=15;spacing=2;"
+  vertex="1" parent="1">
+  <mxGeometry x="30" y="30" width="[总宽]" height="[总高]" as="geometry" />
+</mxCell>
+```
+
+| 样式属性 | 值 |
+|---------|-----|
+| fillColor | `#dae8fc` |
+| gradientColor | `#7ea6e0` |
+| strokeColor | `#6c8ebf` |
+| startSize（标题高） | `30` |
+| 标题字号 | 22px，line-height: 130% |
+
+### 2.2 子泳道（部门 / 功能域）
+
+```xml
+<mxCell id="lane-1"
+  value="&lt;span style=&quot;font-size: 18px;&quot;&gt;[部门名称]&lt;/span&gt;"
+  style="swimlane;html=1;startSize=25;
+         fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+  vertex="1" parent="outer">
+  <mxGeometry y="30" width="[子宽]" height="[总高-30]" as="geometry" />
+</mxCell>
+```
+
+| 规则 | 说明 |
+|------|------|
+| y 值 | 固定 `30`（= 外层标题高度） |
+| 不写 x | 由 `childLayout=stackLayout` 自动水平排列 |
+| 各子泳道宽之和 | = 外层容器总宽 |
+| 各子泳道高一致 | = 外层容器总高 − 30 |
+| 标题字号 | 18px |
+| 最小宽度 | 200px |
+
+---
+
+## 三、活动节点（三层 GROUP）
+
+每个操作节点是一个 **3 层垂直 GROUP**，宽度固定 **76.82px**，总高 **54px**。
+
+```
+y=0  ┌──────────────────────────────┐ h=12  ← ① 活动编码（白底，10px）
+     ├──────────────────────────────┤
+y=12 │         活动名称             │ h=30  ← ② 活动内容（模块色，14px）
+     ├──────────────────────────────┤
+y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰底，10px）
+     └──────────────────────────────┘
+```
+
+### 3.1 完整 XML 模板
+
+```xml
+<!-- GROUP 容器 -->
+<mxCell id="[id]-g" value="" style="group" connectable="0" vertex="1" parent="[泳道id]">
+  <mxGeometry x="[x]" y="[y]" width="76.82" height="54" as="geometry" />
+</mxCell>
+
+<!-- ① 活动编码 -->
+<mxCell id="[id]-code"
+  value="&lt;font style=&quot;font-size: 10px;&quot;&gt;[活动编码]&lt;/font&gt;"
+  style="rounded=0;whiteSpace=wrap;html=1;"
+  vertex="1" parent="[id]-g">
+  <mxGeometry width="76.82" height="12" as="geometry" />
+</mxCell>
+
+<!-- ② 活动内容（系统操作示例，色值按模块替换） -->
+<mxCell id="[id]-name"
+  value="&lt;span style=&quot;font-size: 14px;&quot;&gt;[活动名称]&lt;/span&gt;"
+  style="rounded=0;whiteSpace=wrap;html=1;
+         fillColor=[模块填充色];strokeColor=[模块边框色];gradientColor=[模块渐变色];
+         align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;"
+  vertex="1" parent="[id]-g">
+  <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+</mxCell>
+
+<!-- ③ 操作岗位 -->
+<mxCell id="[id]-dept"
+  value="&lt;span style=&quot;font-size: 10px;&quot;&gt;[岗位]&lt;/span&gt;"
+  style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;
+         fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;"
+  vertex="1" parent="[id]-g">
+  <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+</mxCell>
+```
+
+> **线下操作**：GROUP 容器整体加 `dashed=1;dashPattern=8 8;`，三层子元素也各自加 `dashed=1;`。
+
+---
+
+## 四、模块色标体系
+
+| 模块 | fillColor | strokeColor | gradientColor | fontColor |
+|------|-----------|-------------|---------------|-----------|
+| 生产管理 / 物流管理 | `#dae8fc` | `#6c8ebf` | `#7ea6e0` | default |
+| 质量管理 | `#cdeb8b` | `#36393d` | — | default |
+| 销售管理 / 营销 | `#ffcc99` | `#36393d` | — | default |
+| 采购管理 | `#f8cecc` | `#b85450` | — | default |
+| 成本管理 | `#ffe6cc` | `#d79b00` | — | default |
+| 计量管理 | `#f5f5f5` | `#666666` | — | `#333333` |
+| 安防管理 | `#e1d5e7` | `#9673a6` | — | default |
+| 安全管理 | `#ffff88` | `#36393d` | — | default |
+| IT 开发 / 数据平台 | `#fad9d5` | `#ae4132` | — | default |
+| 设备管理 | `#b0e3e6` | `#0e8088` | — | default |
+| 能源管理 | `#fff2cc` | `#d6b656` | — | default |
+| 环保管理 | `#d5e8d4` | `#82b366` | — | default |
+| 炼钢智能化 | `#1ba1e2` | `#006EAF` | — | `#ffffff` |
+| 轧钢智能化 | `#60a917` | `#2D7600` | — | `#ffffff` |
+| BIP 异质系统 | `#e6d0de` | `#996185` | `#d5739d` | default |
+| 子流程通用 | `#d5e8d4` | `#82b366` | `#97d077` | default |
+
+> 废钢闭环管理沿用各参与模块色标，不单独配色。
+
+---
+
+## 五、节点形状字典
+
+| 场景 | style 关键属性 | 说明 |
+|------|--------------|------|
+| 系统操作（在线） | `rounded=0` 矩形 | 最常用 |
+| 子流程 / 跨流程引用 | `shape=process;backgroundOutline=1` | 两侧有竖线 |
+| 系统表单 / 多文档 | `shape=mxgraph.flowchart.multi-document` | 多页波浪形 |
+| 单份单据 | `shape=document` | 单波浪 |
+| 逻辑判定 | `rhombus;fillColor=#cdeb8b;strokeColor=#36393d` | 菱形 |
+| 开始 / 结束 | `shape=mxgraph.flowchart.terminator;strokeWidth=2;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff` | 圆角端点 |
+| 移动操作图标 | `shape=mxgraph.office.devices.cell_phone_android_standalone;fillColor=#505050;strokeColor=none` | 纯图标 + 底部文字 |
+| 警示提醒图标 | `shape=mxgraph.office.concepts.whats_new;fillColor=#505050;strokeColor=none` | 纯图标 |
+| 子流程边界框 | `rounded=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=[模块边框色]` | 圆角虚线框 |
+
+### 开始 / 结束节点模板
+
+```xml
+<mxCell id="flow-start" value="开始"
+  style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;
+         whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+  vertex="1" parent="[泳道id]">
+  <mxGeometry x="[x]" y="[y]" width="61" height="20" as="geometry" />
+</mxCell>
+```
+
+---
+
+## 六、连接线规范
+
+### 6.1 主流程线（标准）
+
+```xml
+<mxCell id="[edge-id]"
+  style="edgeStyle=orthogonalEdgeStyle;rounded=0;
+         orthogonalLoop=1;jettySize=auto;html=1;
+         exitX=0.5;exitY=1;exitDx=0;exitDy=0;
+         entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+  edge="1" source="[源节点-code层id]" target="[目标节点-code层id]"
+  parent="[共同父容器id]">
+  <mxGeometry relative="1" as="geometry" />
+</mxCell>
+```
+
+| 规则 | 值 |
+|------|-----|
+| 线型 | `edgeStyle=orthogonalEdgeStyle`（直角折线，禁止斜线） |
+| 圆角 | `rounded=0` |
+| 主流方向 | 上→下：exitY=1 → entryY=0 |
+| 水平流 | 左→右：exitX=1 → entryX=0 |
+| source/target | 指向节点 GROUP 最顶层 cell（code 层），或 GROUP 本身 |
+
+### 6.2 跨泳道粗箭头（系统边界数据传递）
+
+```xml
+<mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;
+               orthogonalLoop=1;jettySize=auto;html=1;shape=flexArrow;"
+  edge="1" parent="[父容器id]">
+  <mxGeometry relative="1" as="geometry">
+    <mxPoint x="[x1]" y="[y1]" as="sourcePoint" />
+    <mxPoint x="[x2]" y="[y2]" as="targetPoint" />
+  </mxGeometry>
+</mxCell>
+```
+
+### 6.3 判定分支标签（必须）
+
+菱形节点每条出线都必须有标注：
+
+```xml
+<mxCell value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;
+               resizable=0;points=[];"
+  connectable="0" vertex="1" parent="[连接线id]">
+  <mxGeometry x="-0.2" y="-1" relative="1" as="geometry">
+    <mxPoint as="offset" />
+  </mxGeometry>
+</mxCell>
+```
+
+### 6.4 绕行折点（避让）
+
+当连接线需要绕过障碍节点时，用 `mxPoint` 手动加折点：
+
+```xml
+<mxGeometry relative="1" as="geometry">
+  <Array as="points">
+    <mxPoint x="[绕行x1]" y="[绕行y1]" />
+    <mxPoint x="[绕行x2]" y="[绕行y2]" />
+  </Array>
+</mxGeometry>
+```
+
+---
+
+## 七、活动编码规范
+
+### 格式
+
+```
+[系统代码] - [流程编号] - [操作类型] - [活动编号]
+  2位字母     2位数字      1位字母      2位数字
+```
+
+### 示例解析：`FGPM-E-01`
+
+| 部分 | 值 | 含义 |
+|------|----|------|
+| 系统代码 | `FGPM` | 废钢加工管理 |
+| 操作类型 | `E` | 金恒平台操作 |
+| 活动编号 | `01` | 第1个活动 |
+
+### 操作类型标识
+
+| 标识 | 含义 |
+|------|------|
+| `E` | 金恒平台（系统在线操作） |
+| `C` | 异质系统（第三方/外部系统） |
+| `M` | 人工作业（线下/手动） |
+
+### 流程（模型）编码
+
+```
+[系统代码] - [流程编号]
+例：MP-01（生产管理第1个流程）
+```
+
+---
+
+## 八、视觉质量规则
+
+### 8.1 间距
+
+| 规则 | 数值 |
+|------|------|
+| 同列节点步距（Y 差值） | ≥ 80px（节点高 54 + 间隔 ≥ 26） |
+| 同行节点列距（X 差值） | ≥ 100px（节点宽 76.82 + 间隔 ≥ 23） |
+| GROUP 边界最小净空 | 10px |
+
+### 8.2 对齐
+
+- 同一泳道主流程节点：X 坐标居中对齐
+- 跨泳道同层节点：Y 坐标对齐
+
+### 8.3 字体规范
+
+| 位置 | 字号 | 字体 |
+|------|------|------|
+| 外层容器标题 | 22px | 默认 |
+| 子泳道标题 | 18px | 默认 |
+| 节点活动名称（中层） | 14px | Helvetica |
+| 节点编码（顶层） | 10px | 默认 |
+| 节点岗位（底层） | 10px | 默认 |
+| 数据节点文字 | 8–10px | 默认 |
+
+### 8.4 禁止事项
+
+| 禁止 | 说明 |
+|------|------|
+| ❌ 节点重叠 | geometry 边界不得相交 |
+| ❌ 线条压盖文字 | 连接线必须绕行或转折避开 |
+| ❌ 斜线 | 只允许直角折线 |
+| ❌ 色标串色 | 同一流程域内只用该域色标 |
+| ❌ 开始/结束彩色 | 固定紫色 `#76608a` |
+| ❌ 判定无标签 | 所有分支线必须标「是/否」或业务语义 |
+| ❌ 编码层为空 | 每个节点必须有活动编码 |
+
+---
+
+## 九、子流程边界框
+
+将同一子流程内的多个节点用虚线圆角矩形圈住：
+
+```xml
+<mxCell value="" style="rounded=1;whiteSpace=wrap;html=1;
+         dashed=1;dashPattern=8 8;
+         fillColor=none;strokeColor=[模块边框色];strokeWidth=1.5;"
+  vertex="1" parent="[泳道id]">
+  <mxGeometry x="[x]" y="[y]" width="[w]" height="[h]" as="geometry" />
+</mxCell>
+```
+
+> 边界框 z-order 必须低于内部节点，不遮挡任何文字。节点各方向与框边距 ≥ 10px。
+
+---
+
+## 十、数据 / 文档节点
+
+独立于操作节点，置于产生它的节点右侧或下方偏右，不接入主流程连接线：
+
+```xml
+<!-- 多份文档 -->
+<mxCell value="[文档名]"
+  style="html=1;shape=mxgraph.flowchart.multi-document;whiteSpace=wrap;
+         fillColor=[模块色];strokeColor=#36393d;
+         rounded=0;align=center;verticalAlign=middle;fontSize=9;"
+  vertex="1" parent="[泳道id]">
+  <mxGeometry x="[x]" y="[y]" width="50" height="22" as="geometry" />
+</mxCell>
+```
+
+---
+
+## 十一、跨流程引用规则
+
+当一个流程调用另一个已有流程时，使用 **子流程节点**（shape=process）而非普通矩形：
+
+```xml
+<!-- ② 层改为 process 形状 -->
+<mxCell id="[id]-name"
+  value="&lt;span style=&quot;font-size: 14px;&quot;&gt;[被引流程名]&lt;/span&gt;"
+  style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;
+         fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;"
+  vertex="1" parent="[id]-g">
+  <mxGeometry y="12" width="76.82" height="38" as="geometry" />
+</mxCell>
+```
+
+> 编码层（① 层）显示被引流程的编码（如 `MP-01`），岗位层（③ 层）显示执行部门。  
+> 活动编码格式：`[本流程编码]-[序号]`，如 `FGPM-A-02`。
+
+---
+
+## 十二、已有文件修改规则
+
+在已有 .drawio 文件中追加或修改时：
+
+1. **不改动 ID** — 已有 mxCell id 不得修改，避免连接线断裂
+2. **新增节点使用新 ID** — 格式：`[流程前缀]-[序号]-[层标识]`，如 `n12-g`、`n12-code`
+3. **插入节点时调整坐标** — 后续节点 y 坐标整体下移，保持 ≥ 80px 步距
+4. **修改色标** — 只改 ② 层（name 层）的 style，不改 ① 和 ③ 层
+5. **增加泳道** — 在 outer 容器末尾追加，更新 outer 总宽
+
+---
+
+## 十三、图例页要求（Tab 1 固定）
+
+每个 .drawio 文件第一个 Tab 必须是标准图例页，包含：
+
+1. 三层节点结构示意（系统操作 / 子流程 / 线下操作）
+2. 开始/结束节点样式
+3. 判定菱形样式
+4. 所有模块色标（色块 + 名称）
+5. 连接线类型示例（主流程线 / 数据标注线）
+6. 活动编码格式说明
+
+> 使用 `wl-skills-design/requirements/flowchart/templates/skeleton.drawio` 中的图例页直接复用。
+
+---
+
+## 十四、最小完整示例（两节点流）
+
+```xml
+<mxfile host="Electron" version="27.0.9" pages="2">
+  <diagram id="legend" name="流程标准定义">
+    <!-- 使用 skeleton.drawio 中的图例页内容 -->
+  </diagram>
+  <diagram id="main" name="示例流程（DEMO-A-01）">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1"
+      tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1"
+      pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" /><mxCell id="1" parent="0" />
+
+        <!-- 外层容器 -->
+        <mxCell id="outer"
+          value="&lt;p style=&quot;line-height: 130%;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;示例流程（DEMO-A-01）&lt;/font&gt;&lt;/p&gt;"
+          style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;spacing=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="400" height="500" as="geometry" />
+        </mxCell>
+
+        <!-- 子泳道 -->
+        <mxCell id="lane"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;部门A&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="400" height="470" as="geometry" />
+        </mxCell>
+
+        <!-- 开始 -->
+        <mxCell id="s1" value="开始"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane">
+          <mxGeometry x="170" y="30" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 节点1 -->
+        <mxCell id="n1-g" value="" style="group" connectable="0" vertex="1" parent="lane">
+          <mxGeometry x="162" y="90" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="n1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;DEMO-E-01&lt;/font&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="n1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="n1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;第一步操作&lt;/span&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;"
+          vertex="1" parent="n1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="n1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;"
+          vertex="1" parent="n1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 结束 -->
+        <mxCell id="e1" value="结束"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane">
+          <mxGeometry x="170" y="190" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 连接：开始→节点1 -->
+        <mxCell id="edge-s1-n1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="s1" target="n1-code" parent="lane">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 连接：节点1→结束 -->
+        <mxCell id="edge-n1-e1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="n1-dept" target="e1" parent="lane">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+```
+
+---
+
+## 十五、验证清单（15 项）
+
+绘制完成必须逐项核查：
+
+- [ ] 1. 文件有 Tab 1「流程标准定义」图例页
+- [ ] 2. 外层容器使用蓝色泳道（`fillColor=#dae8fc`，标题 22px）
+- [ ] 3. 子泳道使用灰色（`fillColor=#f5f5f5`，标题 18px）
+- [ ] 4. 每个操作节点都是 3 层 GROUP（编码 / 名称 / 岗位）
+- [ ] 5. 节点 GROUP 宽度 76.82px，总高 54px
+- [ ] 6. 编码层：10px 字体，白底（无 fillColor）
+- [ ] 7. 名称层：14px 字体，颜色匹配对应模块色标
+- [ ] 8. 岗位层：10px 字体，`fillColor=#eeeeee`
+- [ ] 9. 开始/结束节点颜色正确（`fillColor=#76608a`）
+- [ ] 10. 所有判定菱形都有「是/否」或业务语义标签
+- [ ] 11. 所有连接线使用直角折线（`edgeStyle=orthogonalEdgeStyle`）
+- [ ] 12. 无节点几何重叠（x/y/w/h 无交叉）
+- [ ] 13. 线下操作节点有虚线样式（`dashed=1`）
+- [ ] 14. 活动编码格式符合 `[系统]-[类型]-[序号]` 或 `[系统]-[流程]-[类型]-[序号]`
+- [ ] 15. 模块色标使用正确，无串色

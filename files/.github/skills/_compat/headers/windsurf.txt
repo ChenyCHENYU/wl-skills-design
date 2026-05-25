@@ -1,0 +1,5 @@
+# Windsurf 产品设计规范（.windsurfrules）。由 wl-skills-design 维护，请勿手动编辑正文内容。
+# 源文件：.github/copilot-instructions.md，更新方式：手动同步正文内容
+
+---
+

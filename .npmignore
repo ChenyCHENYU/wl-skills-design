@@ -1,0 +1,12 @@
+# 排除维护者专用文档（不发布到 npm）
+kit-internal/
+
+# 排除开发工具文件
+.editorconfig
+.gitattributes
+.git/
+node_modules/
+
+# 排除测试 / CI
+tests/
+.github/workflows/

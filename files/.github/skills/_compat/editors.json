@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "description": "wl-skills-design 多编辑器适配注册表",
+  "source": ".github/copilot-instructions.md",
+  "editors": [
+    {
+      "id": "github-copilot",
+      "name": "GitHub Copilot",
+      "enabled": true,
+      "outputPath": ".github/copilot-instructions.md",
+      "headerFile": "headers/github-copilot.txt",
+      "note": "源文件即为输出，无需额外生成"
+    },
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "enabled": true,
+      "outputPath": "CLAUDE.md",
+      "headerFile": "headers/claude-code.txt"
+    },
+    {
+      "id": "cursor-rules",
+      "name": "Cursor (.cursorrules)",
+      "enabled": true,
+      "outputPath": ".cursorrules",
+      "headerFile": "headers/cursor-rules.txt"
+    },
+    {
+      "id": "cursor-mdc",
+      "name": "Cursor MDC",
+      "enabled": true,
+      "outputPath": ".cursor/rules/conventions.mdc",
+      "headerFile": "headers/cursor-mdc.txt"
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf",
+      "enabled": true,
+      "outputPath": ".windsurfrules",
+      "headerFile": "headers/windsurf.txt"
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "enabled": true,
+      "outputPath": ".clinerules",
+      "headerFile": "headers/cline.txt"
+    },
+    {
+      "id": "kiro",
+      "name": "Kiro",
+      "enabled": true,
+      "outputPath": ".kiro/steering/conventions.md",
+      "headerFile": "headers/kiro.txt"
+    },
+    {
+      "id": "trae",
+      "name": "Trae",
+      "enabled": true,
+      "outputPath": ".trae/rules/conventions.md",
+      "headerFile": "headers/trae.txt"
+    },
+    {
+      "id": "agents",
+      "name": "Generic Agents (AGENTS.md)",
+      "enabled": true,
+      "outputPath": "AGENTS.md",
+      "headerFile": "headers/agents.txt"
+    },
+    {
+      "id": "qoder",
+      "name": "Qoder",
+      "enabled": true,
+      "outputPath": ".qoder/rules/conventions.md",
+      "headerFile": "headers/qoder.txt"
+    }
+  ]
+}

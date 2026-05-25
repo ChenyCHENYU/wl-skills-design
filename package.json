@@ -1,0 +1,48 @@
+{
+  "name": "@agile-team/wl-skills-design",
+  "version": "0.0.1",
+  "description": "产品设计 AI 技能包 v1.0.0 — 5 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目",
+  "main": "./bin/wl-skills-design.js",
+  "bin": {
+    "wl-skills-design": "bin/wl-skills-design.js"
+  },
+  "files": [
+    "bin/",
+    "files/",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "ai",
+    "skills",
+    "copilot",
+    "design",
+    "flowchart",
+    "drawio",
+    "cursor",
+    "windsurf",
+    "kiro",
+    "claude",
+    "agents",
+    "product-design"
+  ],
+  "author": "ChenyCHENYU",
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChenyCHENYU/wl-skills-design.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
+    "commitizen": "^4.3.1",
+    "cz-customizable": "^7.5.4",
+    "husky": "^9.1.7"
+  }
+}

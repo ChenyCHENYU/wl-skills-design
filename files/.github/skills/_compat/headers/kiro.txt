@@ -1,0 +1,10 @@
+---
+inclusion: always
+description: 产品设计 AI 技能规范（5 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）
+---
+
+<!-- Kiro Steering 规则。由 wl-skills-design 维护，请勿手动编辑正文内容。 -->
+<!-- 源文件：.github/copilot-instructions.md -->
+
+---
+
