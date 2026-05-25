@@ -11,6 +11,7 @@
 | Skill 名称 | 状态 | SKILL.md 路径 | 触发关键词 |
 |-----------|------|--------------|-----------|
 | 流程图设计 | ✅ v1.0 | `requirements/flowchart/SKILL.md` | 流程图、泳道图、泳道、flowchart、draw.io、业务流程、生产流程、工作流 |
+| 需求设计说明书 | ✅ v1.0 | `requirements/spec/SKILL.md` | 需求设计说明书、spec、功能设计、IPO表、IPO、流程说明、活动说明、画面逻辑、功能规格、处理逻辑、说明书 |
 | 原型设计 | 🔲 规划中 | `requirements/prototype/SKILL.md` | 原型、线框图、prototype、页面设计、UI 草图 |
 | 数据库设计 | 🔲 规划中 | `data/database/SKILL.md` | 数据库、ER 图、表结构、实体关系、database、schema |
 | 接口设计 | 🔲 规划中 | `api/restful/SKILL.md` | 接口、API、RESTful、OpenAPI、接口文档、swagger |

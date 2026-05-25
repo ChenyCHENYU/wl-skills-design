@@ -13,6 +13,7 @@
 | 03 | [03-database.md](./03-database.md) | 数据设计 · 数据库 | 🔲 规划中 | 用户要求设计数据库、ER 图、表结构 |
 | 04 | [04-api-design.md](./04-api-design.md) | 接口设计 · RESTful | 🔲 规划中 | 用户要求设计接口、API 文档、OpenAPI |
 | 05 | [05-code-design.md](./05-code-design.md) | 代码设计 · 业务逻辑 | 🔲 规划中 | 用户要求设计代码结构、业务逻辑分层 |
+| 06 | [06-spec-doc.md](./06-spec-doc.md) | 系统需求设计 · 说明书 | ✅ v1.0 | 用户要求编写需求设计说明书、IPO 表、功能规格、流程说明 |
 
 ---
 

@@ -1,6 +1,6 @@
 # @agile-team/wl-skills-design
 
-**产品设计 AI 技能包** — 5 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目。
+**产品设计 AI 技能包** — 6 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目。
 
 让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正理解产品设计规范**，从流程图到数据库、接口、代码结构设计全链路 AI 辅助。
 
@@ -37,6 +37,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
 | 设计域 | 技能 | 状态 |
 |-------|------|------|
 | 系统需求设计 | draw.io 业务流程图 | ✅ 已发布 |
+| 系统需求设计 | 需求设计说明书（IPO / 流程说明 / 功能设计）| ✅ 已发布 |
 | 系统需求设计 | 原型设计 | 🔲 v2.0 规划中 |
 | 数据设计 | 数据库 ER 设计 | 🔲 v2.0 规划中 |
 | 接口设计 | RESTful / OpenAPI | 🔲 v3.0 规划中 |
@@ -96,6 +97,10 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   │   ├── SKILL.md                   AI 触发文件
 │   │   │   │   ├── USAGE.md                   人读版使用说明
 │   │   │   │   └── templates/skeleton.drawio  骨架模板
+│   │   │   ├── requirements/spec/             需求设计说明书 Skill ✅
+│   │   │   │   ├── SKILL.md                   AI 触发文件
+│   │   │   │   ├── USAGE.md                   人读版使用说明
+│   │   │   │   └── sub/                       Sub-Skill 分解（4个文件）
 │   │   │   ├── data/                          数据设计类（规划中）
 │   │   │   ├── api/                           接口设计类（规划中）
 │   │   │   └── code/                          代码设计类（规划中）
@@ -119,7 +124,13 @@ wl-skills-design/                              ← 你正看的这个仓库
     ├── README.md                              维护者首页 + 快速命令
     ├── architecture.md                        架构决策记录（ADR-001~004）
     ├── CONTRIBUTING.md                        贡献流程（新增规范/Skill/多编辑器同步）
-    └── skills/README.md                       Skill 开发状态 + 规划清单
+    ├── skills/README.md                       Skill 开发状态 + 规划清单
+    └── examples/
+        └── spec/                              需求设计说明书真实样例（不发布）
+            ├── 00-doc-outline-reference.md    完整标题树（199条目，华新项目）
+            ├── 01-flow-desc-example.md        流程说明+活动说明表完整示例
+            ├── 02-function-ipo-example.md     IPO 表完整示例（含格式规范说明）
+            └── 03-flow-screen-map-example.md  流程与作业画面对照表示例
 ```
 
 > **维护准则**：
@@ -135,11 +146,12 @@ wl-skills-design/                              ← 你正看的这个仓库
 │
 ├── .github/                              ← 来自本包 files/.github/
 │   ├── copilot-instructions.md           AI 主入口
-│   ├── standards/                        5 条设计规范 + index.md 门控
+│   ├── standards/                        6 条设计规范 + index.md 门控
 │   ├── skills/
 │   │   ├── _registry.md                  ★ 触发词路由（单一数据源）
 │   │   ├── _compat/                      多编辑器适配配置
 │   │   ├── requirements/flowchart/       流程图 Skill ✅
+│   │   ├── requirements/spec/            需求设计说明书 Skill ✅
 │   │   ├── data/                         数据设计类 🔲
 │   │   ├── api/                          接口设计类 🔲
 │   │   └── code/                         代码设计类 🔲

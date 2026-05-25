@@ -10,6 +10,7 @@
 | Skill | 版本 | 路径 | 关联规范 | 备注 |
 |-------|------|------|---------|------|
 | 流程图设计 | v1.0 | `requirements/flowchart/` | `standards/01-flowchart.md` | draw.io 泳道图规范 |
+| 需求设计说明书 | v1.0 | `requirements/spec/` | `standards/06-spec-doc.md` | IPO 表 / 流程说明 / 活动说明表 / 报表设计，含 4 个 sub-skill + 4 个 examples |
 
 ---
 
