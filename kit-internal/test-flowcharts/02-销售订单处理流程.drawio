@@ -1,0 +1,290 @@
+<mxfile host="Electron" agent="wl-skills-design/v1.0" version="27.0.9" pages="2">
+  <!-- Tab 1: 流程标准定义（图例页，固定不变） -->
+  <diagram id="tab-legend" name="流程标准定义">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hdr" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;流程图绘制规范 · wl-skills-design&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="30" width="1000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="&lt;span style=&quot;font-size: 12px;&quot;&gt;本页为标准图例，详见 .github/standards/01-flowchart.md&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="90" width="600" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- Tab 2: 销售订单处理流程 -->
+  <diagram id="sale-ord-01" name="销售订单处理流程（SALE-ORD-01）">
+    <mxGraphModel dx="1665" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 外层主容器 -->
+        <mxCell id="outer"
+          value="&lt;p style=&quot;line-height: 130%;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;销售订单处理流程（SALE-ORD-01）&lt;/font&gt;&lt;/p&gt;"
+          style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;spacing=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="1100" height="700" as="geometry" />
+        </mxCell>
+
+        <!-- lane-a: 销售人员 -->
+        <mxCell id="lane-a"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;销售人员&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="366" height="670" as="geometry" />
+        </mxCell>
+
+        <!-- lane-b: 销售主管 -->
+        <mxCell id="lane-b"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;销售主管&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="367" height="670" as="geometry" />
+        </mxCell>
+
+        <!-- lane-c: 仓储物流 -->
+        <mxCell id="lane-c"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;仓储物流&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="367" height="670" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-a 节点
+        ============================================================ -->
+
+        <!-- 开始 -->
+        <mxCell id="flow-start" value="开始"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-a">
+          <mxGeometry x="152" y="35" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- sa1: 接收客户订单 -->
+        <mxCell id="sa1-g" value="" style="group" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="145" y="90" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sa1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sa1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sa1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;接收客户订单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sa1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sa1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;销售人员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sa1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- sa2: 录入系统订单 -->
+        <mxCell id="sa2-g" value="" style="group" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="145" y="200" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sa2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-02&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sa2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sa2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;录入系统订单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sa2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sa2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;销售人员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sa2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 订单数据文档（产生于 sa2，置于右侧，不接入主流程线） -->
+        <mxCell id="doc-order" value="系统订单数据"
+          style="html=1;shape=mxgraph.flowchart.multi-document;whiteSpace=wrap;fillColor=#ffcc99;strokeColor=#36393d;rounded=0;align=center;verticalAlign=middle;fontSize=9;"
+          vertex="1" parent="lane-a">
+          <mxGeometry x="240" y="207" width="60" height="22" as="geometry" />
+        </mxCell>
+        <!-- 虚线标注线：sa2-name → doc-order -->
+        <mxCell id="e-sa2-doc"
+          style="endArrow=classic;html=1;rounded=0;dashed=1;dashPattern=4 4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;"
+          edge="1" source="sa2-name" target="doc-order" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-b 节点
+        ============================================================ -->
+
+        <!-- sb1: 审核订单（同行 y=200） -->
+        <mxCell id="sb1-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="145" y="200" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sb1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-03&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sb1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sb1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;审核订单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sb1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sb1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;销售主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sb1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- dec1: 是否确认? -->
+        <mxCell id="dec1" value="是否确认?"
+          style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=10;"
+          vertex="1" parent="lane-b">
+          <mxGeometry x="148" y="315" width="70" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- sb2: 退回修改通知 -->
+        <mxCell id="sb2-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="145" y="420" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sb2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-04&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sb2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sb2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;退回修改通知&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sb2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sb2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;销售主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sb2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-c 节点
+        ============================================================ -->
+
+        <!-- sc1: 拣货配货（同行 y=315，与 dec1 跨泳道对齐） -->
+        <mxCell id="sc1-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="145" y="315" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sc1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-05&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sc1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sc1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;拣货配货&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sc1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sc1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;仓储人员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sc1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- sc2: 发货出库 -->
+        <mxCell id="sc2-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="145" y="425" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sc2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-06&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sc2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sc2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;发货出库&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sc2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sc2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;物流专员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sc2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- sc3: 更新发货状态 -->
+        <mxCell id="sc3-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="145" y="535" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="sc3-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;SALE-E-07&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="sc3-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="sc3-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;更新发货状态&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="sc3-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sc3-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;物流专员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="sc3-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 结束 -->
+        <mxCell id="flow-end" value="结束"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-c">
+          <mxGeometry x="152" y="615" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             连接线
+        ============================================================ -->
+
+        <!-- 1. start → sa1-code（vertical，lane-a） -->
+        <mxCell id="e-start-sa1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="flow-start" target="sa1-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. sa1-name → sa2-code（vertical，lane-a） -->
+        <mxCell id="e-sa1-sa2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="sa1-name" target="sa2-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. sa2-name → sb1-code（跨泳道 a→b，parent=outer） -->
+        <mxCell id="e-sa2-sb1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="sa2-name" target="sb1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. sb1-name → dec1（vertical，lane-b） -->
+        <mxCell id="e-sb1-dec1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="sb1-name" target="dec1" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. dec1(否) → sb2-code（vertical，lane-b） -->
+        <mxCell id="e-dec1-sb2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="dec1" target="sb2-code" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell value="否" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="e-dec1-sb2">
+          <mxGeometry x="-0.2" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 6. dec1(是) → sc1-code（跨泳道 b→c，parent=outer） -->
+        <mxCell id="e-dec1-sc1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="dec1" target="sc1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="e-dec1-sc1">
+          <mxGeometry x="-0.2" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 7. sb2-name → sa2-code（跨泳道 b→a 反向，parent=outer）
+             outer本地坐标：sb2-name中心y=477，sa2-code中心y=236 -->
+        <mxCell id="e-sb2-sa2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="sb2-name" target="sa2-code" parent="outer">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="10" y="477" />
+              <mxPoint x="10" y="236" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. sc1-name → sc2-code（vertical，lane-c） -->
+        <mxCell id="e-sc1-sc2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="sc1-name" target="sc2-code" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 9. sc2-name → sc3-code（vertical，lane-c） -->
+        <mxCell id="e-sc2-sc3"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="sc2-name" target="sc3-code" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 10. sc3-name → flow-end（vertical，lane-c） -->
+        <mxCell id="e-sc3-end"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="sc3-name" target="flow-end" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

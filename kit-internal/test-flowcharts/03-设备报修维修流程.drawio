@@ -1,0 +1,385 @@
+<mxfile host="Electron" agent="wl-skills-design/v1.0" version="27.0.9" pages="2">
+  <!-- Tab 1: 流程标准定义（图例页，固定不变） -->
+  <diagram id="tab-legend" name="流程标准定义">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hdr" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;流程图绘制规范 · wl-skills-design&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="30" width="1000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="&lt;span style=&quot;font-size: 12px;&quot;&gt;本页为标准图例，详见 .github/standards/01-flowchart.md&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="90" width="600" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- Tab 2: 设备报修维修流程（复杂：4泳道 + 线下节点 + 子流程引用 + 跨3泳道连接） -->
+  <diagram id="eqpt-rep-01" name="设备报修维修流程（EQPT-REP-01）">
+    <mxGraphModel dx="1665" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 外层主容器（4泳道，总宽1460） -->
+        <mxCell id="outer"
+          value="&lt;p style=&quot;line-height: 130%;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;设备报修维修流程（EQPT-REP-01）&lt;/font&gt;&lt;/p&gt;"
+          style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;spacing=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="1460" height="900" as="geometry" />
+        </mxCell>
+
+        <!-- lane-a: 操作人员（宽365） -->
+        <mxCell id="lane-a"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;操作人员&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="365" height="870" as="geometry" />
+        </mxCell>
+
+        <!-- lane-b: 设备管理员（宽365） -->
+        <mxCell id="lane-b"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;设备管理员&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="365" height="870" as="geometry" />
+        </mxCell>
+
+        <!-- lane-c: 维修班组（宽365） -->
+        <mxCell id="lane-c"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;维修班组&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="365" height="870" as="geometry" />
+        </mxCell>
+
+        <!-- lane-d: 技术主管（宽365） -->
+        <mxCell id="lane-d"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;技术主管&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="365" height="870" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-a 节点
+        ============================================================ -->
+
+        <!-- 开始 -->
+        <mxCell id="flow-start" value="开始"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-a">
+          <mxGeometry x="152" y="35" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ea1: 发现故障并登记（线下人工操作，dashed） -->
+        <mxCell id="ea1-g" value="" style="group;dashed=1;dashPattern=8 8;" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="144" y="90" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ea1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-M-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="ea1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ea1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;发现故障并登记&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;dashed=1;" vertex="1" parent="ea1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ea1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作人员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;dashed=1;" vertex="1" parent="ea1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ea2: 提交系统报修工单 -->
+        <mxCell id="ea2-g" value="" style="group" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="144" y="210" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ea2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ea2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ea2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;提交系统报修工单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ea2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ea2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作人员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ea2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-b 节点
+        ============================================================ -->
+
+        <!-- eb1: 接收报修工单（同行 y=210，跨泳道对齐 ea2） -->
+        <mxCell id="eb1-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="144" y="210" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-02&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="eb1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;接收报修工单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="eb1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;设备管理员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="eb1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- eb2: 分配维修班组 -->
+        <mxCell id="eb2-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="144" y="325" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-03&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="eb2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;分配维修班组&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="eb2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;设备管理员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="eb2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- eb3: 初步验收（同行 y=555，跨泳道对齐 ec3） -->
+        <mxCell id="eb3-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="144" y="555" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-07&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="eb3-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;初步验收&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="eb3-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;设备管理员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="eb3-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- dec1: 是否验收合格? -->
+        <mxCell id="dec1" value="验收合格?"
+          style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=10;"
+          vertex="1" parent="lane-b">
+          <mxGeometry x="147" y="665" width="70" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- eb4: 关闭工单并更新台账 -->
+        <mxCell id="eb4-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="144" y="775" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="eb4-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-08&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="eb4-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="eb4-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;关闭工单更新台账&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="eb4-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="eb4-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;设备管理员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="eb4-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 结束（正常路径） -->
+        <mxCell id="flow-end" value="结束"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-b">
+          <mxGeometry x="152" y="845" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-c 节点
+        ============================================================ -->
+
+        <!-- ec1: 领取维修任务（同行 y=325，跨泳道对齐 eb2） -->
+        <mxCell id="ec1-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="144" y="325" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ec1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-04&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ec1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ec1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;领取维修任务&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ec1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ec1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;维修班长&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ec1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ec2: 现场检修 -->
+        <mxCell id="ec2-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="144" y="440" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-05&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ec2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;现场检修&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ec2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;维修工&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ec2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ec3: 填写维修报告（同行 y=555，跨泳道对齐 eb3） -->
+        <mxCell id="ec3-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="144" y="555" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ec3-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-06&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ec3-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ec3-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;填写维修报告&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ec3-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ec3-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;维修班长&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ec3-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-d 节点（技术主管，处理不合格返工路径）
+        ============================================================ -->
+
+        <!-- ed1: 技术诊断分析（子流程引用，同行 y=665，跨泳道对齐 dec1）
+             使用 shape=process 表示跨流程/专项技术处理 -->
+        <mxCell id="ed1-g" value="" style="group" connectable="0" vertex="1" parent="lane-d">
+          <mxGeometry x="144" y="665" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ed1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-A-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ed1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <!-- name层使用 shape=process 表示子流程引用 -->
+        <mxCell id="ed1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;技术诊断分析&lt;/span&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ed1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ed1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;技术主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ed1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ed2: 出具维修方案 -->
+        <mxCell id="ed2-g" value="" style="group" connectable="0" vertex="1" parent="lane-d">
+          <mxGeometry x="144" y="775" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ed2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQPT-E-09&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ed2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ed2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;出具维修方案&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ed2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ed2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;技术主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ed2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 结束（专家介入路径） -->
+        <mxCell id="flow-end-d" value="结束"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-d">
+          <mxGeometry x="152" y="845" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             连接线
+             所有规则：
+             - 同泳道：source=name层，target=code层，parent=泳道id
+             - 跨泳道：source=name层，target=code层，parent=outer
+             - 向左跨泳道：exitX=0, entryX=1
+             - 向右跨泳道：exitX=1, entryX=0
+        ============================================================ -->
+
+        <!-- 1. start → ea1-code（vertical，lane-a） -->
+        <mxCell id="e-start-ea1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="flow-start" target="ea1-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. ea1-name → ea2-code（vertical，lane-a） -->
+        <mxCell id="e-ea1-ea2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="ea1-name" target="ea2-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. ea2-name → eb1-code（跨泳道 a→b，parent=outer） -->
+        <mxCell id="e-ea2-eb1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="ea2-name" target="eb1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. eb1-name → eb2-code（vertical，lane-b） -->
+        <mxCell id="e-eb1-eb2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="eb1-name" target="eb2-code" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. eb2-name → ec1-code（跨泳道 b→c，parent=outer） -->
+        <mxCell id="e-eb2-ec1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="eb2-name" target="ec1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 6. ec1-name → ec2-code（vertical，lane-c） -->
+        <mxCell id="e-ec1-ec2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="ec1-name" target="ec2-code" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 7. ec2-name → ec3-code（vertical，lane-c） -->
+        <mxCell id="e-ec2-ec3"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="ec2-name" target="ec3-code" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 8. ec3-name → eb3-code（跨泳道 c→b 向左，parent=outer）
+             两节点同行 y=555，水平连接
+             outer本地坐标：ec3-name左边x=365+365+144=874，中心y=30+555+12+15=612
+             eb3-code右边x=365+144+76.82=585.82，中心y=30+555+6=591 -->
+        <mxCell id="e-ec3-eb3"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="ec3-name" target="eb3-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 9. eb3-name → dec1（vertical，lane-b） -->
+        <mxCell id="e-eb3-dec1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="eb3-name" target="dec1" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 10. dec1(是) → eb4-code（vertical，lane-b） -->
+        <mxCell id="e-dec1-eb4"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="dec1" target="eb4-code" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="e-dec1-eb4">
+          <mxGeometry x="-0.2" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 11. eb4-name → flow-end（vertical，lane-b） -->
+        <mxCell id="e-eb4-end"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="eb4-name" target="flow-end" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 12. dec1(否) → ed1-code（跨泳道 b→d 跳过c，parent=outer）
+             dec1右侧 → ed1-code左侧；两节点同行 y=665 -->
+        <mxCell id="e-dec1-ed1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="dec1" target="ed1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell value="否" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="e-dec1-ed1">
+          <mxGeometry x="-0.2" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 13. ed1-name → ed2-code（vertical，lane-d） -->
+        <mxCell id="e-ed1-ed2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="ed1-name" target="ed2-code" parent="lane-d">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 14. ed2-name → flow-end-d（vertical，lane-d） -->
+        <mxCell id="e-ed2-end"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="ed2-name" target="flow-end-d" parent="lane-d">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
