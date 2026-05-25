@@ -1,0 +1,46 @@
+<mxfile host="Python-Generator" version="21.0.0">
+  <diagram id="PMPM-A-01" name="炼钢计划编制流程（PMPM-A-01）">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10"
+                  guides="1" tooltips="1" connect="1" arrows="1" fold="1"
+                  page="1" pageScale="1" pageWidth="940" pageHeight="1280">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="main" parent="1" style="shape=table;startSize=40;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;fontSize=14;" value="炼钢计划编制流程（PMPM-A-01）" vertex="1"><mxGeometry x="40" y="20" width="740" height="1080" as="geometry"/></mxCell>
+        <mxCell id="lane_hdr_0" parent="main" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;align=center;" value="计划员" vertex="1"><mxGeometry x="0" width="220" height="1080" as="geometry"/></mxCell>
+        <mxCell id="lane_hdr_1" parent="main" style="swimlane;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;align=center;" value="车间主任" vertex="1"><mxGeometry x="220" width="220" height="1080" as="geometry"/></mxCell>
+        <mxCell id="lane_hdr_2" parent="main" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;align=center;" value="系统" vertex="1"><mxGeometry x="440" width="220" height="1080" as="geometry"/></mxCell>
+        <mxCell id="node_E1" parent="lane_hdr_2" value="开始" style="shape=mxgraph.flowchart.terminator;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;fontStyle=1;" vertex="1"><mxGeometry x="470" y="60" width="100" height="30" as="geometry"/></mxCell>
+        <mxCell id="node_N1" parent="lane_hdr_2" value="接收炼钢订单
+PMPM-E-01 / 系统" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="470" y="140" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_N2" parent="lane_hdr_0" value="编制炼钢计划
+PMPM007 / 计划员" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="30" y="220" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_D1" parent="lane_hdr_0" value="数据完整？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=11;align=center;verticalAlign=middle;" vertex="1"><mxGeometry x="30" y="300" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_N3" parent="lane_hdr_0" value="修正并保存
+PMPM007 / 计划员" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="30" y="380" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_N4" parent="lane_hdr_1" value="确认 / 审核计划
+PMPM008 / 车间主任" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="250" y="460" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_D2" parent="lane_hdr_1" value="审核通过？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=11;align=center;verticalAlign=middle;" vertex="1"><mxGeometry x="250" y="540" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_N5" parent="lane_hdr_0" value="修改并重提
+PMPM007 / 计划员" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="30" y="620" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_N6" parent="lane_hdr_1" value="下发计划至 MES
+PMPM009 / 车间主任" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="250" y="700" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_N7" parent="lane_hdr_2" value="推送下发通知
+API-PMPM-001 / 系统" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1"><mxGeometry x="470" y="780" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="node_E2" parent="lane_hdr_2" value="结束" style="shape=mxgraph.flowchart.terminator;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;fontStyle=1;" vertex="1"><mxGeometry x="470" y="860" width="100" height="30" as="geometry"/></mxCell>
+        <mxCell id="edge_0" parent="1" source="node_E1" target="node_N1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_1" parent="1" source="node_N1" target="node_N2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_2" parent="1" source="node_N2" target="node_D1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_3" parent="1" source="node_D1" target="node_N3" value="否" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_4" parent="1" source="node_N3" target="node_N2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;curved=1;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_5" parent="1" source="node_D1" target="node_N4" value="是" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_6" parent="1" source="node_N4" target="node_D2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_7" parent="1" source="node_D2" target="node_N5" value="否" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_8" parent="1" source="node_N5" target="node_N4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;curved=1;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_9" parent="1" source="node_D2" target="node_N6" value="是" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_10" parent="1" source="node_N6" target="node_N7" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="edge_11" parent="1" source="node_N7" target="node_E2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

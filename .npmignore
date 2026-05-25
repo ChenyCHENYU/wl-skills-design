@@ -1,6 +1,9 @@
 # 排除维护者专用文档（不发布到 npm）
 kit-internal/
 
+# 排除 Python 规格文档生成流水线（不发布到 npm）
+spec-gen/
+
 # 排除开发工具文件
 .editorconfig
 .gitattributes

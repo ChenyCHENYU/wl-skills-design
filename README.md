@@ -232,6 +232,44 @@ vim files/.github/skills/_registry.md     # 注册触发词（必须）
 
 ---
 
+## spec-gen — Word 规格文档自动生成流水线
+
+> 独立于 npm 包主体，供产品设计团队直接使用。不发布到 npm。
+
+### 目录结构
+
+```
+spec-gen/
+├── scripts/          Python 源码（git 追踪）
+│   ├── generate_spec_doc.py   ★ 主生成器
+│   ├── draw_flow.py           流程图模块（PNG + drawio 双轨）
+│   └── create_skeleton.py    一次性骨架提取（勿重复运行）
+├── templates/        ⚠️ 只读模板区（禁止脚本写入）
+│   └── template_skeleton.docx
+├── output/           生成物（.gitignored）
+│   └── assets/       中间图片（流程图 PNG / drawio / UI 占位图）
+└── analysis/         参考资料（git 追踪）
+    └── doc_deep_analysis.txt
+```
+
+### 快速生成文档
+
+```bash
+pip install python-docx Pillow
+python spec-gen/scripts/generate_spec_doc.py
+# 输出：spec-gen/output/华新计划模块需求设计说明书_v2.0.docx
+```
+
+### 模板保护约定
+
+- `spec-gen/templates/` 内文件为**只读基准**，任何脚本输出**不得**写入此目录
+- 所有生成物（docx/png/drawio）统一写入 `spec-gen/output/`，已加入 `.gitignore`
+- 如需重新提取骨架，修改 `create_skeleton.py` 后确认 `OUT` 路径指向 `templates/`，且不覆盖已确认的版本
+
+详见 [spec-gen/README.md](./spec-gen/README.md)
+
+---
+
 ## CHANGELOG
 
 见 [CHANGELOG.md](./CHANGELOG.md)。

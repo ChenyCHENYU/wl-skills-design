@@ -19,3 +19,14 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# ────────────────────────────────────────────────
+# spec-gen 输出物（生成物，不入 git）
+# templates/ 不在列表内，必须追踪
+# ────────────────────────────────────────────────
+spec-gen/output/*.docx
+spec-gen/output/*.pdf
+spec-gen/output/assets/*.png
+# drawio 文件保留（可用 draw.io 编辑的来源文件）
+spec-gen/__pycache__/
+spec-gen/scripts/__pycache__/
