@@ -1,6 +1,6 @@
 # @agile-team/wl-skills-design
 
-**产品设计 AI 技能包 v1.0.0** — 5 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目。
+**产品设计 AI 技能包** — 5 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目。
 
 让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正理解产品设计规范**，从流程图到数据库、接口、代码结构设计全链路 AI 辅助。
 
@@ -36,7 +36,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
 
 | 设计域 | 技能 | 状态 |
 |-------|------|------|
-| 系统需求设计 | draw.io 业务流程图 | ✅ v1.0 |
+| 系统需求设计 | draw.io 业务流程图 | ✅ 已发布 |
 | 系统需求设计 | 原型设计 | 🔲 v2.0 规划中 |
 | 数据设计 | 数据库 ER 设计 | 🔲 v2.0 规划中 |
 | 接口设计 | RESTful / OpenAPI | 🔲 v3.0 规划中 |
@@ -166,9 +166,31 @@ npx @agile-team/wl-skills-design update
 
 # 预览安装内容，不实际写入
 npx @agile-team/wl-skills-design --dry-run
+
+# 查看当前版本
+npx @agile-team/wl-skills-design --version
 ```
 
 安装完成后，直接在 AI 对话中描述设计需求即可触发对应 Skill。
+
+---
+
+## 流程图闭环工作流（最佳实践）
+
+> 生成 → 验证 → 自动修复，三步全闭环
+
+1. **创建流程图**：使用 `.github/prompts/create-flowchart.prompt.md`
+   ```
+   在 VS Code Copilot Chat 中按 "/" 输入 create-flowchart，
+   然后描述业务需求："帮我建一个废钓入库检验流程，涉及质检部、仓储部、采购部"
+   ```
+
+2. **验证结果**：使用 `.github/prompts/validate-flowchart.prompt.md`
+   - 自动正对 15 项规范指标
+   - 加载 `standards/01-flowchart.md` 作为基准
+   - **永远不等待用户确认**—发现不合格项即自动 `replace_string_in_file` 修复
+
+3. **修复优先级**：结构性错误 → 样式错误 → 内容错误
 
 ---
 

@@ -51,7 +51,7 @@ tools:
    - 每个活动节点：严格 3 层 GROUP（code 层 12px 高 / name 层 30px 高 / dept 层 12px 高），总高 54px，宽 76.82px
    - 开始/结束：`shape=mxgraph.flowchart.terminator`，紫色（`#76608a`）
    - 判定：菱形（`rhombus`），黄绿色（`#cdeb8b`），出线必须有标签
-   - 连接线：`edgeStyle=orthogonalEdgeStyle`，source/target 指向 code 层 cell id
+   - 连接线：`edgeStyle=orthogonalEdgeStyle`，**source 指向 name 层**（`n[x]-name`），**target 指向 code 层**（`n[x]-code`）；跨泳道时 **parent 必须为外层主容器 id**，不是子泳道 id
    - 活动编码格式：`[系统代码]-[类型]-[序号]`
 
 **ID 命名规则**：`n[序号]-g`（GROUP）、`n[序号]-code`、`n[序号]-name`、`n[序号]-dept`，edge 用 `e-[源]-[目标]`

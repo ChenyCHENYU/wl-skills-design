@@ -246,10 +246,18 @@ E=金恒平台  C=异质系统  M=人工作业
                orthogonalLoop=1;jettySize=auto;html=1;
                exitX=0.5;exitY=1;exitDx=0;exitDy=0;
                entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
-  edge="1" source="[源节点id]" target="[目标节点id]" parent="[父容器id]">
+  edge="1"
+  source="[源节点-name层id]"     <!-- ← exit from name层（可视节点体底部/侧面） -->
+  target="[目标节点-code层id]"   <!-- ← entry to code层（整个GROUP顶部） -->
+  parent="[同泳道时=泳道id；跨泳道时=外层主容器id]">
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
 ```
+
+> ⚠️ **关键规则（来自真实参考文件验证）**  
+> - **source** 必须指向 **name 层**（`[id]-name`），从 name 层底部/侧面退出  
+> - **target** 必须指向 **code 层**（`[id]-code`），从 code 层顶部/侧面进入  
+> - **跨泳道连接**：`parent` 必须设为**外层主容器 id**，不是子泳道 id
 
 | 规则 | 说明 |
 |------|------|
@@ -257,6 +265,9 @@ E=金恒平台  C=异质系统  M=人工作业
 | 不用圆角 | `rounded=0` |
 | 优先上→下 | exitY=1 → entryY=0 |
 | 水平流 | exitX=1 → entryX=0 |
+| source 层级 | **name 层**（节点可视体，`[id]-name`） |
+| target 层级 | **code 层**（GROUP 顶部，`[id]-code`） |
+| 跨泳道 parent | **外层主容器 id**，非子泳道 id ⚠️ |
 
 ### 6.2 跨泳道数据/信号粗箭头
 

@@ -1,8 +1,9 @@
 ---
 mode: agent
-description: '验证 draw.io 流程图是否符合 wl-skills-design 规范，输出结构化报告'
+description: '验证 draw.io 流程图是否符合 wl-skills-design 规范，输出结构化报告，并自动修复不合格项'
 tools:
   - read_file
+  - replace_string_in_file
 ---
 
 ## 验证流程图（wl-skills-design 规范）
@@ -82,10 +83,15 @@ tools:
 
 ---
 
-### 第五步：询问自动修复
+### 第五步：自动修复不合格项
 
-如果存在不合格项，询问：
+如果存在 ❌ 不合格项，**直接使用 `replace_string_in_file` 逐项执行修复**，无需等待用户确认。
 
-> 是否需要自动修复上述问题？（需要 `replace_string_in_file` 工具权限）
+修复优先级：
+1. **结构性错误**（连接线 parent 错误、source/target 层级错误、节点 GROUP 结构缺层）
+2. **样式错误**（颜色串色、字号不符、dashed 缺失）
+3. **内容错误**（缺少标签、编码格式）
 
-如用户同意，逐项执行修复，每项修复后告知结果。
+每项修复后，输出：`✅ 已修复第 N 项：[]问题描述]`
+
+如所有项均通过，输出：`✅ 流程图已符合所有规范，无需修复。`

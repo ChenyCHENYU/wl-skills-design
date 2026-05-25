@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * wl-skills-design CLI v1.0.0
+ * wl-skills-design CLI v${PKG.version}
  *
  * 命令:
  *   init      全量安装（默认）— 将 AI 设计技能包复制到当前项目
  *   update    增量更新 — 覆盖有变化的文件，保留用户自定义内容
+ *   --version 显示版本号
  *   --help    帮助
  *   --dry-run 预览模式（不实际写入，仅显示将要复制的文件）
  */
@@ -20,11 +21,17 @@ const args = process.argv.slice(2);
 
 // ─── 已知命令 / 选项白名单 ───────────────────────────────────────────────
 const KNOWN_COMMANDS = new Set(["init", "update"]);
-const KNOWN_FLAGS = new Set(["--dry-run", "--help", "-h", "--force"]);
+const KNOWN_FLAGS = new Set(["--dry-run", "--help", "-h", "--force", "--version", "-v"]);
 
 const dryRun = args.includes("--dry-run");
 const showHelp = args.includes("--help") || args.includes("-h");
+const showVersion = args.includes("--version") || args.includes("-v");
 const force = args.includes("--force");
+
+if (showVersion) {
+  console.log(`${PKG.version}`);
+  process.exit(0);
+}
 
 if (!showHelp) {
   const unknownFlags = args.filter(

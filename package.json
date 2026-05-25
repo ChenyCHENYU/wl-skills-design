@@ -1,7 +1,7 @@
 {
   "name": "@agile-team/wl-skills-design",
-  "version": "0.0.1",
-  "description": "产品设计 AI 技能包 v1.0.0 — 5 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目",
+  "version": "0.0.2",
+  "description": "产品设计 AI 技能包 — 5 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目",
   "main": "./bin/wl-skills-design.js",
   "bin": {
     "wl-skills-design": "bin/wl-skills-design.js"
@@ -28,6 +28,14 @@
   ],
   "author": "ChenyCHENYU",
   "license": "UNLICENSED",
+  "homepage": "https://github.com/ChenyCHENYU/wl-skills-design#readme",
+  "bugs": {
+    "url": "https://github.com/ChenyCHENYU/wl-skills-design/issues"
+  },
+  "scripts": {
+    "cz": "cz",
+    "prepare": "husky"
+  },
   "publishConfig": {
     "access": "public"
   },

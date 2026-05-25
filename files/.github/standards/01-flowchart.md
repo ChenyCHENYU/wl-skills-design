@@ -192,7 +192,7 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
          orthogonalLoop=1;jettySize=auto;html=1;
          exitX=0.5;exitY=1;exitDx=0;exitDy=0;
          entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
-  edge="1" source="[源节点-code层id]" target="[目标节点-code层id]"
+  edge="1" source="[源节点-name层id]" target="[目标节点-code层id]"
   parent="[共同父容器id]">
   <mxGeometry relative="1" as="geometry" />
 </mxCell>
@@ -204,7 +204,9 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
 | 圆角 | `rounded=0` |
 | 主流方向 | 上→下：exitY=1 → entryY=0 |
 | 水平流 | 左→右：exitX=1 → entryX=0 |
-| source/target | 指向节点 GROUP 最顶层 cell（code 层），或 GROUP 本身 |
+| source | **指向 name 层**（`[id]-name`），exit 从 name 层底/侧出 |
+| target | **指向 code 层**（`[id]-code`），entry 从 code 层顶/侧入 |
+| 跨泳道 parent | ⚠️ 必须为**外层主容器 id**，不是子泳道 id |
 
 ### 6.2 跨泳道粗箭头（系统边界数据传递）
 
@@ -476,7 +478,7 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
         <!-- 连接：节点1→结束 -->
         <mxCell id="edge-n1-e1"
           style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
-          edge="1" source="n1-dept" target="e1" parent="lane">
+          edge="1" source="n1-name" target="e1" parent="lane">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
