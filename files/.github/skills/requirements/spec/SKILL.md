@@ -54,7 +54,19 @@ tools:
 
 ---
 
-## 文档骨架（快速生成空白框架）
+## 操作入口（完整闭环）
+
+| 任务 | 使用方式 |
+|------|---------|
+| 生成章节内容并落盘 | 使用 `.github/prompts/create-spec-section.prompt.md` |
+| 验证已有章节文件 | 使用 `.github/prompts/validate-spec-section.prompt.md` |
+| 直接在对话中生成 | 在对话中描述任务，AI 自动路由到对应 sub-skill |
+| 查阅完整规范 | 读取 `.github/standards/06-spec-doc.md` |
+| 查阅真实样例 | 读取 `kit-internal/examples/spec/` 目录 |
+
+---
+
+## 文档骨架
 
 当用户需要「先出骨架再逐章填写」时，直接生成以下框架：
 

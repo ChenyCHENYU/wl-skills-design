@@ -6,6 +6,26 @@
 
 ---
 
+## [0.0.4] — 2026-05（需求设计说明书 Skill + 闭环升级）
+
+### 新增
+- **需求设计说明书 Skill 全套**（`requirements/spec/`）
+  - 权威规范：`standards/06-spec-doc.md`（8章，18项验证清单，IPO表四段式格式规范）
+  - 主入口：`SKILL.md` + `USAGE.md`
+  - 4 个 Sub-Skill：总体设计 / 流程说明体系 / 功能 IPO 表（核心）/ 数据报表
+  - VS Code Prompt：`create-spec-section.prompt.md`（含文件落盘）
+  - VS Code Prompt：`validate-spec-section.prompt.md`（A类12项+B类8项+C类5项，自动修复）
+  - 真实样例：`kit-internal/examples/spec/`，4个文件（如菜项目 199 条目大纲、PMMB001 完整 IPO、流程画面对照表）
+- **IPO 表 Sub-Skill 补充场景模板**：多 Tab 页 / 状态机功能 / 主从表功能
+
+### 调整
+- `_registry.md` 添加需求设计说明书触发词（9 个关键词）
+- `standards/index.md` 添加 06 条目
+- `kit-internal/skills/README.md` 添加 spec skill 行
+- `README.md` 技能覆盖表 / 仓库结构图全面同步
+
+---
+
 ## [0.0.2] — 2025-05（Patch 优化）
 
 ### 修复
