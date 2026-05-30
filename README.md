@@ -241,8 +241,8 @@ vim files/.github/skills/_registry.md     # 注册触发词（必须）
 ```
 spec-gen/
 ├── scripts/          Python 源码（git 追踪）
-│   ├── generate_spec_doc.py   ★ 主生成器
-│   ├── draw_flow.py           流程图模块（PNG + drawio 双轨）
+│   ├── generate_spec_doc.py   ★ 主生成器（模板基生成）
+│   ├── draw_flow.py           流程图模块（脚本基生成：PNG + drawio 双轨）
 │   └── create_skeleton.py    一次性骨架提取（勿重复运行）
 ├── templates/        ⚠️ 只读模板区（禁止脚本写入）
 │   └── template_skeleton.docx
@@ -259,6 +259,16 @@ pip install python-docx Pillow
 python spec-gen/scripts/generate_spec_doc.py
 # 输出：spec-gen/output/华新计划模块需求设计说明书_v2.0.docx
 ```
+
+### 生成策略：模板基 vs 脚本基
+
+| 策略 | 适用场景 | 工具 |
+|------|---------|------|
+| **模板基**（Template-based）| 文档结构固定，改内容/数据，快速批量出稿 | `generate_spec_doc.py` |
+| **脚本基**（Script-based）| 流程图节点动态/数据源驱动，高度灵活 | `draw_flow.py` |
+| **混合** | 先脚本基生成流程图 PNG → 再模板基嵌入文档 | 两者配合 |
+
+> 日常迭代推荐**模板基**；流程图变更用**脚本基**；两者可混用。
 
 ### 模板保护约定
 
