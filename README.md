@@ -37,7 +37,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
 | 设计域 | 技能 | 状态 |
 |-------|------|------|
 | 系统需求设计 | draw.io 业务流程图 | ✅ 已发布 |
-| 系统需求设计 | 需求设计说明书（IPO / 流程说明 / 功能设计）| ✅ 已发布 |
+| 系统需求设计 | 需求设计说明书（IPO / 流程说明 / 功能设计 / 数据报表）| ✅ 已发布 |
 | 系统需求设计 | 原型设计 | 🔲 v2.0 规划中 |
 | 数据设计 | 数据库 ER 设计 | 🔲 v2.0 规划中 |
 | 接口设计 | RESTful / OpenAPI | 🔲 v3.0 规划中 |
@@ -106,7 +106,9 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   └── code/                          代码设计类（规划中）
 │   │   ├── prompts/                           VS Code Copilot 提示词
 │   │   │   ├── create-flowchart.prompt.md
-│   │   │   └── validate-flowchart.prompt.md
+│   │   │   ├── validate-flowchart.prompt.md
+│   │   │   ├── create-spec-section.prompt.md
+│   │   │   └── validate-spec-section.prompt.md  单一权威指向 §十一，43 项验证
 │   │   └── guides/                            人读指南
 │   │       ├── usage.md
 │   │       └── architecture.md
@@ -130,7 +132,8 @@ wl-skills-design/                              ← 你正看的这个仓库
             ├── 00-doc-outline-reference.md    完整标题树（199条目，华新项目）
             ├── 01-flow-desc-example.md        流程说明+活动说明表完整示例
             ├── 02-function-ipo-example.md     IPO 表完整示例（含格式规范说明）
-            └── 03-flow-screen-map-example.md  流程与作业画面对照表示例
+            ├── 03-flow-screen-map-example.md  流程与作业画面对照表示例
+            └── 04-api-example.md              接口说明示例
 ```
 
 > **维护准则**：
@@ -198,7 +201,7 @@ npx @agile-team/wl-skills-design --version
    ```
 
 2. **验证结果**：使用 `.github/prompts/validate-flowchart.prompt.md`
-   - 自动正对 15 项规范指标
+   - 自动对对 20 项规范指标（包括 FC-01〜FC-05 跨文档一致性校验）
    - 加载 `standards/01-flowchart.md` 作为基准
    - **永远不等待用户确认**—发现不合格项即自动 `replace_string_in_file` 修复
 
