@@ -55,9 +55,9 @@ tools:
 ### Step 4：自动验证
 
 文件写入后，立即执行自检：
-- 对照 `.github/standards/06-spec-doc.md` § 七 验证清单（18 项）
+- 对照 `.github/standards/06-spec-doc.md` §十一 验证清单（43 项）
 - 发现不合格项 → 立即用 `replace_string_in_file` 修复
-- 全部通过后输出：`✅ 文件已写入 [路径]，通过 X/18 项验证`
+- 全部通过后输出：`✅ 文件已写入 [路径]，通过 X/43 项验证`
 
 ---
 
