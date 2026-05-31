@@ -1,8 +1,8 @@
 # @agile-team/wl-skills-design
 
-**产品设计 AI 技能包** — 7 条设计规范 + AI Skill 自动调度，支持 10  种 AI 编辑器，一条命令导入设计项目。
+**产品设计 AI 技能包** — 7 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目。
 
-让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正理解产品设计规范**，从流程图到数据库、接口、代码结构设计全链路 AI 辅助。
+让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正理解产品设计规范**，从流程图、需求说明书到数据库、接口设计、集成评审全链路 AI 辅助。
 
 ---
 
@@ -11,7 +11,11 @@
 ```bash
 npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前项目
 # 在 AI 对话中：
-"帮我画一个废钢采购流程图，涉及采购部、质检部、仓储部"
+"帮我画一个废钓采购流程图，涉及采购部、质检部、仓储部"
+"帮我编写订单管理模块的需求设计说明书 IPO 表"
+"帮我设计订单模块的数据库表结构和数据字典"
+"帮我设计订单创建接口（RESTful）"
+"对订单模块三份设计文档做一次整体评审，给我出评分报告"
 ```
 
 ---
@@ -19,15 +23,23 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
 ## 这个包干什么？
 
 ```
-用户说："帮我画一个废钢入库检验流程图"
+用户说："帮我设计订单模块的数据库"
     │
     ▼ AI 识别关键词 → 查阅 .github/skills/_registry.md
-    ▼ 读取 .github/skills/requirements/flowchart/SKILL.md
-    ▼ 加载 .github/standards/01-flowchart.md（规范）
-    ▼ 使用 templates/skeleton.drawio（骨架模板）
+    ▼ 读取 .github/skills/data/database/SKILL.md
+    ▼ 加载 .github/standards/03-database.md（规范）
+    ▼ 从 spec IPO 表推导实体 → Sub-01/02/03（ER / 数据字典 / DDL）
+    ▼ 执行 30 项验证，自动注入 7 个系统字段、索引、命名前缀
     ↓
-《符合团队规范的 draw.io XML》
-（泳道图 / 三层节点 / 色标统一 / 编码格式 / 图例页）
+《数据库设计（ER / DB 清单 / 数据字典 / DDL）》 + DB_REVIEW 验证报告
+
+用户说："对这个模块做整体评审、出评分"
+    │
+    ▼ 采集 spec/DB/IF 三份 validate 结论（Sub-01）
+    ▼ D4 跨文档三角联动 18 项（Sub-02）
+    ▼ 综合评分 + P0 一票否决 + 追溯矩阵（Sub-03）
+    ↓
+《 DESIGN_REVIEW》：仔表盘 + P0 阶断清单 + spec→接口→表 追溯矩阵 + 修复任务
 ```
 
 ---
@@ -108,7 +120,7 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   ├── api/restful/               接口设计 Skill ✅（4 sub + 4 templates）
 │   │   │   ├── cross/design-review/       设计集成评审 Skill ✅（3 sub + 1 template）
 │   │   │   └── code/                      代码设计类（规划中）
-│   │   ├── prompts/                           VS Code Copilot 提示词（13 个）
+│   │   ├── prompts/                           VS Code Copilot 提示词（9 个）
 │   │   │   ├── create-flowchart.prompt.md
 │   │   │   ├── validate-flowchart.prompt.md
 │   │   │   ├── create-spec-section.prompt.md
@@ -198,22 +210,37 @@ npx @agile-team/wl-skills-design --version
 
 ---
 
-## 流程图闭环工作流（最佳实践）
+## 设计全链路工作流（最佳实践）
 
-> 生成 → 验证 → 自动修复，三步全闭环
+> 每个环节：生成 → 验证 → 自动修复，全链路闭环
 
-1. **创建流程图**：使用 `.github/prompts/create-flowchart.prompt.md`
-   ```
-   在 VS Code Copilot Chat 中按 "/" 输入 create-flowchart，
-   然后描述业务需求："帮我建一个废钓入库检验流程，涉及质检部、仓储部、采购部"
-   ```
+### 1. 流程图（需求设计朴限）
 
-2. **验证结果**：使用 `.github/prompts/validate-flowchart.prompt.md`
-   - 自动对对 20 项规范指标（包括 FC-01〜FC-05 跨文档一致性校验）
-   - 加载 `standards/01-flowchart.md` 作为基准
-   - **永远不等待用户确认**—发现不合格项即自动 `replace_string_in_file` 修复
+VS Code Copilot 中按 `/` 用 prompt：
+- **创建**：`/create-flowchart` → 描述业务需求
+- **验证**：`/validate-flowchart` → 自动对照 20 项规范，发现即修复
 
-3. **修复优先级**：结构性错误 → 样式错误 → 内容错误
+### 2. 需求设计说明书
+
+- **创建**：`/create-spec-section` → 指定模块，生成 IPO 表 / 流程说明 / 活动说明 / 报表设计
+- **验证**：`/validate-spec-section` → 验证字段完整性、编码格式、流程与 IPO 一致性
+
+### 3. 数据库设计
+
+- **创建**：`/create-db-design` → 从 spec IPO 表推导 ER 图 / 数据字典（10 列）/ DDL
+- **验证**：`/validate-db-design` → 执行 30 项，强制注入 7 个系统字段、索引、spec 字段联动
+
+### 4. 接口设计
+
+- **创建**：`/create-if-design` → 从 spec 功能编码推导接口清单 / 集成报文 / RESTful 定义
+- **验证**：`/validate-if-design` → 执行 35 项，检查统一响应包装、安全、幂等、spec/DB 字段联动
+
+### 5. 集成评审（最终闭环）
+
+- **评审**：`/design-review` → 自动采集三份 validate 结果，计算 D4 三角联动 18 项，出带评分的 `DESIGN_REVIEW_*.md`
+  - 仔表盘：D1–D4 四维度得分 + 综合等级 🟢🟡🟠🔴
+  - P0 阶断清单（缺表、缺接口、字段对不上…）
+  - spec→接口→落库表 正向追溯矩阵
 
 ---
 
@@ -222,7 +249,7 @@ npx @agile-team/wl-skills-design --version
 ### 新增设计规范
 
 ```bash
-vim files/.github/standards/06-xxx.md     # 创建规范文件
+vim files/.github/standards/08-xxx.md     # 创建规范文件（当前已生 01/03/04/06/07，下一个是 08）
 vim files/.github/standards/index.md      # 更新门控索引
 ```
 
