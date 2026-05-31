@@ -15,6 +15,7 @@
 | 原型设计 | 🔲 规划中 | `requirements/prototype/SKILL.md` | 原型、线框图、prototype、页面设计、UI 草图 |
 | 数据库设计 | ✅ v1.0 | `data/database/SKILL.md` | 数据库、ER 图、表结构、实体关系、数据字典、DDL、database、schema |
 | 接口设计 | ✅ v1.0 | `api/restful/SKILL.md` | 接口、API、RESTful、OpenAPI、接口文档、报文、集成接口、swagger |
+| 设计集成评审 | ✅ v1.0 | `cross/design-review/SKILL.md` | 评审、评审报告、评分、设计评审、集成评审、质量评审、追溯矩阵、一致性检查、整体评审、review |
 | 代码结构设计 | 🔲 规划中 | `code/architecture/SKILL.md` | 代码结构、分层设计、架构设计、领域模型、DDD |
 
 ---

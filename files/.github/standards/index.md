@@ -14,6 +14,7 @@
 | 04 | [04-api-design.md](./04-api-design.md) | 接口设计 · RESTful | ✅ v1.0 | 用户要求设计接口、API 文档、报文、集成接口、OpenAPI |
 | 05 | [05-code-design.md](./05-code-design.md) | 代码设计 · 业务逻辑 | 🔲 规划中 | 用户要求设计代码结构、业务逻辑分层 |
 | 06 | [06-spec-doc.md](./06-spec-doc.md) | 系统需求设计 · 说明书 | ✅ v1.0 | 用户要求编写需求设计说明书、IPO 表、功能规格、流程说明 |
+| 07 | [07-design-review.md](./07-design-review.md) | 跨域 · 集成评审 | ✅ v1.0 | 用户要求评审、评分、出评审报告、检查三份设计一致性、追溯矩阵 |
 
 ---
 

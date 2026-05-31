@@ -1,6 +1,6 @@
 # @agile-team/wl-skills-design
 
-**产品设计 AI 技能包** — 6 条设计规范 + AI Skill 自动调度，支持 10 种 AI 编辑器，一条命令导入设计项目。
+**产品设计 AI 技能包** — 7 条设计规范 + AI Skill 自动调度，支持 10  种 AI 编辑器，一条命令导入设计项目。
 
 让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正理解产品设计规范**，从流程图到数据库、接口、代码结构设计全链路 AI 辅助。
 
@@ -41,6 +41,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
 | 系统需求设计 | 原型设计 | 🔲 v2.0 规划中 |
 | 数据设计 | 数据库设计（ER / DB 清单 / 数据字典 / DDL）| ✅ 已发布 |
 | 接口设计 | 接口设计（系统集成报文 / RESTful / OpenAPI）| ✅ 已发布 |
+| 跨域评审 | 设计集成评审（评分 / 追溯矩阵 / 跨文档一致性）| ✅ 已发布 |
 | 代码设计 | 业务逻辑代码结构 | 🔲 v3.0 规划中 |
 
 ---
@@ -83,13 +84,15 @@ wl-skills-design/                              ← 你正看的这个仓库
 ├── files/                                     ★★★ 真正会被复制到目标项目的内容 ★★★
 │   ├── .github/
 │   │   ├── copilot-instructions.md            源 AI 主入口（编辑这里，不要改目标项目副本）
-│   │   ├── standards/                         5 条设计规范（01 ✅，02~05 规划中）
+│   │   ├── standards/                         7 条设计规范（01/03/04/06/07 ✅，02/05 规划中）
 │   │   │   ├── index.md                       规范门控
-│   │   │   ├── 01-flowchart.md                draw.io 泳道流程图规范（15 章节）
+│   │   │   ├── 01-flowchart.md                draw.io 泳道流程图规范（15 章节）✅
 │   │   │   ├── 02-prototype.md                原型规范（stub）
-│   │   │   ├── 03-database.md                 数据库规范（stub）
-│   │   │   ├── 04-api-design.md               接口规范（stub）
-│   │   │   └── 05-code-design.md              代码设计规范（stub）
+│   │   │   ├── 03-database.md                 数据库规范（30 项验证）✅
+│   │   │   ├── 04-api-design.md               接口规范（35 项验证）✅
+│   │   │   ├── 05-code-design.md              代码设计规范（stub）
+│   │   │   ├── 06-spec-doc.md                 需求说明书规范✅
+│   │   │   └── 07-design-review.md            集成评审规范（评分 + D4 联动 18 项）✅
 │   │   ├── skills/
 │   │   │   ├── _registry.md                   ★ 触发词路由 — 唯一数据源
 │   │   │   ├── _compat/                       多编辑器适配源（editors.json + headers/）
@@ -101,14 +104,18 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   │   ├── SKILL.md                   AI 触发文件
 │   │   │   │   ├── USAGE.md                   人读版使用说明
 │   │   │   │   └── sub/                       Sub-Skill 分解（4个文件）
-│   │   │   ├── data/                          数据设计类（规划中）
-│   │   │   ├── api/                           接口设计类（规划中）
-│   │   │   └── code/                          代码设计类（规划中）
-│   │   ├── prompts/                           VS Code Copilot 提示词
+│   │   │   ├── data/database/             数据库设计 Skill ✅（4 sub + 3 templates）
+│   │   │   ├── api/restful/               接口设计 Skill ✅（4 sub + 4 templates）
+│   │   │   ├── cross/design-review/       设计集成评审 Skill ✅（3 sub + 1 template）
+│   │   │   └── code/                      代码设计类（规划中）
+│   │   ├── prompts/                           VS Code Copilot 提示词（13 个）
 │   │   │   ├── create-flowchart.prompt.md
 │   │   │   ├── validate-flowchart.prompt.md
 │   │   │   ├── create-spec-section.prompt.md
-│   │   │   └── validate-spec-section.prompt.md  单一权威指向 §十一，43 项验证
+│   │   │   ├── validate-spec-section.prompt.md
+│   │   │   ├── create-db-design.prompt.md / validate-db-design.prompt.md
+│   │   │   ├── create-if-design.prompt.md / validate-if-design.prompt.md
+│   │   │   └── design-review.prompt.md          集成评审出报告
 │   │   └── guides/                            人读指南
 │   │       ├── usage.md
 │   │       └── architecture.md
@@ -124,7 +131,7 @@ wl-skills-design/                              ← 你正看的这个仓库
 │
 └── kit-internal/                              ★★ 仅仓库可见，不发布到 npm ★★
     ├── README.md                              维护者首页 + 快速命令
-    ├── architecture.md                        架构决策记录（ADR-001~004）
+    ├── architecture.md                        架构决策记录（ADR-001~007）
     ├── CONTRIBUTING.md                        贡献流程（新增规范/Skill/多编辑器同步）
     ├── skills/README.md                       Skill 开发状态 + 规划清单
     └── examples/
@@ -149,14 +156,15 @@ wl-skills-design/                              ← 你正看的这个仓库
 │
 ├── .github/                              ← 来自本包 files/.github/
 │   ├── copilot-instructions.md           AI 主入口
-│   ├── standards/                        6 条设计规范 + index.md 门控
+│   ├── standards/                        7 条设计规范 + index.md 门控
 │   ├── skills/
 │   │   ├── _registry.md                  ★ 触发词路由（单一数据源）
 │   │   ├── _compat/                      多编辑器适配配置
 │   │   ├── requirements/flowchart/       流程图 Skill ✅
 │   │   ├── requirements/spec/            需求设计说明书 Skill ✅
-│   │   ├── data/                         数据设计类 🔲
-│   │   ├── api/                          接口设计类 🔲
+│   │   ├── data/database/                数据库设计 Skill ✅
+│   │   ├── api/restful/                  接口设计 Skill ✅
+│   │   ├── cross/design-review/          设计集成评审 Skill ✅
 │   │   └── code/                         代码设计类 🔲
 │   ├── prompts/                          VS Code Copilot 提示词
 │   └── guides/                           使用指南

@@ -6,6 +6,26 @@
 
 ---
 
+## [0.2.0] — 2026-05（新增设计集成评审 Skill，三份产物聚合评分闭环）
+
+### 新增
+- **设计集成评审 Skill（`cross/design-review/`）**：把需求设计（spec）、数据库设计（DB）、接口设计（IF）三份产物聚合成一份带评分的评审报告——**第二层报告**，消费各产物 validate 结论再叠加跨文档联动与综合评分
+  - 规范 `standards/07-design-review.md`：评分模型（维度得分 = 通过/(总−暂挂)，4 等级 🟢🟡🟠🔴）、**P0 一票否决闸门**、问题分级 P0/P1/P2/P3、**D4 跨文档三角联动 18 项**（spec→DB / spec→IF / IF→DB / 命名口径 / 可追溯）、追溯矩阵、报告六部分结构、评审执行清单 RV 12 项、复评协议、报告模板
+  - 3 个 sub-skill：`01-collect`（采集三维度结论）/ `02-cross-check`（三角联动 + 追溯矩阵，核心）/ `03-score-report`（评分 + 分级 + 出报告）
+  - 1 个模板：`review-report`（仪表盘 + P0 清单 + 追溯矩阵 + 修复任务）
+  - 1 个 prompt：`design-review`
+- **追溯矩阵**：spec 功能编码 → 接口 → 落库表 正向闭环视图，一眼定位断点（✅ 闭环 / ❌ 断点 / ⚠️ 暂挂）
+- 新增 ADR-007（架构决策：集成评审作为第二层报告、跨域 cross/ 类、复用而非重算、P0 一票否决）
+
+### 变更
+- `_registry.md` / `standards/index.md` / `copilot-instructions.md`：新增设计集成评审 ✅ v1.0、standards 07 ✅
+- 新增 `skills/cross/README.md`（跨域集成类 Skill 说明）
+- 同步重建 9 个编辑器配置文件
+- 修正 README 文档漂移：规范数 6→7、技能覆盖表新增集成评审行、目录树补全 DB/IF/cross skill 与 9 个 prompt、ADR 计数更新
+- `guides/usage.md`：补全数据库/接口/评审/说明书的触发示例（移除过时「规划中」标记）
+
+---
+
 ## [0.1.0] — 2026-05（新增数据库设计 + 接口设计两大 Skill，全链路闭环）
 
 ### 新增
