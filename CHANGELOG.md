@@ -6,6 +6,31 @@
 
 ---
 
+## [0.2.1] — 2026-05（闭环补强 + 历史遗留清理 + 文档对齐）
+
+### 新增
+- **spec 验证落盘报告**：`validate-spec-section.prompt.md` 验证完成后落盘 `docs/spec/reports/SPEC_REVIEW_{模块}_{日期}.md`，与 `DB_REVIEW_*` / `IF_REVIEW_*` 三者对齐——补齐「设计集成评审」采集 D1 需求维度的数据源（此前 D1 只能现场重验）
+- **db / api 真实样例**：`kit-internal/examples/db/01-data-dictionary-example.md`（10 列数据字典 + 7 系统字段 + 索引 + 三方联动）、`kit-internal/examples/api/01-restful-example.md`（RESTful 定义 + 统一包装 + spec/DB 联动），补足 few-shot 参考
+- kit-internal README 新增**发布到 npm** 流程（特殊字符路径需复制到临时目录发布）
+
+### 变更
+- `_registry.md`：补充「规划中 Skill 其 SKILL.md 未创建，命中触发词时不读取、直接提示不可用」防护说明
+- `design-review/sub/01-collect.md`、`standards/07-design-review.md`：D1 数据源明确为 `SPEC_REVIEW_*.md`（43 项）
+- `CONTRIBUTING.md`：新增 Skill 类别补充 `cross/`（跨域聚合类）；规范编号示例 06→08
+- `package.json`：description 规范数 6→7、补全五大技能；版本 0.2.0 → 0.2.1
+- 同步重建 9 个编辑器配置文件版本号
+
+### 移除
+- 删除历史遗留 `docs/spec/huaxin/`（华新项目业务文档，不属于通用工具包）
+- 解除 `spec-gen/output/assets/PMPM-A-01.drawio` git 追踪（项目生成物）
+- `.gitignore` 补全 `*.drawio` / `__pycache__/` / `docs/` 排除规则
+
+### 修复
+- `copilot-instructions.md` 及 9 个编辑器配置版本号 v1.0.0 → 与 npm 包对齐
+- README：examples 树补 db/api，去除项目特定（华新）注释
+
+---
+
 ## [0.2.0] — 2026-05（新增设计集成评审 Skill，三份产物聚合评分闭环）
 
 ### 新增

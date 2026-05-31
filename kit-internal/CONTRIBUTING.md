@@ -46,7 +46,8 @@ vim files/.github/standards/index.md
 ## 三、新增 Skill
 
 ```bash
-# 1. 确定 Skill 所属类别（requirements / data / api / code）
+# 1. 确定 Skill 所属类别（requirements / data / api / code / cross）
+#    cross = 跨域聚合类（如设计集成评审，消费多个产物的结论）
 mkdir -p files/.github/skills/[category]/[skill-name]/templates
 
 # 2. 创建 SKILL.md（AI 触发文件）

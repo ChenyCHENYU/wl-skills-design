@@ -13,6 +13,7 @@
 | `architecture.md` | 架构决策记录（ADR） |
 | `CONTRIBUTING.md` | 贡献流程与规范 |
 | `skills/README.md` | Skill 维护清单与规划 |
+| `examples/` | 各设计域真实样例（spec / db / api），供 few-shot 参考，不发布 |
 
 ---
 
@@ -30,8 +31,8 @@
 ## 快速上手（维护者）
 
 ```bash
-# 1. 新增一条设计规范
-vim .github/standards/06-xxx.md
+# 1. 新增一条设计规范（当前已有 01~07，下一个是 08）
+vim .github/standards/08-xxx.md
 vim .github/standards/index.md   # 更新表格
 
 # 2. 新增一个 Skill
@@ -44,3 +45,29 @@ vim .github/skills/_registry.md   # 注册触发词
 # 手动将 .github/copilot-instructions.md 内容同步到各编辑器根配置文件
 # 参见 .github/skills/_compat/README.md
 ```
+
+---
+
+## 发布到 npm（重要）
+
+> ⚠️ 本仓库路径含 `#` / `【】` 特殊字符，会破坏 npm 打包。
+> **必须**复制到无特殊字符的临时目录再发布。
+
+```bash
+# 1. 准备干净目录（只拷发布所需文件）
+TMP=$(mktemp -d)
+cp -r bin files package.json README.md CHANGELOG.md "$TMP"/
+cd "$TMP"
+
+# 2. 写入发布 token（发布后立即删除，切勿提交）
+echo "//registry.npmjs.org/:_authToken=<NPM_TOKEN>" > .npmrc
+
+# 3. 发布（跳过 husky 等脚本）
+npm publish --ignore-scripts --access public
+
+# 4. 清理
+rm -f .npmrc && cd - && rm -rf "$TMP"
+```
+
+> 发布前确认：`package.json` version 已 bump、CHANGELOG 已记录、git 已 commit + tag + push。
+

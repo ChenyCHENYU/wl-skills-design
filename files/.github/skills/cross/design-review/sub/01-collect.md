@@ -9,7 +9,7 @@
 
 | 维度 | 优先数据源 | 缺失时的兜底 |
 |------|-----------|------------|
-| D1 需求设计 | spec 验证结论（若有 SPEC_REVIEW 报告） | 现场按 `06-spec-doc.md` 验证；或标「未提供」 |
+| D1 需求设计 | `docs/spec/reports/SPEC_REVIEW_*.md`（43 项） | 现场按 `06-spec-doc.md` 验证；或标「未提供」 |
 | D2 数据库设计 | `docs/db/reports/DB_REVIEW_*.md`（30 项） | 现场触发 `data/database/sub/04-db-review.md` |
 | D3 接口设计 | `docs/api/reports/IF_REVIEW_*.md`（35 项） | 现场触发 `api/restful/sub/04-if-review.md` |
 
@@ -34,7 +34,7 @@
 
 | 维度 | 总项 | 通过 | 失败 | 暂挂 | 数据来源 |
 |------|------|------|------|------|---------|
-| D1 需求 | 25 | 22 | 2 | 1 | SPEC 结论 |
+| D1 需求 | 25 | 22 | 2 | 1 | SPEC_REVIEW_订单_20260531 |
 | D2 数据库 | 30 | 21 | 7 | 2 | DB_REVIEW_订单_20260531 |
 | D3 接口 | 35 | 24 | 8 | 3 | IF_REVIEW_订单_20260531 |
 

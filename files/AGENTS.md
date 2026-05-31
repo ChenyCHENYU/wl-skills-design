@@ -11,7 +11,7 @@
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.2.0  
+> 版本：v0.2.1  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---

@@ -200,6 +200,9 @@ docs/spec/{项目代号}/4.N-data-report.md
 
 文件写入后，调用 `.github/prompts/validate-spec-section.prompt.md` 自动验证（按 §十一 适用检查组——本章主要触发 D 组数据需求 + G 组报表设计 + 自动修复）。
 
+> 验证完成后，prompt 会将最终结论落盘到 `docs/spec/reports/SPEC_REVIEW_{模块}_{日期}.md`，  
+> 供「设计集成评审」采集 D1 需求维度（与 DB_REVIEW / IF_REVIEW 三者对齐）。
+
 ### 常见铁项自修指南
 
 | 问题 | 修复方法 |

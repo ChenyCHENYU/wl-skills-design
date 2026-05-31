@@ -147,12 +147,16 @@ wl-skills-design/                              ← 你正看的这个仓库
     ├── CONTRIBUTING.md                        贡献流程（新增规范/Skill/多编辑器同步）
     ├── skills/README.md                       Skill 开发状态 + 规划清单
     └── examples/
-        └── spec/                              需求设计说明书真实样例（不发布）
-            ├── 00-doc-outline-reference.md    完整标题树（199 条目，真实项目参考样例）
-            ├── 01-flow-desc-example.md        流程说明+活动说明表完整示例
-            ├── 02-function-ipo-example.md     IPO 表完整示例（含格式规范说明）
-            ├── 03-flow-screen-map-example.md  流程与作业画面对照表示例
-            └── 04-api-example.md              接口说明示例
+        ├── spec/                              需求设计说明书真实样例（不发布）
+        │   ├── 00-doc-outline-reference.md    完整标题树（199 条目，真实项目参考样例）
+        │   ├── 01-flow-desc-example.md        流程说明+活动说明表完整示例
+        │   ├── 02-function-ipo-example.md     IPO 表完整示例（含格式规范说明）
+        │   ├── 03-flow-screen-map-example.md  流程与作业画面对照表示例
+        │   └── 04-api-example.md              接口说明示例
+        ├── db/                                数据库设计真实样例（不发布）
+        │   └── 01-data-dictionary-example.md  10 列数据字典 + 系统字段 + 索引 + 联动
+        └── api/                               接口设计真实样例（不发布）
+            └── 01-restful-example.md          RESTful 定义 + 统一包装 + spec/DB 联动
 ```
 
 > **维护准则**：
