@@ -62,14 +62,14 @@ if (showHelp) {
   用法：
     npx @agile-team/wl-skills-design          # 全量安装（init）
     npx @agile-team/wl-skills-design init      # 同上
-    npx @agile-team/wl-skills-design update    # 增量更新（覆盖已安装文件）
+    npx @agile-team/wl-skills-design update    # 增量更新（覆盖已安装文件，本地改动自动备份 .bak）
     npx @agile-team/wl-skills-design --dry-run # 预览，不实际写入
 
   安装内容：
     .github/copilot-instructions.md    AI 主入口
-    .github/standards/                 5 条设计规范（01-flowchart ✅，02~05 规划中）
-    .github/skills/                    AI Skill（流程图 ✅，原型/数据库/接口/代码 规划中）
-    .github/prompts/                   VS Code Copilot 提示词
+    .github/standards/                 7 条设计规范（流程图/数据库/接口/说明书/集成评审 ✅，原型/代码 规划中）
+    .github/skills/                    AI Skill（流程图/说明书/数据库/接口/集成评审 ✅，原型/代码 规划中）
+    .github/prompts/                   VS Code Copilot 提示词（9 个）
     .github/guides/                    使用指南
     CLAUDE.md / AGENTS.md / .cursorrules / .windsurfrules 等（10 种编辑器）
   `);
@@ -101,6 +101,7 @@ function run() {
   const allFiles = getAllFiles(FILES_DIR);
   let copied = 0;
   let skipped = 0;
+  let backedUp = 0;
 
   console.log(`\n  wl-skills-design v${PKG.version} — ${command === "update" ? "增量更新" : "全量安装"}`);
   if (dryRun) console.log("  [dry-run 模式：不实际写入]\n");
@@ -117,6 +118,13 @@ function run() {
         skipped++;
         continue;
       }
+      // 内容不同 → 目标文件可能含本地改动，覆盖前备份 .bak
+      if (!dryRun) fs.copyFileSync(dest, `${dest}.bak`);
+      console.log(`  ${dryRun ? "[预览]" : "⚠"} ${rel}${dryRun ? "（将覆盖，本地有改动）" : "（已备份 .bak 后覆盖）"}`);
+      if (!dryRun) copyFile(src, dest);
+      copied++;
+      backedUp++;
+      continue;
     }
 
     console.log(`  ${dryRun ? "[预览]" : "✔"} ${rel}`);
@@ -125,7 +133,7 @@ function run() {
   }
 
   console.log(`\n  ${dryRun ? "预览完成" : "安装完成"}`);
-  console.log(`  ✔ ${dryRun ? "将复制" : "已复制"} ${copied} 个文件${skipped ? `，跳过 ${skipped} 个未变化文件` : ""}`);
+  console.log(`  ✔ ${dryRun ? "将复制" : "已复制"} ${copied} 个文件${skipped ? `，跳过 ${skipped} 个未变化文件` : ""}${backedUp ? `，备份 ${backedUp} 个本地改动文件（.bak）` : ""}`);
 
   if (!dryRun) {
     console.log(`

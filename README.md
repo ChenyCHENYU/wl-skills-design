@@ -39,7 +39,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
     ▼ D4 跨文档三角联动 18 项（Sub-02）
     ▼ 综合评分 + P0 一票否决 + 追溯矩阵（Sub-03）
     ↓
-《 DESIGN_REVIEW》：仔表盘 + P0 阶断清单 + spec→接口→表 追溯矩阵 + 修复任务
+《 DESIGN_REVIEW》：仪表盘 + P0 阻断清单 + spec→接口→表 追溯矩阵 + 修复任务
 ```
 
 ---
@@ -218,7 +218,7 @@ npx @agile-team/wl-skills-design --version
 
 > 每个环节：生成 → 验证 → 自动修复，全链路闭环
 
-### 1. 流程图（需求设计朴限）
+### 1. 流程图（需求设计环节）
 
 VS Code Copilot 中按 `/` 用 prompt：
 - **创建**：`/create-flowchart` → 描述业务需求
@@ -242,8 +242,8 @@ VS Code Copilot 中按 `/` 用 prompt：
 ### 5. 集成评审（最终闭环）
 
 - **评审**：`/design-review` → 自动采集三份 validate 结果，计算 D4 三角联动 18 项，出带评分的 `DESIGN_REVIEW_*.md`
-  - 仔表盘：D1–D4 四维度得分 + 综合等级 🟢🟡🟠🔴
-  - P0 阶断清单（缺表、缺接口、字段对不上…）
+  - 仪表盘：D1–D4 四维度得分 + 综合等级 🟢🟡🟠🔴
+  - P0 阻断清单（缺表、缺接口、字段对不上…）
   - spec→接口→落库表 正向追溯矩阵
 
 ---
@@ -268,7 +268,17 @@ vim files/.github/skills/_registry.md     # 注册触发词（必须）
 
 ### 多编辑器内容同步
 
-修改 `files/.github/copilot-instructions.md` 后，参考 `files/.github/skills/_compat/README.md` 同步到 `files/` 根目录的各编辑器配置文件。
+修改 `files/.github/copilot-instructions.md` 后，运行同步脚本自动重建全部 9 个编辑器配置
+（内容从单一源派生，版本号从 `package.json` 注入）：
+
+```bash
+npm run sync      # 重建 9 个编辑器配置
+npm run check     # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
+```
+
+> 本仓库路径含特殊字符（`【】` / `#`），node 直接执行脚本文件会崩溃，
+> 需先复制 `files/` `scripts/` `package.json` 到无特殊字符的临时目录运行再拷回。
+> 详见 `files/.github/skills/_compat/README.md` 与 `kit-internal/CONTRIBUTING.md`。
 
 完整贡献流程：[kit-internal/CONTRIBUTING.md](./kit-internal/CONTRIBUTING.md)
 

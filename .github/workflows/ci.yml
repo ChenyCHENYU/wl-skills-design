@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 编辑器配置漂移校验
+        run: node scripts/sync-editors.js --check
+
+      - name: 一致性自检（doctor）
+        run: node scripts/check.js
+
+      - name: 安装冒烟测试（init 到临时目录）
+        run: |
+          TMP="$(mktemp -d)"
+          (cd "$TMP" && node "$GITHUB_WORKSPACE/bin/wl-skills-design.js" init)
+          test -f "$TMP/.github/copilot-instructions.md"
+          test -f "$TMP/.github/skills/_registry.md"
+          test -f "$TMP/CLAUDE.md"
+          test -f "$TMP/AGENTS.md"
+          echo "✔ 安装冒烟测试通过"

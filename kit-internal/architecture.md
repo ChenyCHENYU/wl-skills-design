@@ -137,3 +137,34 @@ spec/DB/IF 各自已有 validate（纵向单文档质量）。但真实项目最
 ### 权衡
 - **优点**：不重复劳动（复用既有 review 结论）；一张仪表盘 + 追溯矩阵直观定位断点；P0 闸门防止「分数好看但不可上线」；与既有 Skill 架构一致（薄 SKILL + 单一规范 + 闭环 + 报告模板）。
 - **代价**：依赖各产物先跑过 validate（否则需现场触发）；D4 需要三份文档同时在工作区才能完整校验，缺则暂挂。
+
+---
+
+## ADR-008 · 多编辑器同步与一致性自检脚本化（消除手工漂移）
+
+**日期**：2026-05  
+**状态**：✅ 已采纳
+
+### 背景
+ADR-003 确立了「单一内容源 + 头部差异化」的多编辑器适配，但同步是**纯手工**的：
+改 `copilot-instructions.md` 后需人肉把正文拷到 9 个编辑器配置，版本号还硬编码在 10 处。
+0.2.1 一整轮变更几乎都在修「文档漂移」，说明手工维护一致性是结构性隐患——
+今天没问题，改三次就漂移，且没有任何机制能发现。
+
+### 决策
+1. **`scripts/sync-editors.js`**：读 `editors.json` + `headers/*.txt` + `copilot-instructions.md`，
+   重新生成全部 9 个编辑器配置；版本号从 `package.json` 注入（`版本：vX.Y.Z` 自动改写）。
+   `--check` 模式只比对不写入，用于 CI / 发布前。
+2. **`scripts/check.js`（doctor）**：校验 ① `_registry.md` 标 ✅ 的 Skill 其 `SKILL.md` 存在；
+   ② `standards/index.md` 引用的规范文件存在；③ 各 `SKILL.md` 引用的 standards/sub/templates
+   路径存在；④ 调用 `sync --check` 检测编辑器漂移。
+3. **`prepublishOnly` 闸门**：`sync --check && check`，配置漂移或引用断裂直接阻断 `npm publish`。
+4. **CLI `update` 备份**：覆盖含本地改动的文件前自动写 `.bak`，避免无声冲掉用户自定义。
+5. **`scripts/` 不发布**：`.npmignore` 排除，属维护者构建工具。
+
+### 权衡
+- **优点**：「改 1 处 + `npm run sync`」取代「手改 10 处」；版本号单一来源；
+  发布前自动挡住漂移与断链；与既有「单一数据源」哲学一致。
+- **代价**：本仓库路径含 `【】`/`#`，node 执行脚本文件会崩溃（access violation），
+  需在无特殊字符的临时目录运行脚本再拷回——已在 README / CONTRIBUTING 标注。
+  长期解决方式是仓库迁移到纯 ASCII 路径。

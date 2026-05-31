@@ -6,7 +6,30 @@
 
 ---
 
-## [0.2.1] — 2026-05（闭环补强 + 历史遗留清理 + 文档对齐）
+## [0.3.0] — 2026-05（工程化加固：同步脚本 + 一致性自检 + 文档勘误）
+
+### 新增
+- **`scripts/sync-editors.js` 多编辑器同步器**：从 `copilot-instructions.md` + `_compat/` 自动重建 9 个编辑器配置，版本号从 `package.json` 注入——`npm run sync` 取代「手改 10 处版本号 + 人肉拷正文」，根除配置漂移；`--check` 模式只校验不写入
+- **`scripts/check.js` 一致性自检（doctor）**：`npm run check` 校验 ① `_registry.md` 标 ✅ 的 Skill 其 `SKILL.md` 存在 ② `standards/index.md` 引用的规范文件存在 ③ 各 `SKILL.md` 引用的 standards/sub/templates 路径存在 ④ 编辑器配置无漂移
+- **发布前闸门 `prepublishOnly`**：`sync --check && check`，配置漂移或引用断裂直接阻断 `npm publish`
+- **CI 工作流**（`.github/workflows/ci.yml`）：PR / push 跑漂移校验 + doctor + init 安装冒烟测试
+- 新增 ADR-008（同步与自检脚本化决策）
+
+### 变更
+- **CLI `update` 覆盖前自动备份**：对含本地改动的文件先写 `.bak` 再覆盖，避免无声冲掉用户自定义内容
+- 版本号统一从 `package.json` 注入，10 个编辑器配置版本号 v0.2.1 → v0.3.0
+- `_compat/README.md` / `CONTRIBUTING.md`：手动同步流程改为脚本化（`npm run sync` / `npm run check`），并标注特殊字符路径需临时目录运行
+- `kit-internal/skills/README.md` 规划清单新增：术语/字段词典（🔴 高，作为字段对齐中央锚点）、测试用例/验收标准、NFR 规范、数据埋点设计
+- `.npmignore` 排除 `scripts/`（维护者构建工具，不发布）
+
+### 修复
+- **CLI `--help` 文本严重过时**：「5 条规范 / 仅流程图可用」→ 实际「7 条规范 / 5 个 Skill 已发布」
+- **README 错别字**：仔表盘 → 仪表盘、P0 阶断清单 → P0 阻断清单、需求设计朴限 → 需求设计环节
+- `headers/kiro.txt` description「5 条设计规范」→「7 条设计规范」
+
+---
+
+
 
 ### 新增
 - **spec 验证落盘报告**：`validate-spec-section.prompt.md` 验证完成后落盘 `docs/spec/reports/SPEC_REVIEW_{模块}_{日期}.md`，与 `DB_REVIEW_*` / `IF_REVIEW_*` 三者对齐——补齐「设计集成评审」采集 D1 需求维度的数据源（此前 D1 只能现场重验）

@@ -1,6 +1,6 @@
 ---
 inclusion: always
-description: 产品设计 AI 技能规范（5 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）
+description: 产品设计 AI 技能规范（7 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）
 ---
 
 <!-- Kiro Steering 规则。由 wl-skills-design 维护，请勿手动编辑正文内容。 -->
@@ -11,7 +11,7 @@ description: 产品设计 AI 技能规范（5 条设计规范 + Skill 自动调�
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.2.1  
+> 版本：v0.3.0  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---

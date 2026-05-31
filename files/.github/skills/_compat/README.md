@@ -31,7 +31,20 @@
     └── + headers/qoder.txt           →  .qoder/rules/conventions.md
 ```
 
-**手动同步**：`copilot-instructions.md` 更新后，将内容复制到对应编辑器文件，保留文件头部不变。
+**自动同步（推荐）**：在仓库根目录运行 `npm run sync`，由 `scripts/sync-editors.js`
+读取 `editors.json` + `headers/` + `copilot-instructions.md` 重新生成全部 9 个编辑器配置，
+并从 `package.json` 注入版本号（无需手改 10 处版本号）。
+
+```bash
+npm run sync          # 重新生成全部编辑器配置
+node scripts/sync-editors.js --check   # 只校验是否漂移，不写入（CI / 发布前）
+```
+
+> ⚠️ 本仓库路径含特殊字符（`【】` / `#`），会导致 node 执行脚本文件崩溃。
+> 运行脚本前需将 `files/` `scripts/` `package.json` 复制到无特殊字符的临时目录执行，
+> 再把生成的编辑器配置拷回。详见 `kit-internal/README.md` 发布章节。
+
+**发布前自检**：`prepublishOnly` 已接入 `sync --check` + `check`，配置漂移会直接阻断发布。
 
 ---
 

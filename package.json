@@ -1,6 +1,6 @@
 {
   "name": "@agile-team/wl-skills-design",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "产品设计 AI 技能包 — 7 条设计规范 + AI Skill 自动调度（流程图/说明书/数据库/接口/集成评审），支持 10 种 AI 编辑器，一条命令导入设计项目",
   "main": "./bin/wl-skills-design.js",
   "bin": {
@@ -34,6 +34,9 @@
   },
   "scripts": {
     "cz": "cz",
+    "sync": "node scripts/sync-editors.js",
+    "check": "node scripts/check.js",
+    "prepublishOnly": "node scripts/sync-editors.js --check && node scripts/check.js",
     "prepare": "husky || true"
   },
   "publishConfig": {

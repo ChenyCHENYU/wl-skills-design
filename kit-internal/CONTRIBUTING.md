@@ -72,11 +72,23 @@ vim files/.github/skills/_registry.md
 
 ## 四、多编辑器同步
 
-修改 `files/.github/copilot-instructions.md` 后，手动同步内容到各编辑器根配置文件：
+修改 `files/.github/copilot-instructions.md` 后，运行同步脚本自动重建全部编辑器配置
+（内容从 `copilot-instructions.md` 派生，版本号从 `package.json` 注入）：
+
+```bash
+npm run sync       # 重建 9 个编辑器配置
+npm run check      # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
+```
+
+> ⚠️ 本仓库路径含特殊字符（`【】` / `#`），node 直接执行脚本文件会崩溃。
+> 需先把 `files/` `scripts/` `package.json` 复制到无特殊字符的临时目录运行，再拷回生成结果。
+> 详见 `kit-internal/README.md` 发布章节。
+
+派生关系（由 `scripts/sync-editors.js` 自动处理，无需手动操作）：
 
 ```
 # 所有路径均相对于 files/ 目录根
-files/CLAUDE.md         ← files/.github/skills/_compat/headers/claude-code.txt + 正文
+files/CLAUDE.md         ← headers/claude-code.txt + 正文
 files/.cursorrules      ← headers/cursor-rules.txt + 正文
 files/.cursor/rules/conventions.mdc  ← headers/cursor-mdc.txt + 正文
 files/.windsurfrules    ← headers/windsurf.txt + 正文
