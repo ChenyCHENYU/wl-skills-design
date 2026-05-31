@@ -27,6 +27,10 @@ Thumbs.db
 spec-gen/output/*.docx
 spec-gen/output/*.pdf
 spec-gen/output/assets/*.png
-# drawio 文件保留（可用 draw.io 编辑的来源文件）
+spec-gen/output/assets/*.drawio
+spec-gen/scripts/__pycache__/
+
+# docs/ 目录（业务项目特定内容，不属于工具包）
+docs/
 spec-gen/__pycache__/
 spec-gen/scripts/__pycache__/

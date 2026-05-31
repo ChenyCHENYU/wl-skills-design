@@ -148,7 +148,7 @@ wl-skills-design/                              ← 你正看的这个仓库
     ├── skills/README.md                       Skill 开发状态 + 规划清单
     └── examples/
         └── spec/                              需求设计说明书真实样例（不发布）
-            ├── 00-doc-outline-reference.md    完整标题树（199条目，华新项目）
+            ├── 00-doc-outline-reference.md    完整标题树（199 条目，真实项目参考样例）
             ├── 01-flow-desc-example.md        流程说明+活动说明表完整示例
             ├── 02-function-ipo-example.md     IPO 表完整示例（含格式规范说明）
             ├── 03-flow-screen-map-example.md  流程与作业画面对照表示例
@@ -295,7 +295,7 @@ spec-gen/
 ```bash
 pip install python-docx Pillow
 python spec-gen/scripts/generate_spec_doc.py
-# 输出：spec-gen/output/华新计划模块需求设计说明书_v2.0.docx
+# 输出：spec-gen/output/[project]_spec_v2.0.docx
 ```
 
 ### 生成策略：模板基 vs 脚本基
