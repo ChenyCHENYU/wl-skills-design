@@ -6,6 +6,33 @@
 
 ---
 
+## [0.1.0] — 2026-05（新增数据库设计 + 接口设计两大 Skill，全链路闭环）
+
+### 新增
+- **数据库设计 Skill（`data/database/`）**：从需求说明书 IPO 表推导数据库设计，输出 ER 图 / DB 清单 / 数据字典（10 列标准表）/ DDL 全套产物
+  - 规范 `standards/03-database.md`：命名约定、**7 个强制系统字段**、主键与索引、文档 4 节结构、变更履历设计、与 spec 字段联动、**30 项验证清单（DB-A/B/C/D/X 五组）**+ 闭环修复协议
+  - 4 个 sub-skill：`01-erd`（实体推导）/ `02-table-design`（字段+系统字段+索引，核心）/ `03-ddl`（建表脚本）/ `04-db-review`（验证+自动修复+报告）
+  - 3 个模板：`db-skeleton` / `data-dictionary`（10 列）/ `table-definition`
+  - 2 个 prompt：`create-db-design` / `validate-db-design`
+- **接口设计 Skill（`api/restful/`）**：从需求说明书功能编码推导接口清单，覆盖系统集成报文 + HTTP/RESTful 两类
+  - 规范 `standards/04-api-design.md`：接口分类与命名、HTTP/RESTful 规范、请求/应答报文结构、触发条件五要素、**统一响应包装 `{code,msg,data,traceId}`**、错误码、安全设计、幂等与重试、与 spec/DB 联动、**35 项验证清单（IF-A/B/C/D/X 五组）**+ 闭环修复协议
+  - 4 个 sub-skill：`01-interface-list`（清单推导+覆盖检查）/ `02-integration`（集成报文，核心）/ `03-restful`（RESTful）/ `04-if-review`（验证+自动修复+报告）
+  - 4 个模板：`if-skeleton` / `interface-list` / `integration-def` / `restful-def`
+  - 2 个 prompt：`create-if-design` / `validate-if-design`
+- **spec → DB → 接口三角联动验证**：DB-X 校验 spec IPO 字段 ⊆ DB 字段；IF-X 校验 spec 功能编码 → 接口覆盖、接口字段英文名 ⊆ DB 字段英文名；跨文件缺对端时标「跨文件暂挂」
+
+### 设计基线（来自真实项目文档）
+- 数据字典严格沿用 10 列：序号/字段英文名/字段中文名/主外键/是否索引/类型/长度/空否/缺省/备注
+- 接口报文沿用 6 列主档/明细档 + 触发条件六行表
+- 在真实格式基线上叠加最佳实践：系统字段、索引章节、命名前缀、统一响应、错误码、安全/幂等、接口编码唯一递增
+
+### 变更
+- `_registry.md` / `standards/index.md` / `copilot-instructions.md` / `data/README.md` / `api/README.md`：数据库设计、接口设计状态 🔲 规划中 → ✅ 可用
+- 同步重建 9 个编辑器配置文件（CLAUDE.md / .cursorrules / .clinerules / .windsurfrules / AGENTS.md 等）
+- 新增 ADR-006（架构决策：复用 spec 闭环 + 真实文档格式基线）
+
+---
+
 ## [0.0.9] — 2026-05（一致性补丁：流程五要素 + 活动编码格式对齐）
 
 ### 修复

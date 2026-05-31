@@ -18,8 +18,8 @@
 | 域 | 说明 | 状态 |
 |----|------|------|
 | 系统需求设计 | 业务流程图（draw.io）、原型（规划中） | 🟢 / 🔲 |
-| 数据设计 | 数据库 ER 设计规范 | 🔲 规划中 |
-| 接口设计 | RESTful / OpenAPI 规范 | 🔲 规划中 |
+| 数据设计 | 数据库 ER / 数据字典 / DDL 设计规范 | 🟢 可用 |
+| 接口设计 | 系统集成报文 / RESTful / OpenAPI 规范 | 🟢 可用 |
 | 代码设计 | 业务逻辑代码结构规范 | 🔲 规划中 |
 
 ---
@@ -68,8 +68,8 @@
 │   ├── index.md                         ★ 规范门控——AI 先读这里，按需加载
 │   ├── 01-flowchart.md                  ★ draw.io 泳道流程图规范（15 章节）✅
 │   ├── 02-prototype.md                  ← 原型设计规范 🔲
-│   ├── 03-database.md                   ← 数据库设计规范 🔲
-│   ├── 04-api-design.md                 ← 接口设计规范 🔲
+│   ├── 03-database.md                   ★ 数据库设计规范（30 项验证）✅
+│   ├── 04-api-design.md                 ★ 接口设计规范（35 项验证）✅
 │   └── 05-code-design.md                ← 代码设计规范 🔲
 │
 ├── skills/
@@ -86,13 +86,19 @@
 │   │       └── templates/
 │   │           └── skeleton.drawio      ← 骨架模板（图例页 + 空白泳道）
 │   │
-│   ├── data/README.md                   ← 数据设计类 Skill 🔲（stub）
-│   ├── api/README.md                    ← 接口设计类 Skill 🔲（stub）
+│   ├── data/database/                ← 数据库设计 ✅（SKILL + USAGE + 4 sub + 3 templates）
+│   ├── api/restful/                  ← 接口设计 ✅（SKILL + USAGE + 4 sub + 4 templates）
 │   └── code/README.md                   ← 代码设计类 Skill 🔲（stub）
 │
 ├── prompts/                             ← VS Code Copilot 提示词
 │   ├── create-flowchart.prompt.md       ← 引导式创建流程图
-│   └── validate-flowchart.prompt.md     ← 验证流程图规范符合度
+│   ├── validate-flowchart.prompt.md     ← 验证流程图规范符合度
+│   ├── create-spec-section.prompt.md    ← 生成需求说明书章节
+│   ├── validate-spec-section.prompt.md  ← 验证需求说明书章节
+│   ├── create-db-design.prompt.md       ← 生成数据库设计
+│   ├── validate-db-design.prompt.md     ← 验证数据库设计
+│   ├── create-if-design.prompt.md       ← 生成接口设计
+│   └── validate-if-design.prompt.md     ← 验证接口设计
 │
 └── guides/                              ← 人读指南（非 AI 路由文件）
     ├── usage.md                         ← 业务团队：如何使用本包

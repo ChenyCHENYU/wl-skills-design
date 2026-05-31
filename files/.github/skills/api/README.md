@@ -1,12 +1,12 @@
 # api — 接口设计类 Skill
 
-> 🔲 **规划中** — v2.0 预计支持
+> ✅ **可用** — v1.0
 
-## 预计 Skill
+## Skill 清单
 
-| Skill | 触发场景 | 关联规范 |
-|-------|---------|---------|
-| RESTful 接口设计 | 设计接口、API 文档、OpenAPI | `standards/04-api-design.md`（待写） |
+| Skill | 路径 | 触发场景 | 关联规范 |
+|-------|------|---------|---------|
+| 接口设计 | `api/restful/SKILL.md` | 系统集成报文、RESTful、API 文档、OpenAPI | `standards/04-api-design.md` ✅ |
 
 ## 新增 Skill 参考
 
