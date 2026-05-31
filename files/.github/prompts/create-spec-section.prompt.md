@@ -23,7 +23,7 @@ tools:
 输出到 docs/4.1-target/flow-PMMB-A-02.md
 ```
 
-> 若未指定路径，默认输出到 `docs/spec/[功能编码或流程编码].md`
+> 若未指定路径，默认输出到 `docs/spec/{project项目代号}/4.{x}-{sub模块名}.md`（对应 doc-skeleton 五文件拆分结构）
 
 ---
 
@@ -65,4 +65,4 @@ tools:
 
 ${input:task:请描述要生成的章节（如：帮我写PMPM007炼钢计划编制的IPO表，列表页+新增页）}
 
-输出路径：${input:outputPath:docs/spec/}
+输出路径：${input:outputPath:docs/spec/{project项目代号}/}
