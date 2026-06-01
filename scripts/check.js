@@ -113,6 +113,18 @@ function checkEditorDrift() {
   }
 }
 
+// ── 编辑器数量（动态，来自 editors.json，消除硬编码漂移）──────────────────
+function getEditorCount() {
+  try {
+    const json = JSON.parse(
+      read(path.join(SKILLS, "_compat", "editors.json"))
+    );
+    return (json.editors || []).filter((e) => e.enabled).length;
+  } catch {
+    return 0;
+  }
+}
+
 // ── 主流程 ───────────────────────────────────────────────────────────────
 console.log("\n  wl-skills-design doctor — 一致性自检\n");
 const r1 = checkRegistry();
@@ -120,10 +132,11 @@ const r2 = checkStandardsIndex();
 const r3 = checkSkillReferences();
 checkEditorDrift();
 
+const editorCount = getEditorCount();
 console.log(`  · registry ✅ Skill 检查：${r1} 项`);
 console.log(`  · standards index 引用检查：${r2} 项`);
 console.log(`  · SKILL.md 内部引用检查：${r3} 项`);
-console.log(`  · 编辑器配置漂移检查：10 个配置\n`);
+console.log(`  · 编辑器配置漂移检查：${editorCount} 个配置\n`);
 
 if (warnings.length) {
   console.log("  ⚠ 警告：");

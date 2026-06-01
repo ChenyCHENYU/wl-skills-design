@@ -41,33 +41,25 @@ vim .github/skills/[category]/[skill-name]/SKILL.md
 vim .github/skills/[category]/[skill-name]/USAGE.md
 vim .github/skills/_registry.md   # 注册触发词
 
-# 3. 同步多编辑器配置
-# 手动将 .github/copilot-instructions.md 内容同步到各编辑器根配置文件
-# 参见 .github/skills/_compat/README.md
+# 3. 同步多编辑器配置（改 copilot-instructions.md 后）
+npm run sync     # 由 scripts/sync-editors.js 重建 9 个编辑器配置
+npm run check    # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
 ```
 
 ---
 
-## 发布到 npm（重要）
+## 发布到 npm
 
-> ⚠️ 本仓库路径含 `#` / `【】` 特殊字符，会破坏 npm 打包。
-> **必须**复制到无特殊字符的临时目录再发布。
+> 路径已为纯 ASCII，可直接在仓库根目录发布，无需复制到临时目录。
 
 ```bash
-# 1. 准备干净目录（只拷发布所需文件）
-TMP=$(mktemp -d)
-cp -r bin files package.json README.md CHANGELOG.md "$TMP"/
-cd "$TMP"
+# 1. bump 版本 + 记录 CHANGELOG，并 commit / tag / push
+npm version <patch|minor|major>
 
-# 2. 写入发布 token（发布后立即删除，切勿提交）
-echo "//registry.npmjs.org/:_authToken=<NPM_TOKEN>" > .npmrc
-
-# 3. 发布（跳过 husky 等脚本）
-npm publish --ignore-scripts --access public
-
-# 4. 清理
-rm -f .npmrc && cd - && rm -rf "$TMP"
+# 2. 发布（prepublishOnly 会先跑 sync --check + check 挡住漂移）
+npm publish --access public
 ```
 
-> 发布前确认：`package.json` version 已 bump、CHANGELOG 已记录、git 已 commit + tag + push。
+> 发布前确认：`package.json` version 已 bump、CHANGELOG 已记录本次变更、git 已 commit + tag + push。
+> npm 鉴权用本机 `npm login` 或 CI 环境变量 `NODE_AUTH_TOKEN`，**不要**把 token 写进仓库内的 `.npmrc`。
 

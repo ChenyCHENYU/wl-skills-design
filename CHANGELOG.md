@@ -6,6 +6,24 @@
 
 ---
 
+## [Unreleased]（工程化收尾：去除特殊字符绕行 + 脚本去硬编码 + 单元测试）
+
+### 新增
+- **`tests/` 单元测试套件**（零依赖，`node:test`）：`npm test` 覆盖 CLI（--version/未知选项与命令退出码/--help/init/--dry-run/update 备份）与构建脚本（sync --check 无漂移、doctor 通过、编辑器数与 `editors.json` 启用数一致、registry 正则解析 ✅ Skill）——补齐「防漂移机制本身无测试」的命门
+- CI 工作流新增「单元测试」步骤（doctor 之后、安装冒烟测试之前）
+
+### 变更
+- **去除过时的「特殊字符路径」绕行说明**：仓库已迁纯 ASCII 路径，README / `_compat/README.md` / `CONTRIBUTING.md` / `kit-internal/README.md` 删除「复制到临时目录运行/发布」的临时方案；`kit-internal/README.md` 发布流程改为 `npm version` + `npm publish`（鉴权走 `npm login` / CI token，不再在仓库写 `.npmrc`）；ADR-008 标注限制已解除
+- **脚本去硬编码**：`check.js` 的「编辑器配置漂移检查：N 个配置」与 `sync-editors.js --check` 的成功提示改为从 `editors.json` 动态取启用数，消除下一个潜在漂移点
+- **CLI `update` 备份改为带时间戳**：`.bak` → `.bak.<时间戳>`，避免连续 update 冲掉上一次的本地改动备份；`.gitignore` 排除 `*.bak` / `*.bak.*`
+- **编辑器头部描述对齐**：`headers/cursor-mdc.txt` / `headers/trae.txt` 的 description 由「流程图/原型/数据库/接口/代码设计」（含未发布能力）统一为「7 条设计规范 + Skill 自动调度」，并重新 `sync` 同步产物
+- README 维护指南：`vim` 手改示例改为「编辑 + `npm run check`」闭环，明确 9（重建）vs 10（校验）编辑器配置的来历
+
+### 修复
+- `bin/wl-skills-design.js` 头部注释 `CLI v${PKG.version}` 的伪模板插值（实际不替换）改为去除版本占位
+
+---
+
 ## [0.3.0] — 2026-05（工程化加固：同步脚本 + 一致性自检 + 文档勘误）
 
 ### 新增

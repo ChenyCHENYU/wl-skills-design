@@ -80,9 +80,7 @@ npm run sync       # 重建 9 个编辑器配置
 npm run check      # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
 ```
 
-> ⚠️ 本仓库路径含特殊字符（`【】` / `#`），node 直接执行脚本文件会崩溃。
-> 需先把 `files/` `scripts/` `package.json` 复制到无特殊字符的临时目录运行，再拷回生成结果。
-> 详见 `kit-internal/README.md` 发布章节。
+> ℹ️ 脚本直接在仓库根目录运行即可，无需额外准备。
 
 派生关系（由 `scripts/sync-editors.js` 自动处理，无需手动操作）：
 

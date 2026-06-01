@@ -1,5 +1,5 @@
 ---
-description: "产品设计 AI 技能规范（流程图 / 原型 / 数据库 / 接口 / 代码设计，由 wl-skills-design 维护）"
+description: "产品设计 AI 技能规范（7 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）"
 globs:
   - "**/*.drawio"
   - "**/*.md"

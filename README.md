@@ -253,17 +253,18 @@ VS Code Copilot 中按 `/` 用 prompt：
 ### 新增设计规范
 
 ```bash
-vim files/.github/standards/08-xxx.md     # 创建规范文件（当前已生 01/03/04/06/07，下一个是 08）
-vim files/.github/standards/index.md      # 更新门控索引
+# 创建规范文件（当前已生 01/03/04/06/07，下一个是 08）
+# 编辑 files/.github/standards/08-xxx.md
+# 更新门控索引 files/.github/standards/index.md
+npm run check     # 校验 index 引用与路径完整性
 ```
 
 ### 新增 AI Skill
 
 ```bash
 mkdir -p files/.github/skills/[category]/[skill-name]/templates
-vim files/.github/skills/[category]/[skill-name]/SKILL.md
-vim files/.github/skills/[category]/[skill-name]/USAGE.md
-vim files/.github/skills/_registry.md     # 注册触发词（必须）
+# 编辑 SKILL.md / USAGE.md，并在 _registry.md 注册触发词（必须）
+npm run check     # 校验 registry ✅ Skill 的文件与引用存在
 ```
 
 ### 多编辑器内容同步
@@ -276,9 +277,9 @@ npm run sync      # 重建 9 个编辑器配置
 npm run check     # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
 ```
 
-> 本仓库路径含特殊字符（`【】` / `#`），node 直接执行脚本文件会崩溃，
-> 需先复制 `files/` `scripts/` `package.json` 到无特殊字符的临时目录运行再拷回。
-> 详见 `files/.github/skills/_compat/README.md` 与 `kit-internal/CONTRIBUTING.md`。
+> 同步规则：`editors.json` 注册 10 个编辑器，其中 GitHub Copilot 的输出即源文件
+> `copilot-instructions.md` 本身（无需重建），故 `npm run sync` 实际重建其余 **9 个**配置；
+> `npm run check` 则对全部 **10 个**做漂移校验。
 
 完整贡献流程：[kit-internal/CONTRIBUTING.md](./kit-internal/CONTRIBUTING.md)
 

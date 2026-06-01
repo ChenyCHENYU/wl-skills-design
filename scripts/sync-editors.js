@@ -65,7 +65,7 @@ function run() {
       console.error(`\n  请运行：npm run sync\n`);
       process.exit(1);
     }
-    console.log(`  ✔ 10 个编辑器配置与源一致（v${VERSION}）`);
+    console.log(`  ✔ ${outputs.length} 个编辑器配置与源一致（v${VERSION}）`);
     return;
   }
 

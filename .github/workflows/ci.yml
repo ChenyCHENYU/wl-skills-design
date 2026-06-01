@@ -22,6 +22,9 @@ jobs:
       - name: 一致性自检（doctor）
         run: node scripts/check.js
 
+      - name: 单元测试（CLI + 构建脚本）
+        run: node --test tests/*.test.js
+
       - name: 安装冒烟测试（init 到临时目录）
         run: |
           TMP="$(mktemp -d)"

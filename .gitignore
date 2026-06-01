@@ -20,6 +20,10 @@ Thumbs.db
 *.swp
 *.swo
 
+# CLI update 备份文件
+*.bak
+*.bak.*
+
 # ────────────────────────────────────────────────
 # spec-gen 输出物（生成物，不入 git）
 # templates/ 不在列表内，必须追踪

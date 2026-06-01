@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * wl-skills-design CLI v${PKG.version}
+ * wl-skills-design CLI
  *
  * 命令:
  *   init      全量安装（默认）— 将 AI 设计技能包复制到当前项目
@@ -118,9 +118,16 @@ function run() {
         skipped++;
         continue;
       }
-      // 内容不同 → 目标文件可能含本地改动，覆盖前备份 .bak
-      if (!dryRun) fs.copyFileSync(dest, `${dest}.bak`);
-      console.log(`  ${dryRun ? "[预览]" : "⚠"} ${rel}${dryRun ? "（将覆盖，本地有改动）" : "（已备份 .bak 后覆盖）"}`);
+      // 内容不同 → 目标文件可能含本地改动，覆盖前备份
+      // 用时间戳命名（.bak.<ts>），避免连续 update 冲掉上一次的本地改动备份
+      if (!dryRun) {
+        const stamp = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14);
+        let bak = `${dest}.bak.${stamp}`;
+        let n = 1;
+        while (fs.existsSync(bak)) bak = `${dest}.bak.${stamp}-${n++}`;
+        fs.copyFileSync(dest, bak);
+      }
+      console.log(`  ${dryRun ? "[预览]" : "⚠"} ${rel}${dryRun ? "（将覆盖，本地有改动）" : "（已备份 .bak.<时间戳> 后覆盖）"}`);
       if (!dryRun) copyFile(src, dest);
       copied++;
       backedUp++;

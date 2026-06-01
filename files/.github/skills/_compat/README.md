@@ -40,9 +40,7 @@ npm run sync          # 重新生成全部编辑器配置
 node scripts/sync-editors.js --check   # 只校验是否漂移，不写入（CI / 发布前）
 ```
 
-> ⚠️ 本仓库路径含特殊字符（`【】` / `#`），会导致 node 执行脚本文件崩溃。
-> 运行脚本前需将 `files/` `scripts/` `package.json` 复制到无特殊字符的临时目录执行，
-> 再把生成的编辑器配置拷回。详见 `kit-internal/README.md` 发布章节。
+> ℹ️ 脚本直接在仓库根目录运行即可（`npm run sync` / `npm run check`）。
 
 **发布前自检**：`prepublishOnly` 已接入 `sync --check` + `check`，配置漂移会直接阻断发布。
 

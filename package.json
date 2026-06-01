@@ -36,6 +36,7 @@
     "cz": "cz",
     "sync": "node scripts/sync-editors.js",
     "check": "node scripts/check.js",
+    "test": "node --test tests/*.test.js",
     "prepublishOnly": "node scripts/sync-editors.js --check && node scripts/check.js",
     "prepare": "husky || true"
   },
