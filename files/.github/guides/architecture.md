@@ -49,7 +49,7 @@ Skill 的触发关键词只在 `skills/_registry.md` 中定义一次，避免分
 
 ### 新增设计规范
 
-1. 在 `standards/` 下创建编号文件（当前已有 01~07，下一个是 `08-xxx.md`）
+1. 在 `standards/` 下创建编号文件（当前已有 01/03/04/06/07/08，下一个是 `09-xxx.md`；02/05 为规划 stub）
 2. 更新 `standards/index.md` 的规范表格
 
 ### 新增 AI 技能
