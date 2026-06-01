@@ -6,6 +6,17 @@
 
 ---
 
+## [0.4.2] — 2026-06（工程小项勘误）
+
+### 修复
+- **husky v9 弃用警告**：`.husky/commit-msg` 移除已弃用的 `#!/usr/bin/env sh` + `. "$(dirname ...)/_/husky.sh"` 两行（husky v9+ 不再需要，v10 将直接失败），仅保留 commitlint 调用
+- **README 错别字**：TL;DR 示例「废**钓**采购流程图」→「废**钢**采购流程图」
+
+### 待决策（未改）
+- `package.json` `license: UNLICENSED` 与 `publishConfig.access: public` 的语义矛盾仍待团队拍板（开源 MIT / 保持内部受限），本版未改动发布行为
+
+---
+
 ## [0.4.1] — 2026-06（数据库/接口规范最佳实践补强）
 
 ### 修复

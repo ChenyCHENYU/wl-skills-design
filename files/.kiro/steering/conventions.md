@@ -11,7 +11,7 @@ description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调�
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.4.1  
+> 版本：v0.4.2  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
