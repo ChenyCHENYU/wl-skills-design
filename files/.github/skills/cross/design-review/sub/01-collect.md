@@ -10,8 +10,8 @@
 | 维度 | 优先数据源 | 缺失时的兜底 |
 |------|-----------|------------|
 | D1 需求设计 | `docs/spec/reports/SPEC_REVIEW_*.md`（43 项） | 现场按 `06-spec-doc.md` 验证；或标「未提供」 |
-| D2 数据库设计 | `docs/db/reports/DB_REVIEW_*.md`（30 项） | 现场触发 `data/database/sub/04-db-review.md` |
-| D3 接口设计 | `docs/api/reports/IF_REVIEW_*.md`（35 项） | 现场触发 `api/restful/sub/04-if-review.md` |
+| D2 数据库设计 | `docs/db/reports/DB_REVIEW_*.md`（34 项） | 现场触发 `data/database/sub/04-db-review.md` |
+| D3 接口设计 | `docs/api/reports/IF_REVIEW_*.md`（38 项） | 现场触发 `api/restful/sub/04-if-review.md` |
 
 > **找最新一份**报告（按文件名日期）。同一模块多份取最近。
 

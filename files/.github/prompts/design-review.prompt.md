@@ -35,8 +35,8 @@ tools:
 
 按 `skills/cross/design-review/sub/01-collect.md`：
 - D1 需求：spec 验证结论（或现场按 `06-spec-doc.md` 验证 / 标「未提供」）
-- D2 数据库：`docs/db/reports/DB_REVIEW_*.md`（30 项；缺则现场触发 `data/database/sub/04`）
-- D3 接口：`docs/api/reports/IF_REVIEW_*.md`（35 项；缺则现场触发 `api/restful/sub/04`）
+- D2 数据库：`docs/db/reports/DB_REVIEW_*.md`（34 项；缺则现场触发 `data/database/sub/04`）
+- D3 接口：`docs/api/reports/IF_REVIEW_*.md`（38 项；缺则现场触发 `api/restful/sub/04`）
 
 抽取每维度 `{总项, 通过, 失败, 暂挂, 失败明细[]}`。
 

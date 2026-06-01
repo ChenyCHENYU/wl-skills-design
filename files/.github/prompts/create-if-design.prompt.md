@@ -53,8 +53,8 @@ tools:
 
 ### Step 5：自动验证（闭环）
 
-- 对照 `.github/standards/04-api-design.md §十`（35 项 IF-A/B/C/D/X）逐项检查
+- 对照 `.github/standards/04-api-design.md §十`（38 项 IF-A/B/C/D/X）逐项检查
 - **特别检查 A02：接口编码无重复**
 - 执行 §十一 IF-X 集合比对（spec/DB 联动）
 - 发现失败项 → 按 §十二 优先级修复 → 复验
-- 输出：`✅ 文件已写入 [路径]，通过 N/35 项验证`，并写报告 `docs/api/reports/IF_REVIEW_{模块}_{日期}.md`
+- 输出：`✅ 文件已写入 [路径]，通过 N/38 项验证`，并写报告 `docs/api/reports/IF_REVIEW_{模块}_{日期}.md`

@@ -52,7 +52,7 @@ tools:
 
 ### Step 5：自动验证（闭环）
 
-- 对照 `.github/standards/03-database.md §八`（30 项 DB-A/B/C/D/X）逐项检查
+- 对照 `.github/standards/03-database.md §八`（34 项 DB-A/B/C/D/E/X）逐项检查
 - 执行 §九 DB-X 集合比对（spec 联动）
 - 发现失败项 → 按 §十 优先级用 `replace_string_in_file` 修复 → 复验
-- 输出：`✅ 文件已写入 [路径]，通过 N/30 项验证`，并写报告 `docs/db/reports/DB_REVIEW_{模块}_{日期}.md`
+- 输出：`✅ 文件已写入 [路径]，通过 N/34 项验证`，并写报告 `docs/db/reports/DB_REVIEW_{模块}_{日期}.md`

@@ -30,7 +30,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
     ▼ 读取 .github/skills/data/database/SKILL.md
     ▼ 加载 .github/standards/03-database.md（规范）
     ▼ 从 spec IPO 表推导实体 → Sub-01/02/03（ER / 数据字典 / DDL）
-    ▼ 执行 30 项验证，自动注入 7 个系统字段、索引、命名前缀
+    ▼ 执行 34 项验证，自动注入 7 个系统字段、索引、命名前缀
     ↓
 《数据库设计（ER / DB 清单 / 数据字典 / DDL）》 + DB_REVIEW 验证报告
 
@@ -102,8 +102,8 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   ├── index.md                       规范门控
 │   │   │   ├── 01-flowchart.md                draw.io 泳道流程图规范（15 章节）✅
 │   │   │   ├── 02-prototype.md                原型规范（stub）
-│   │   │   ├── 03-database.md                 数据库规范（30 项验证）✅
-│   │   │   ├── 04-api-design.md               接口规范（35 项验证）✅
+│   │   │   ├── 03-database.md                 数据库规范（34 项验证）✅
+│   │   │   ├── 04-api-design.md               接口规范（38 项验证）✅
 │   │   │   ├── 05-code-design.md              代码设计规范（stub）
 │   │   │   ├── 06-spec-doc.md                 需求说明书规范✅
 │   │   │   └── 07-design-review.md            集成评审规范（评分 + D4 联动 18 项）✅
@@ -238,12 +238,12 @@ VS Code Copilot 中按 `/` 用 prompt：
 ### 3. 数据库设计
 
 - **创建**：`/create-db-design` → 从 spec IPO 表推导 ER 图 / 数据字典（10 列）/ DDL
-- **验证**：`/validate-db-design` → 执行 30 项，强制注入 7 个系统字段、索引、spec 字段联动
+- **验证**：`/validate-db-design` → 执行 34 项，强制注入 7 个系统字段、索引、spec 字段联动
 
 ### 4. 接口设计
 
 - **创建**：`/create-if-design` → 从 spec 功能编码推导接口清单 / 集成报文 / RESTful 定义
-- **验证**：`/validate-if-design` → 执行 35 项，检查统一响应包装、安全、幂等、spec/DB 字段联动
+- **验证**：`/validate-if-design` → 执行 38 项，检查统一响应包装、安全、幂等、spec/DB 字段联动
 
 ### 5. 集成评审（最终闭环）
 

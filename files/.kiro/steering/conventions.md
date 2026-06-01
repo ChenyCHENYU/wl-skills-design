@@ -11,7 +11,7 @@ description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调�
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.4.0  
+> 版本：v0.4.1  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
@@ -75,8 +75,8 @@ description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调�
 │   ├── index.md                         ★ 规范门控——AI 先读这里，按需加载
 │   ├── 01-flowchart.md                  ★ draw.io 泳道流程图规范（15 章节）✅
 │   ├── 02-prototype.md                  ← 原型设计规范 🔲
-│   ├── 03-database.md                   ★ 数据库设计规范（30 项验证）✅
-│   ├── 04-api-design.md                 ★ 接口设计规范（35 项验证）✅
+│   ├── 03-database.md                   ★ 数据库设计规范（34 项验证）✅
+│   ├── 04-api-design.md                 ★ 接口设计规范（38 项验证）✅
 │   ├── 05-code-design.md                ← 代码设计规范 🔲
 │   ├── 06-spec-doc.md                   ★ 需求设计说明书规范 ✅
 │   ├── 07-design-review.md              ★ 设计集成评审规范（评分 + D4 联动 18 项）✅

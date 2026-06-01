@@ -24,7 +24,7 @@
 | 1 | `id` | 主键 | PK | 是 | bigint | - | N | - | 雪花 ID |
 | 2 | `orderNo` | 订单号 | - | 是(UK) | varchar | 40 | N | - | 业务唯一，规则见编码约定 |
 | 3 | `custId` | 客户ID | FK | 是 | varchar | 32 | N | - | 关联 pmbd_customer.custId |
-| 4 | `custName` | 客户名称 | - | 否 | varchar | 100 | N | - | 冗余，下单时快照 |
+| 4 | `custName` | 客户名称 | - | 否 | varchar | 100 | N | - | [冗余:pmbd_customer.custName]，下单时快照，不随客户主数据变更 |
 | 5 | `orderDate` | 下单日期 | - | 是 | date | - | N | - | 按日期范围查询高频 |
 | 6 | `totalWeight` | 合同数量 | - | 否 | decimal | 12,2 | N | 0 | 单位：吨 |
 | 7 | `deliveredWeight` | 已交数量 | - | 否 | decimal | 12,2 | N | 0 | 累计实际交货量 |
@@ -36,7 +36,7 @@
 | 13 | `updatedTime` | 更新时间 | - | 否 | datetime | - | Y | - | 系统字段 |
 | 14 | `deletedFlag` | 删除标志 | - | 否 | tinyint | - | N | 0 | 系统字段 0正常 1删除 |
 | 15 | `tenantId` | 租户号 | - | 否 | varchar | 32 | Y | - | 系统字段，多租户 |
-| 16 | `version` | 乐观锁版本 | - | 否 | int | - | N | 0 | 系统字段 |
+| 16 | `version` | 乐观锁版本 | - | 否 | int | - | N | 0 | 系统字段 S8（乐观锁，并发控制）|
 
 ### 索引清单
 

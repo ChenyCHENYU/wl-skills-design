@@ -11,8 +11,8 @@
 |-------|------|------|---------|------|
 | 流程图设计 | v1.0 | `requirements/flowchart/` | `standards/01-flowchart.md` | draw.io 泳道图规范 |
 | 需求设计说明书 | v1.0 | `requirements/spec/` | `standards/06-spec-doc.md` | IPO 表 / 流程说明 / 活动说明表 / 报表设计，含 4 个 sub-skill + 4 个 examples |
-| 数据库设计 | v1.0 | `data/database/` | `standards/03-database.md` | ER / DB 清单 / 数据字典（10 列）/ DDL，含 4 sub + 3 templates，30 项验证 + spec 联动 |
-| 接口设计 | v1.0 | `api/restful/` | `standards/04-api-design.md` | 集成报文 / RESTful，含 4 sub + 4 templates，35 项验证 + spec/DB 联动 |
+| 数据库设计 | v1.0 | `data/database/` | `standards/03-database.md` | ER / DB 清单 / 数据字典（10 列）/ DDL，含 4 sub + 3 templates，34 项验证 + spec 联动 |
+| 接口设计 | v1.0 | `api/restful/` | `standards/04-api-design.md` | 集成报文 / RESTful，含 4 sub + 4 templates，38 项验证 + spec/DB 联动 |
 | 设计集成评审 | v1.0 | `cross/design-review/` | `standards/07-design-review.md` | 聚合 spec/DB/IF 三份产物，4 维度评分 + D4 联动 18 项 + 追溯矩阵 + P0 一票否决，含 3 sub + 1 template |
 | 术语字段词典 | v1.0 | `cross/glossary/` | `standards/08-glossary.md` | 字段对齐中央锚点：中英文名/枚举/编码统一语言，18 项验证（GL-A/B/C/X），含 3 sub + 1 template |
 

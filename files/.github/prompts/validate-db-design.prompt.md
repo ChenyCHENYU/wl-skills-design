@@ -21,7 +21,7 @@ tools:
 
 ## 第一步：加载规范
 
-读取 `.github/standards/03-database.md`，作为验证基准。**唯一权威检查清单为 §八（30 项，DB-A/B/C/D/X 五组）**；DB-X 集合比对算法见 §九。
+读取 `.github/standards/03-database.md`，作为验证基准。**唯一权威检查清单为 §八（34 项，DB-A/B/C/D/E/X 六组）**；DB-X 集合比对算法见 §九。
 
 > ⚠️ 本 prompt **不自行定义检查项**，所有检查项以 §八 为准，避免双源脱节。
 
@@ -29,7 +29,7 @@ tools:
 
 读取用户指定的 `.md` 文件全部内容（必要时读取关联的 spec / 接口文件用于 X 组比对）。
 
-## 第三步：按内容确定适用检查组，执行 §八 的 30 项
+## 第三步：按内容确定适用检查组，执行 §八 的 34 项
 
 > **DB-B（系统字段）与 DB-X（spec 联动）对所有数据库设计强制执行。**
 
@@ -61,7 +61,7 @@ X05：联动矩阵行数 == |SET_SPEC_FLD|
 
 ## 第四步：自动修复
 
-按 §十 优先级（DB-X → DB-B → DB-C → DB-A → DB-D）用 `replace_string_in_file` 修复，修复后复验全部 30 项。
+按 §十 优先级（DB-X → DB-B → DB-C → DB-A → DB-D）用 `replace_string_in_file` 修复，修复后复验全部 34 项。
 
 ## 第五步：输出验证报告
 
@@ -77,7 +77,7 @@ X05：联动矩阵行数 == |SET_SPEC_FLD|
 修复动作：
   [B04] 已补 deletedFlag
   [X03] 已统一为"订单号"
-复验：30/30 通过 → ✅ DONE
+复验：34/34 通过 → ✅ DONE
 ```
 
 > 报告同时写入 `docs/db/reports/DB_REVIEW_{模块}_{日期}.md`。
