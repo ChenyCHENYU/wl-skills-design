@@ -12,7 +12,7 @@
 |-----------|------|--------------|-----------|
 | 流程图设计 | ✅ v1.0 | `requirements/flowchart/SKILL.md` | 流程图、泳道图、泳道、flowchart、draw.io、业务流程、生产流程、工作流 |
 | 需求设计说明书 | ✅ v1.0 | `requirements/spec/SKILL.md` | 需求设计说明书、spec、功能设计、IPO表、IPO、流程说明、活动说明、画面逻辑、功能规格、处理逻辑、说明书 |
-| 原型设计 | 🔲 规划中 | `requirements/prototype/SKILL.md` | 原型、线框图、prototype、页面设计、UI 草图 |
+| 原型设计 | ✅ v1.0 | `requirements/prototype/SKILL.md` | 原型、线框图、prototype、页面设计、UI 草图、页面标注、交互模式、原型标注、页面清单 |
 | 数据库设计 | ✅ v1.0 | `data/database/SKILL.md` | 数据库、ER 图、表结构、实体关系、数据字典、DDL、database、schema |
 | 接口设计 | ✅ v1.0 | `api/restful/SKILL.md` | 接口、API、RESTful、OpenAPI、接口文档、报文、集成接口、swagger |
 | 设计集成评审 | ✅ v1.0 | `cross/design-review/SKILL.md` | 评审、评审报告、评分、设计评审、集成评审、质量评审、追溯矩阵、一致性检查、整体评审、review |

@@ -51,7 +51,7 @@ npx @agile-team/wl-skills-design          # 安装 AI 设计技能包到当前�
 |-------|------|------|
 | 系统需求设计 | draw.io 业务流程图 | ✅ 已发布 |
 | 系统需求设计 | 需求设计说明书（IPO / 流程说明 / 功能设计 / 数据报表）| ✅ 已发布 |
-| 系统需求设计 | 原型设计 | 🔲 v2.0 规划中 |
+| 系统需求设计 | 原型设计 | 🔲 v2.0 Skill 落地中（规范已完成） |
 | 数据设计 | 数据库设计（ER / DB 清单 / 数据字典 / DDL）| ✅ 已发布 |
 | 接口设计 | 接口设计（系统集成报文 / RESTful / OpenAPI）| ✅ 已发布 |
 | 跨域评审 | 设计集成评审（评分 / 追溯矩阵 / 跨文档一致性）| ✅ 已发布 |
@@ -98,10 +98,10 @@ wl-skills-design/                              ← 你正看的这个仓库
 ├── files/                                     ★★★ 真正会被复制到目标项目的内容 ★★★
 │   ├── .github/
 │   │   ├── copilot-instructions.md            源 AI 主入口（编辑这里，不要改目标项目副本）
-│   │   ├── standards/                         8 条设计规范（01/03/04/06/07/08 ✅，02/05 规划中）
+│   │   ├── standards/                         8 条设计规范（01/02/03/04/06/07/08 ✅，05 规划中）
 │   │   │   ├── index.md                       规范门控
 │   │   │   ├── 01-flowchart.md                draw.io 泳道流程图规范（15 章节）✅
-│   │   │   ├── 02-prototype.md                原型规范（stub）
+│   │   │   ├── 02-prototype.md                原型设计规范（23 项验证）✅
 │   │   │   ├── 03-database.md                 数据库规范（34 项验证）✅
 │   │   │   ├── 04-api-design.md               接口规范（38 项验证）✅
 │   │   │   ├── 05-code-design.md              代码设计规范（stub）
@@ -299,7 +299,7 @@ npm run check     # 一致性自检（registry / index / 路径引用 / 编辑�
 
 ---
 
-## spec-gen — Word 规格文档自动生成流水线
+## spec-gen — 设计文档生成工具集
 
 > 独立于 npm 包主体，供产品设计团队直接使用。不发布到 npm。
 
@@ -307,10 +307,8 @@ npm run check     # 一致性自检（registry / index / 路径引用 / 编辑�
 
 ```
 spec-gen/
-├── scripts/          Python 源码（git 追踪）
-│   ├── generate_spec_doc.py   ★ 主生成器（模板基生成）
-│   ├── draw_flow.py           流程图模块（脚本基生成：PNG + drawio 双轨）
-│   └── create_skeleton.py    一次性骨架提取（勿重复运行）
+├── scripts/          工具脚本（git 追踪）
+│   └── draw_flow.py           流程图双轨生成器（PNG + drawio，通用工具）
 ├── templates/        ⚠️ 只读模板区（禁止脚本写入）
 │   └── template_skeleton.docx
 ├── output/           生成物（.gitignored）
@@ -319,29 +317,15 @@ spec-gen/
     └── doc_deep_analysis.txt
 ```
 
-### 快速生成文档
+### 流程图生成
 
 ```bash
-pip install python-docx Pillow
-python spec-gen/scripts/generate_spec_doc.py
-# 输出：spec-gen/output/[project]_spec_v2.0.docx
+pip install Pillow
+python spec-gen/scripts/draw_flow.py
 ```
 
-### 生成策略：模板基 vs 脚本基
-
-| 策略 | 适用场景 | 工具 |
-|------|---------|------|
-| **模板基**（Template-based）| 文档结构固定，改内容/数据，快速批量出稿 | `generate_spec_doc.py` |
-| **脚本基**（Script-based）| 流程图节点动态/数据源驱动，高度灵活 | `draw_flow.py` |
-| **混合** | 先脚本基生成流程图 PNG → 再模板基嵌入文档 | 两者配合 |
-
-> 日常迭代推荐**模板基**；流程图变更用**脚本基**；两者可混用。
-
-### 模板保护约定
-
-- `spec-gen/templates/` 内文件为**只读基准**，任何脚本输出**不得**写入此目录
-- 所有生成物（docx/png/drawio）统一写入 `spec-gen/output/`，已加入 `.gitignore`
-- 如需重新提取骨架，修改 `create_skeleton.py` 后确认 `OUT` 路径指向 `templates/`，且不覆盖已确认的版本
+> **注意**：原有的 `generate_spec_doc.py`（华新项目特定）和 `create_skeleton.py`（一次性工具）已废弃删除。  
+> 设计文档生成的正确方式是通过 Skill 体系（`create-spec-section` prompt）。
 
 详见 [spec-gen/README.md](./spec-gen/README.md)
 

@@ -11,7 +11,7 @@
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.4.2  
+> 版本：v0.5.0  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
@@ -22,7 +22,7 @@
 
 | 域 | 说明 | 状态 |
 |----|------|------|
-| 系统需求设计 | 业务流程图（draw.io）、原型（规划中） | 🟢 / 🔲 |
+| 系统需求设计 | 业务流程图（draw.io）、原型标注、需求设计说明书 | 🟢 可用 |
 | 数据设计 | 数据库 ER / 数据字典 / DDL 设计规范 | 🟢 可用 |
 | 接口设计 | 系统集成报文 / RESTful / OpenAPI 规范 | 🟢 可用 |
 | 集成评审 | 需求/数据库/接口三份产物的集成评审、评分、追溯 | 🟢 可用 |
@@ -74,7 +74,7 @@
 ├── standards/                           ← 设计规范（工具无关，按域编号）
 │   ├── index.md                         ★ 规范门控——AI 先读这里，按需加载
 │   ├── 01-flowchart.md                  ★ draw.io 泳道流程图规范（15 章节）✅
-│   ├── 02-prototype.md                  ← 原型设计规范 🔲
+│   ├── 02-prototype.md                  ★ 原型设计规范（23 项验证）✅
 │   ├── 03-database.md                   ★ 数据库设计规范（34 项验证）✅
 │   ├── 04-api-design.md                 ★ 接口设计规范（38 项验证）✅
 │   ├── 05-code-design.md                ← 代码设计规范 🔲
@@ -90,11 +90,13 @@
 │   │   └── headers/                     ← 各编辑器头部格式模板（10 个文件）
 │   │
 │   ├── requirements/                    ← 系统需求设计类 Skill
-│   │   └── flowchart/                   ← draw.io 流程图 ✅
-│   │       ├── SKILL.md                 ★ AI 触发文件
-│   │       ├── USAGE.md                 ← 人读版使用说明
-│   │       └── templates/
-│   │           └── skeleton.drawio      ← 骨架模板（图例页 + 空白泳道）
+│   │   ├── flowchart/                   ← draw.io 流程图 ✅
+│   │   │   ├── SKILL.md                 ★ AI 触发文件
+│   │   │   ├── USAGE.md                 ← 人读版使用说明
+│   │   │   └── templates/
+│   │   │       └── skeleton.drawio      ← 骨架模板（图例页 + 空白泳道）
+│   │   ├── spec/                        ← 需求设计说明书 ✅（SKILL + USAGE + 4 sub + templates）
+│   │   └── prototype/                   ← 原型标注 ✅（SKILL + USAGE + 2 sub + 1 template）
 │   │
 │   ├── data/database/                ← 数据库设计 ✅（SKILL + USAGE + 4 sub + 3 templates）
 │   ├── api/restful/                  ← 接口设计 ✅（SKILL + USAGE + 4 sub + 4 templates）
@@ -107,6 +109,8 @@
 │   ├── validate-flowchart.prompt.md     ← 验证流程图规范符合度
 │   ├── create-spec-section.prompt.md    ← 生成需求说明书章节
 │   ├── validate-spec-section.prompt.md  ← 验证需求说明书章节
+│   ├── create-prototype.prompt.md       ← 生成原型标注（D3 开发就绪）
+│   ├── validate-prototype.prompt.md     ← 验证原型标注（23 项）
 │   ├── create-db-design.prompt.md       ← 生成数据库设计
 │   ├── validate-db-design.prompt.md     ← 验证数据库设计
 │   ├── create-if-design.prompt.md       ← 生成接口设计

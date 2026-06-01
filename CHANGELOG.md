@@ -6,6 +6,27 @@
 
 ---
 
+## [0.5.0] — 2026-06（新增原型设计 Skill + spec-gen 瘦身）
+
+### 新增
+- **原型设计标注 Skill（`requirements/prototype/`）**：把 spec 功能设计转成结构化原型标注，达到「开发就绪（D3）」深度，可被 `prototype-scan`（wl-skills-kit）直接消费生成代码
+  - 规范 `standards/02-prototype.md` 从 stub 升级为完整规范：8 种交互模式 + 决策树、每页 7 项必标内容、三级深度（D1/D2/D3）、与 spec 的字段对齐规则、钢铁行业特化（页面模式映射/高频字典/组炉组浇等特殊交互）、**23 项验证清单（PT-A/B/C/X 四组）** + 闭环修复协议
+  - 薄 SKILL + 2 sub（`01-page-layout` 定模式骨架 / `02-field-annotation` 字段标注核心）+ 1 template（`page-annotation` 7 项必标）
+  - 2 个 prompt：`create-prototype` / `validate-prototype`
+  - **页面编码复用 spec 功能编码**（不另起编码体系），PT-X X05 校验原型「关联 IPO」编码 ∈ spec 4.x.4
+- 新增 ADR-010（原型规范定位为标注深度标准而非视觉规范）、ADR-011（spec-gen 废弃项目特定脚本）
+
+### 变更
+- `_registry.md` / `standards/index.md` / `copilot-instructions.md`：原型设计 🔲 → ✅ v1.0、standards 02 ✅
+- `package.json`：version 0.4.2 → 0.5.0，description 补「原型标注」技能
+- 同步重建 10 个编辑器配置（v0.4.2 → v0.5.0）
+- `kit-internal/skills/README.md`：原型从规划中移至已发布；补充增量设计/版本追踪/错误恢复的后续规划
+
+### 移除
+- **spec-gen 瘦身**：删除 `generate_spec_doc.py`（华新项目特定硬编码，不可复用）与 `create_skeleton.py`（一次性骨架提取工具，已完成使命）；保留通用的 `draw_flow.py`（流程图双轨生成器）。设计文档生成的正确路径是 Skill 体系（`create-spec-section`），不再维护项目特定的 Python 生成器
+
+---
+
 ## [0.4.2] — 2026-06（工程小项勘误）
 
 ### 修复
