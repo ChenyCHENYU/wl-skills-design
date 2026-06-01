@@ -1,5 +1,5 @@
 ---
-description: "产品设计 AI 技能规范（7 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）"
+description: "产品设计 AI 技能规范（8 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）"
 globs:
   - "**/*.drawio"
   - "**/*.md"
@@ -16,7 +16,7 @@ alwaysApply: true
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.3.0  
+> 版本：v0.4.0  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
@@ -31,6 +31,7 @@ alwaysApply: true
 | 数据设计 | 数据库 ER / 数据字典 / DDL 设计规范 | 🟢 可用 |
 | 接口设计 | 系统集成报文 / RESTful / OpenAPI 规范 | 🟢 可用 |
 | 集成评审 | 需求/数据库/接口三份产物的集成评审、评分、追溯 | 🟢 可用 |
+| 术语字段词典 | 字段对齐的中央锚点（中英文名/枚举/编码统一语言） | 🟢 可用 |
 | 代码设计 | 业务逻辑代码结构规范 | 🔲 规划中 |
 
 ---
@@ -83,7 +84,8 @@ alwaysApply: true
 │   ├── 04-api-design.md                 ★ 接口设计规范（35 项验证）✅
 │   ├── 05-code-design.md                ← 代码设计规范 🔲
 │   ├── 06-spec-doc.md                   ★ 需求设计说明书规范 ✅
-│   └── 07-design-review.md              ★ 设计集成评审规范（评分 + D4 联动 18 项）✅
+│   ├── 07-design-review.md              ★ 设计集成评审规范（评分 + D4 联动 18 项）✅
+│   └── 08-glossary.md                   ★ 术语/字段词典规范（字段对齐锚点，18 项）✅
 │
 ├── skills/
 │   ├── _registry.md                     ★ Skill 触发词路由（唯一数据源）
@@ -102,6 +104,7 @@ alwaysApply: true
 │   ├── data/database/                ← 数据库设计 ✅（SKILL + USAGE + 4 sub + 3 templates）
 │   ├── api/restful/                  ← 接口设计 ✅（SKILL + USAGE + 4 sub + 4 templates）
 │   ├── cross/design-review/          ← 设计集成评审 ✅（SKILL + USAGE + 3 sub + 1 template）
+│   ├── cross/glossary/               ← 术语字段词典 ✅（SKILL + USAGE + 3 sub + 1 template）
 │   └── code/README.md                   ← 代码设计类 Skill 🔲（stub）
 │
 ├── prompts/                             ← VS Code Copilot 提示词
@@ -113,7 +116,9 @@ alwaysApply: true
 │   ├── validate-db-design.prompt.md     ← 验证数据库设计
 │   ├── create-if-design.prompt.md       ← 生成接口设计
 │   ├── validate-if-design.prompt.md     ← 验证接口设计
-│   └── design-review.prompt.md          ← 集成评审（三份产物评分出报告）
+│   ├── design-review.prompt.md          ← 集成评审（三份产物评分出报告）
+│   ├── create-glossary.prompt.md        ← 生成/维护术语字段词典
+│   └── validate-glossary.prompt.md      ← 校验三方字段 ⊆ 词典
 │
 └── guides/                              ← 人读指南（非 AI 路由文件）
     ├── usage.md                         ← 业务团队：如何使用本包

@@ -67,9 +67,9 @@ if (showHelp) {
 
   安装内容：
     .github/copilot-instructions.md    AI 主入口
-    .github/standards/                 7 条设计规范（流程图/数据库/接口/说明书/集成评审 ✅，原型/代码 规划中）
-    .github/skills/                    AI Skill（流程图/说明书/数据库/接口/集成评审 ✅，原型/代码 规划中）
-    .github/prompts/                   VS Code Copilot 提示词（9 个）
+    .github/standards/                 8 条设计规范（流程图/数据库/接口/说明书/集成评审/术语词典 ✅，原型/代码 规划中）
+    .github/skills/                    AI Skill（流程图/说明书/数据库/接口/集成评审/术语词典 ✅，原型/代码 规划中）
+    .github/prompts/                   VS Code Copilot 提示词（11 个）
     .github/guides/                    使用指南
     CLAUDE.md / AGENTS.md / .cursorrules / .windsurfrules 等（10 种编辑器）
   `);

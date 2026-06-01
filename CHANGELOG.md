@@ -6,17 +6,29 @@
 
 ---
 
-## [Unreleased]（工程化收尾：去除特殊字符绕行 + 脚本去硬编码 + 单元测试）
+## [0.4.0] — 2026-06（新增术语/字段词典 Skill，字段对齐中央锚点 + 工程化收尾）
 
 ### 新增
+- **术语/字段词典 Skill（`cross/glossary/`）**：为全链路建立统一语言（Ubiquitous Language）中央词典——把同一业务概念在 spec/DB/接口的**中文名↔英文名↔类型↔枚举↔模块码**钉成单一映射，作为字段对齐的**中央锚点**，让字段对不齐从「评审时发现」提前到「设计时杜绝」
+  - 规范 `standards/08-glossary.md`：四类词条（业务术语/字段/枚举/编码注册）、字段词条 9 列单一映射格式、与 spec/DB/接口联动 G1~G5、对既有 DB-X/IF-X/D4 校验的**锚点化增强**（两两互比 O(N²) → 与词典比对 O(N)）、**18 项验证清单（GL-A/B/C/X 四组）**+ 闭环修复协议
+  - 3 个 sub-skill：`01-build-glossary`（编码注册+业务术语）/ `02-field-entry`（字段+枚举，核心）/ `03-glossary-review`（三方 ⊆ 词典校验+联动矩阵+报告）
+  - 1 个模板：`glossary`（四类词条骨架）
+  - 2 个 prompt：`create-glossary` / `validate-glossary`
+- 新增 ADR-009（术语词典作为字段对齐中央锚点、cross 类、锚点化既有校验、向后兼容）
 - **`tests/` 单元测试套件**（零依赖，`node:test`）：`npm test` 覆盖 CLI（--version/未知选项与命令退出码/--help/init/--dry-run/update 备份）与构建脚本（sync --check 无漂移、doctor 通过、编辑器数与 `editors.json` 启用数一致、registry 正则解析 ✅ Skill）——补齐「防漂移机制本身无测试」的命门
 - CI 工作流新增「单元测试」步骤（doctor 之后、安装冒烟测试之前）
 
 ### 变更
+- `_registry.md` / `standards/index.md` / `copilot-instructions.md` / `cross/README.md`：新增术语字段词典 ✅ v1.0、standards 08 ✅
+- `07-design-review.md §十一`：补充与 08 词典的关系（D4 字段/枚举一致性以「三方 ⊆ 词典」为基准，词典缺失时回退两两互比）
+- `package.json`：description 规范数 7→8、补术语词典技能；版本 0.3.0 → 0.4.0
+- CLI `--help` / README：规范数 7→8、技能覆盖表新增术语词典行、prompt 数 9→11、目录树补全 glossary skill 与 2 个 prompt
+- `kit-internal/skills/README.md`：术语词典从🔴规划中移至已发布
+- 同步重建 10 个编辑器配置文件（v0.3.0 → v0.4.0）
 - **去除过时的「特殊字符路径」绕行说明**：仓库已迁纯 ASCII 路径，README / `_compat/README.md` / `CONTRIBUTING.md` / `kit-internal/README.md` 删除「复制到临时目录运行/发布」的临时方案；`kit-internal/README.md` 发布流程改为 `npm version` + `npm publish`（鉴权走 `npm login` / CI token，不再在仓库写 `.npmrc`）；ADR-008 标注限制已解除
 - **脚本去硬编码**：`check.js` 的「编辑器配置漂移检查：N 个配置」与 `sync-editors.js --check` 的成功提示改为从 `editors.json` 动态取启用数，消除下一个潜在漂移点
 - **CLI `update` 备份改为带时间戳**：`.bak` → `.bak.<时间戳>`，避免连续 update 冲掉上一次的本地改动备份；`.gitignore` 排除 `*.bak` / `*.bak.*`
-- **编辑器头部描述对齐**：`headers/cursor-mdc.txt` / `headers/trae.txt` 的 description 由「流程图/原型/数据库/接口/代码设计」（含未发布能力）统一为「7 条设计规范 + Skill 自动调度」，并重新 `sync` 同步产物
+- **编辑器头部描述对齐**：`headers/cursor-mdc.txt` / `headers/trae.txt` 的 description 由「流程图/原型/数据库/接口/代码设计」（含未发布能力）统一为「N 条设计规范 + Skill 自动调度」，并重新 `sync` 同步产物
 - README 维护指南：`vim` 手改示例改为「编辑 + `npm run check`」闭环，明确 9（重建）vs 10（校验）编辑器配置的来历
 
 ### 修复
