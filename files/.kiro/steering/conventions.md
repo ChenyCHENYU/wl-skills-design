@@ -11,7 +11,7 @@ description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调�
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.5.0  
+> 版本：v0.6.0  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
@@ -58,7 +58,10 @@ description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调�
 1. 识别意图 → 查阅 `_registry.md` 找到对应 Skill
 2. 读取该 Skill 的 `SKILL.md` 获取操作指令
 3. 按需读取 `standards/` 中的规范文件
-4. 执行操作，输出符合规范的设计产物
+4. 用 `templates/`（空白模板）起骨架，对照 `examples/`（真实样例）校准质量——**生成结果必须不低于样例**
+5. 执行操作，输出符合规范的设计产物
+
+> **每个 Skill 双层资料**：`templates/` = 空白起点（纯结构 + 占位符）；`examples/` = 真实样例（质量标杆，含「自检：本样例为何达标」清单）。两者并存，确保既不漏结构、又达到最佳实践水位。
 
 ---
 
@@ -91,18 +94,20 @@ description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调�
 │   │
 │   ├── requirements/                    ← 系统需求设计类 Skill
 │   │   ├── flowchart/                   ← draw.io 流程图 ✅
-│   │   │   ├── SKILL.md                 ★ AI 触发文件
+│   │   │   ├── SKILL.md                 ★ AI 触发文件（薄包装）
 │   │   │   ├── USAGE.md                 ← 人读版使用说明
-│   │   │   └── templates/
-│   │   │       └── skeleton.drawio      ← 骨架模板（图例页 + 空白泳道）
-│   │   ├── spec/                        ← 需求设计说明书 ✅（SKILL + USAGE + 4 sub + templates）
-│   │   └── prototype/                   ← 原型标注 ✅（SKILL + USAGE + 2 sub + 1 template）
+│   │   │   ├── templates/               ← 空白模板（图例页 + 空白泳道）
+│   │   │   └── examples/                ← 真实样例（质量标杆，AI 须做得不低于它）
+│   │   ├── spec/                        ← 需求设计说明书 ✅（SKILL + USAGE + 4 sub + templates + 5 examples）
+│   │   └── prototype/                   ← 原型标注 ✅（SKILL + USAGE + 2 sub + 1 template + 1 example）
 │   │
-│   ├── data/database/                ← 数据库设计 ✅（SKILL + USAGE + 4 sub + 3 templates）
-│   ├── api/restful/                  ← 接口设计 ✅（SKILL + USAGE + 4 sub + 4 templates）
-│   ├── cross/design-review/          ← 设计集成评审 ✅（SKILL + USAGE + 3 sub + 1 template）
-│   ├── cross/glossary/               ← 术语字段词典 ✅（SKILL + USAGE + 3 sub + 1 template）
+│   ├── data/database/                ← 数据库设计 ✅（SKILL + USAGE + 4 sub + 3 templates + 1 example）
+│   ├── api/restful/                  ← 接口设计 ✅（SKILL + USAGE + 4 sub + 4 templates + 2 examples）
+│   ├── cross/design-review/          ← 设计集成评审 ✅（SKILL + USAGE + 3 sub + 1 template + 1 example）
+│   ├── cross/glossary/               ← 术语字段词典 ✅（SKILL + USAGE + 3 sub + 1 template + 1 example）
 │   └── code/README.md                   ← 代码设计类 Skill 🔲（stub）
+
+> **每个 Skill 双层资料**：`templates/` = 空白模板（纯结构 + 占位符，起点）；`examples/` = 真实样例（填好内容的质量标杆，结尾附自检清单）。AI 用模板起骨架、对照样例校准，生成结果不得低于样例。
 │
 ├── prompts/                             ← VS Code Copilot 提示词
 │   ├── create-flowchart.prompt.md       ← 引导式创建流程图

@@ -13,7 +13,9 @@
 | `architecture.md` | 架构决策记录（ADR） |
 | `CONTRIBUTING.md` | 贡献流程与规范 |
 | `skills/README.md` | Skill 维护清单与规划 |
-| `examples/` | 各设计域真实样例（spec / db / api），供 few-shot 参考，不发布 |
+
+> **样例（examples）与模板（templates）现已随包发布**，分别位于每个 Skill 目录下的 `examples/`（真实场景质量标杆）与 `templates/`（空白起点）。
+> 详见 `architecture.md` ADR-012。维护样例请改 `files/.github/skills/<category>/<skill>/examples/`。
 
 ---
 

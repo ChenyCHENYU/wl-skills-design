@@ -55,8 +55,12 @@ tools:
 | 模板 | 用途 |
 |------|------|
 | `templates/db-skeleton.md` | 分册文件结构 + 每模块 4 节骨架 |
-| `templates/data-dictionary.md` | 数据字典 10 列标准表（直接套用）|
-| `templates/table-definition.md` | 单表完整定义示例（含系统字段 + 索引清单）|
+| `templates/data-dictionary.md` | 数据字典 10 列**空白模板**（`{占位符}`，直接套用）|
+| `templates/table-definition.md` | 单表完整定义**空白模板**（含系统字段 + 索引清单）|
+
+> **空白模板 vs 真实样例**：`templates/` 是空白起点（纯结构 + 占位符）；
+> `examples/01-data-dictionary.md` 是**真实样例（质量标杆）**——填好内容、含三方联动，
+> 生成结果须**对照样例自检且不低于它**。
 
 ---
 

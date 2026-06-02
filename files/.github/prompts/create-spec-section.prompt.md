@@ -37,7 +37,7 @@ tools:
    - 流程说明 → `.github/skills/requirements/spec/sub/02-module-flow.md`
    - 总体章节 → `.github/skills/requirements/spec/sub/01-overview.md`
    - 数据/报表 → `.github/skills/requirements/spec/sub/04-data-report.md`
-3. 参考 `kit-internal/examples/spec/` 中对应的真实样例
+3. 参考 `.github/skills/requirements/spec/examples/` 中对应的真实样例（质量标杆，须做得不低于它）
 
 ### Step 2：生成内容
 

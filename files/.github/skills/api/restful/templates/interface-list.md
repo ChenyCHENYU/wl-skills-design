@@ -1,14 +1,14 @@
-# 模板 — 接口清单（interface-list）
+# 默认模板 — 接口清单（interface-list）
 
-> 规范见 `standards/04-api-design.md §九`。置于分册 `00-api-overview.md` 开头。
+> **这是「默认模板（空白起点）」**：纯结构 + `{占位符}`，零业务数据。置于分册 `00-api-overview.md` 开头。
+> 规范见 `standards/04-api-design.md §九`。填好的真实范例（质量标杆）见 `../examples/01-restful.md`，生成结果须不低于它。
 
 ## 接口清单
 
 | 接口编码 | 接口名称 | 类型 | 源→目标 | 关联 spec 功能编码 | 关联 DB 表 |
 |---------|---------|------|---------|-------------------|-----------|
-| `QM_PM_B_01` | 订单下达推送 | 集成-批次 | QM→PM | PMPM007 | `pmom_order_main` |
-| `QM_PM_B_02` | 订单完工回传 | 集成-批次 | PM→QM | PMPM012 | `pmom_order_main` |
-| `POST /api/v1/orders` | 新增订单 | RESTful | 前端→PM | PMPM007 | `pmom_order_main` |
+| `{源_目标_类型_NN}` | {接口名称} | {集成-批次 / RESTful} | {源}→{目标} | {功能编码} | `{表名}` |
+| `{METHOD /api/v1/...}` | {接口名称} | {RESTful} | {前端}→{模块} | {功能编码} | `{表名}` |
 
 > 约束：
 > - 集成接口编码 **递增唯一**，禁止重复（IF-A02）。

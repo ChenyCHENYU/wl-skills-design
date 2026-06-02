@@ -2,7 +2,7 @@
 
 > **适用范围**：每个功能的「画面逻辑（原型）」和「处理逻辑（IPO 表）」  
 > **权威规范**：`.github/standards/06-spec-doc.md` § 五（功能设计详细规范）  
-> **参考样例**：`kit-internal/examples/spec/02-function-ipo-example.md`
+> **参考样例**：`.github/skills/requirements/spec/examples/02-function-ipo.md`（随包发布，质量标杆）
 
 ---
 
@@ -207,7 +207,7 @@
 
 #### 完整 IPO 表真实示例
 
-来源：`kit-internal/examples/spec/02-function-ipo-example.md`（PMMB001 BOM钢种合金原料配比）
+来源：`.github/skills/requirements/spec/examples/02-function-ipo.md`（PMMB001 BOM钢种合金原料配比）
 
 ```markdown
 **(1) 列表页**

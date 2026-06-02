@@ -56,16 +56,17 @@ tools:
 
 ---
 
-## 第三步（可选）：参考真实样例
+## 第三步（可选）：对照真实样例（质量标杆，必须做得不低于它）
 
-`kit-internal/examples/spec/` 目录下有源自真实项目的参考样例：
+本 Skill 同目录 `examples/` 下有源自真实项目的**样例（填好内容）**。`templates/` 是空白起点，`examples/` 是质量标杆——生成结果须不低于样例：
 
 | 样例文件 | 用途 |
 |---------|------|
-| `00-doc-outline-reference.md` | 完整标题树（验证结构完整性）|
-| `01-flow-desc-example.md` | 流程说明 + 活动说明表的完整写法 |
-| `02-function-ipo-example.md` | IPO 表的完整写法（含多页面）|
-| `03-flow-screen-map-example.md` | 流程与作业画面对照表的写法 |
+| `.github/skills/requirements/spec/examples/00-doc-outline.md` | 完整标题树（验证结构完整性）|
+| `.github/skills/requirements/spec/examples/01-flow-desc.md` | 流程说明 + 活动说明表的完整写法 |
+| `.github/skills/requirements/spec/examples/02-function-ipo.md` | IPO 表的完整写法（含多页面）|
+| `.github/skills/requirements/spec/examples/03-flow-screen-map.md` | 流程与作业画面对照表的写法 |
+| `.github/skills/requirements/spec/examples/04-api.md` | 内部接口（API）节的完整写法 |
 
 ---
 

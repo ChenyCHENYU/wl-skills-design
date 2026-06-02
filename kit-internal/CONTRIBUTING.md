@@ -49,6 +49,7 @@ vim files/.github/standards/index.md
 # 1. 确定 Skill 所属类别（requirements / data / api / code / cross）
 #    cross = 跨域聚合类（如设计集成评审，消费多个产物的结论）
 mkdir -p files/.github/skills/[category]/[skill-name]/templates
+mkdir -p files/.github/skills/[category]/[skill-name]/examples
 
 # 2. 创建 SKILL.md（AI 触发文件）
 vim files/.github/skills/[category]/[skill-name]/SKILL.md
@@ -67,6 +68,21 @@ vim files/.github/skills/_registry.md
 - 第二步：读取模板（如有）
 - 快速参考表（颜色、尺寸、格式等高频查询项）
 - 操作入口（对应 prompt 或操作指令）
+
+### 双层资料约定（templates vs examples · 见 ADR-012）
+
+每个 Skill **必须**提供两层资料，且**两层都随包发布**：
+
+| 目录 | 角色 | 内容要求 |
+|------|------|---------|
+| `templates/` | **默认模板（空白起点）** | 纯结构 + `{占位符}`，**零业务数据**；由本 Skill 的 skills 规则派生 |
+| `examples/` | **真实样例（质量标杆）** | 真实场景填充内容；AI 生成时**必须做得不低于它** |
+
+约定：
+- 模板里**不得**出现成片真实业务数据（那是样例的职责）；模板只示意结构与占位。
+- 每个样例文件结尾附「**自检：本样例为何达标**」清单，把标杆显式化为可对照的检查点。
+- SKILL.md 第三步同时指向两层，并注明 examples 是「质量标杆，须不低于它」。
+- 规范升级时，样例的自检清单门槛要同步抬高，确保样例始终是最佳实践。
 
 ---
 

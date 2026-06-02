@@ -1072,15 +1072,15 @@
 
 ## §十二  快速参考：典型章节样例
 
-完整样例见 `kit-internal/examples/spec/`：
+完整样例见 `.github/skills/requirements/spec/examples/`（随包发布，目标项目内可直接打开）：
 
 | 样例文件 | 内容 |
 |---------|------|
-| `00-doc-outline-reference.md` | 完整标题树（源自真实项目，199条目）|
-| `01-flow-desc-example.md` | 完整的流程说明章节示例（含活动说明表 + 对照表）|
-| `02-function-ipo-example.md` | 完整的 IPO 表示例（5列，含多页面/三段式/状态机/主从表）|
-| `03-flow-screen-map-example.md` | 流程与作业画面对照表示例（含操作类型列）|
-| `04-api-example.md` | 内部接口（API）节完整示例（含接口编码/请求响应/触发时机）|
+| `00-doc-outline.md` | 完整标题树（源自真实项目，199条目）|
+| `01-flow-desc.md` | 完整的流程说明章节示例（含活动说明表 + 对照表）|
+| `02-function-ipo.md` | 完整的 IPO 表示例（5列，含多页面/三段式/状态机/主从表）|
+| `03-flow-screen-map.md` | 流程与作业画面对照表示例（含操作类型列）|
+| `04-api.md` | 内部接口（API）节完整示例（含接口编码/请求响应/触发时机）|
 
 ---
 

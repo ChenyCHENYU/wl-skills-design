@@ -55,9 +55,13 @@ tools:
 | 模板 | 用途 |
 |------|------|
 | `templates/if-skeleton.md` | 分册文件结构 + 每接口 4 段骨架 |
-| `templates/interface-list.md` | 接口清单表（含关联 spec / DB 列）|
-| `templates/integration-def.md` | 集成接口完整定义（触发五要素 + 主档/明细档 + JSON）|
-| `templates/restful-def.md` | RESTful 接口完整定义（URL/Method/包装/错误码）|
+| `templates/interface-list.md` | 接口清单表**空白模板**（含关联 spec / DB 列）|
+| `templates/integration-def.md` | 集成接口**空白模板**（触发五要素 + 主档/明细档 + JSON）|
+| `templates/restful-def.md` | RESTful 接口**空白模板**（URL/Method/包装/错误码）|
+
+> **空白模板 vs 真实样例**：`templates/` 是空白起点（纯结构 + 占位符）；
+> `examples/01-restful.md`、`examples/02-integration.md` 是**真实样例（质量标杆）**——
+> 含统一响应包装、错误码、幂等、三方联动，生成结果须**对照样例自检且不低于它**。
 
 ---
 

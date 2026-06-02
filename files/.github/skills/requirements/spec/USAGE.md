@@ -52,14 +52,15 @@ requirements/spec/
 
 ## 参考样例
 
-`kit-internal/examples/spec/` 目录下的真实样例（源自烟台华新数智化改造项目一期）：
+`examples/`（与本 Skill 同目录，随包发布）下的真实样例（源自烟台华新数智化改造项目一期）：
 
 | 文件 | 内容 |
 |------|------|
-| `00-doc-outline-reference.md` | 完整标题树（199 条目）|
-| `01-flow-desc-example.md` | PMMB-A-02 月度生产目标流程说明完整示例 |
-| `02-function-ipo-example.md` | PMMB001 BOM钢种合金原料配比 IPO 表完整示例 |
-| `03-flow-screen-map-example.md` | 流程与作业画面对照表示例 |
+| `examples/00-doc-outline.md` | 完整标题树（199 条目）|
+| `examples/01-flow-desc.md` | PMMB-A-02 月度生产目标流程说明完整示例 |
+| `examples/02-function-ipo.md` | PMMB001 BOM钢种合金原料配比 IPO 表完整示例 |
+| `examples/03-flow-screen-map.md` | 流程与作业画面对照表示例 |
+| `examples/04-api.md` | 内部接口（API）节完整示例 |
 
 ---
 

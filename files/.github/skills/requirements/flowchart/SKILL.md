@@ -26,6 +26,10 @@ tools:
 .github/skills/requirements/flowchart/templates/skeleton.drawio
 ```
 
+> **空白模板 vs 真实样例**：`templates/skeleton.drawio` 是空白起点（图例页 + 空白泳道）；
+> `examples/01-purchase-approval.drawio` 是**真实样例（质量标杆）**——一份按全规范绘制的采购申请审批流程，
+> 含多泳道、判定分支、跨泳道连线，生成结果须**对照样例自检且不低于它**（说明见 `examples/README.md`）。
+
 ---
 
 ## 快速参考（完整规范见 standards.md）

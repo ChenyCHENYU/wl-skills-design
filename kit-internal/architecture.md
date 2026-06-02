@@ -258,3 +258,52 @@ ADR-003 确立了「单一内容源 + 头部差异化」的多编辑器适配，
 ### 权衡
 - **优点**：消除「两套生成方式」的认知混乱；减少维护负担；明确 Skill 体系是唯一的设计文档生成路径
 - **代价**：如果未来需要批量生成 Word（非 AI 场景），需要重新写脚本——但那时应该基于通用模板引擎，而非硬编码
+
+
+---
+
+## ADR-012 · 每个 Skill 双层资料：templates（空白模板）+ examples（真实样例），并随包发布
+
+**日期**：2026-06
+**状态**：✅ 已采纳
+
+### 背景
+此前每个 Skill 目录只有 `templates/`，但里面混了两种东西：
+- 一部分是**空白骨架**（如 `glossary.md`、`review-report.md`，用 `{占位符}`）
+- 一部分却**填了真实业务数据**（如 `data-dictionary.md`、`table-definition.md`、`restful-def.md`）
+
+而真正的「真实场景样例」又被放在 **不发布** 的 `kit-internal/examples/`（仅 spec/db/api 三域）。
+结果是：① 模板层职责不纯（有的空、有的满）；② 目标项目里 `npx` 装完根本看不到样例，
+AI 在用户项目中无质量标杆可对照；③ 多处 `files/` 文档引用 `kit-internal/examples/`——
+这些路径在目标项目里**不存在**（断链）。
+
+### 决策
+确立**每个 Skill 双层资料**的统一约定，且**两层都随包发布**：
+
+```
+skills/<category>/<skill>/
+├── templates/   ← 默认模板（空白起点）：纯结构 + {占位符}，零业务数据，由 skills 规则派生
+└── examples/    ← 真实样例（质量标杆）：真实场景填充内容，AI「必须做得不低于它」
+```
+
+1. **templates 归零**：把混入真实数据的模板（data-dictionary / table-definition /
+   restful-def / integration-def / interface-list）改写为纯 `{占位符}` 空白骨架。
+2. **examples 上架**：把 `kit-internal/examples/`（spec×5 / db×1 / api×1）迁入对应 Skill 的
+   `examples/`，并**补齐缺失域**——flowchart（真实 drawio + README）、prototype（D3 标注）、
+   glossary（订单+计划词典）、design-review（订单模块评审报告），实现 7 域全覆盖。
+3. **SKILL.md 双指**：每个 SKILL.md 第三步同时标注「空白模板（templates）」与
+   「真实样例（examples，质量标杆，须不低于它）」，并修正所有原指向 `kit-internal/examples/` 的断链。
+4. **删除 kit-internal/examples/**：避免「两份样例」认知混乱，样例只此一处（随包发布）。
+
+> 每个样例文件结尾固定附「自检：本样例为何达标」清单，把「标杆」显式化为可对照的检查点，
+> 强制 AI 生成时对齐并设法超过，而非仅仅模仿格式。
+
+### 权衡
+- **优点**：
+  - 模板层职责单一（永远是空白起点），样例层职责单一（永远是质量标杆），认知零歧义。
+  - 目标项目 `npx` 装完即可见样例，AI 在用户项目内就有「做到多好才算达标」的锚点。
+  - 消除 `files/` → `kit-internal/` 的发布期断链（doctor 的 SKILL 引用检查从 18 → 23 项且全过）。
+  - 7 个设计域统一拥有「空白模板 + 真实样例」，每层都能朝最佳实践收敛。
+- **代价**：
+  - 发布体积略增（样例为纯文本/单个 drawio，增量可忽略）。
+  - 样例需与规范同步演进——规范升级时，样例的「自检清单」也要同步抬高门槛（由 CONTRIBUTING 约束）。

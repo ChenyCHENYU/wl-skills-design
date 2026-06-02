@@ -6,6 +6,33 @@
 
 ---
 
+## [0.6.0] — 2026-06（每个 Skill 双层资料：模板 + 样例，且随包发布）
+
+### 新增
+- **真实样例随包发布 + 全域覆盖**（ADR-012）：每个 Skill 目录新增 `examples/`，存放源自真实项目的「真实样例（质量标杆）」，`npx` 安装后在目标项目内可直接打开，AI 生成时**对照自检且必须做得不低于它**
+  - 流程图：`examples/01-purchase-approval.drawio`（采购审批全规范流程）+ `examples/README.md`
+  - 需求说明书：`examples/00-doc-outline` / `01-flow-desc` / `02-function-ipo` / `03-flow-screen-map` / `04-api` 共 5 份
+  - **原型（新增样例）**：`examples/01-page-annotation.md` 炼钢计划列表 D3 完整标注
+  - 数据库：`examples/01-data-dictionary.md` 订单主表+明细表（7 系统字段 + 索引 + 三方联动）
+  - 接口：`examples/01-restful.md` 订单状态变更 + `examples/02-integration.md` 订单下达推送
+  - **集成评审（新增样例）**：`examples/01-review-report.md` 订单模块第 1 轮评审（P0 一票否决 + 暂挂排除分母演示）
+  - **术语词典（新增样例）**：`examples/01-glossary.md` 订单+计划域完整词典（四类词条 + 联动矩阵）
+  - 每个样例结尾固定附「**自检：本样例为何达标**」清单，把质量标杆显式化为可逐条对照的检查点
+- 新增 ADR-012（每个 Skill 双层资料：templates 空白模板 + examples 真实样例，两层都随包发布）
+
+### 变更
+- **templates 归零职责**：把此前混入真实业务数据的模板改写为纯 `{占位符}` 空白骨架——`data-dictionary.md` / `table-definition.md` / `restful-def.md` / `integration-def.md` / `interface-list.md`。自此 `templates/` 永远是空白起点，`examples/` 永远是质量标杆，职责零歧义
+- **各 SKILL.md 第三步双指**：同时标注「空白模板（templates）」与「真实样例（examples，质量标杆，须不低于它）」
+- **修复发布期断链**：此前 `files/` 内多处文档（`06-spec-doc.md §十二`、spec `USAGE.md`、`create-spec-section.prompt.md`、`sub/03-function-ipo.md`）引用 `kit-internal/examples/`——该路径在目标项目里不存在。现全部改指随包发布的 `examples/`（doctor 的 SKILL 引用检查 18 → 23 项且全过）
+- **README 重写**：新增「核心设计理念」「双层资料：模板 + 样例」「一次 AI 调度长什么样」等章节，目录层级与架构讲解更清晰
+- `kit-internal/`：`README.md` / `CONTRIBUTING.md`（新增双层资料约定）/ `skills/README.md`（补原型 + 各域样例计数）同步更新
+- `package.json`：version 0.5.0 → 0.6.0；同步重建 10 个编辑器配置
+
+### 移除
+- **删除 `kit-internal/examples/`**：样例已迁入各 Skill 的 `examples/`（随包发布），避免「两份样例」认知混乱，样例此后只此一处
+
+---
+
 ## [0.5.0] — 2026-06（新增原型设计 Skill + spec-gen 瘦身）
 
 ### 新增
