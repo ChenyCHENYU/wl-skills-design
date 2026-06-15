@@ -16,7 +16,7 @@ alwaysApply: true
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.6.1  
+> 版本：v0.7.0  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
@@ -32,6 +32,7 @@ alwaysApply: true
 | 接口设计 | 系统集成报文 / RESTful / OpenAPI 规范 | 🟢 可用 |
 | 集成评审 | 需求/数据库/接口三份产物的集成评审、评分、追溯 | 🟢 可用 |
 | 术语字段词典 | 字段对齐的中央锚点（中英文名/枚举/编码统一语言） | 🟢 可用 |
+| 变更影响分析 | 字段/状态/接口/页面变更的影响矩阵、补丁计划、复验顺序 | 🟢 可用 |
 | 代码设计 | 业务逻辑代码结构规范 | 🔲 规划中 |
 
 ---
@@ -103,7 +104,8 @@ alwaysApply: true
 │   ├── 05-code-design.md                ← 代码设计规范 🔲
 │   ├── 06-spec-doc.md                   ★ 需求设计说明书规范 ✅
 │   ├── 07-design-review.md              ★ 设计集成评审规范（评分 + D4 联动 18 项）✅
-│   └── 08-glossary.md                   ★ 术语/字段词典规范（字段对齐锚点，18 项）✅
+│   ├── 08-glossary.md                   ★ 术语/字段词典规范（字段对齐锚点，18 项）✅
+│   └── 09-change-impact.md              ★ 变更影响分析规范（影响矩阵 + 补丁计划）✅
 │
 ├── skills/
 │   ├── _manifest.json                   ★ Skill 精准路由（机器可读唯一执行源）
@@ -126,6 +128,7 @@ alwaysApply: true
 │   ├── api/restful/                  ← 接口设计 ✅（SKILL + USAGE + 4 sub + 4 templates + 2 examples）
 │   ├── cross/design-review/          ← 设计集成评审 ✅（SKILL + USAGE + 3 sub + 1 template + 1 example）
 │   ├── cross/glossary/               ← 术语字段词典 ✅（SKILL + USAGE + 3 sub + 1 template + 1 example）
+│   ├── cross/change-impact/          ← 变更影响分析 ✅（SKILL + USAGE + 3 sub + 1 template + 1 example）
 │   └── code/README.md                   ← 代码设计类 Skill 🔲（stub）
 
 > **每个 Skill 双层资料**：`templates/` = 空白模板（纯结构 + 占位符，起点）；`examples/` = 真实样例（填好内容的质量标杆，结尾附自检清单）。AI 用模板起骨架、对照样例校准，生成结果不得低于样例。
@@ -143,7 +146,9 @@ alwaysApply: true
 │   ├── validate-if-design.prompt.md     ← 验证接口设计
 │   ├── design-review.prompt.md          ← 集成评审（三份产物评分出报告）
 │   ├── create-glossary.prompt.md        ← 生成/维护术语字段词典
-│   └── validate-glossary.prompt.md      ← 校验三方字段 ⊆ 词典
+│   ├── validate-glossary.prompt.md      ← 校验三方字段 ⊆ 词典
+│   ├── analyze-change-impact.prompt.md  ← 分析设计变更影响并输出补丁计划
+│   └── validate-change-impact.prompt.md ← 验证影响矩阵和补丁任务可执行性
 │
 └── guides/                              ← 人读指南（非 AI 路由文件）
     ├── usage.md                         ← 业务团队：如何使用本包

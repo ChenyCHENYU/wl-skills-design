@@ -18,6 +18,7 @@
 | 接口设计 | v1.0 | `api/restful/` | `standards/04-api-design.md` | 集成报文 / RESTful，4 sub + 4 templates + 2 examples，38 项验证 + spec/DB 联动 |
 | 设计集成评审 | v1.0 | `cross/design-review/` | `standards/07-design-review.md` | 聚合 spec/DB/IF 三份产物，4 维度评分 + D4 联动 18 项 + 追溯矩阵 + P0 一票否决，3 sub + 1 template + 1 example |
 | 术语字段词典 | v1.0 | `cross/glossary/` | `standards/08-glossary.md` | 字段对齐中央锚点：中英文名/枚举/编码统一语言，18 项验证（GL-A/B/C/X），3 sub + 1 template + 1 example |
+| 变更影响分析 | v1.0 | `cross/change-impact/` | `standards/09-change-impact.md` | 字段/状态/接口/页面变更的影响矩阵 + 补丁计划 + 复验顺序，3 sub + 1 template + 1 example |
 
 ---
 
@@ -78,16 +79,16 @@ wl-skills-design                          wl-skills-kit
 
 ---
 
-## 增量设计支持（后续规划）
+## 增量设计支持（已启动）
 
-> 当前 Skill 更适合「从零开始」的场景。真实项目中设计是增量的。
+> `cross/change-impact` 已提供第一层增量协同能力：先分析影响，再排补丁，再调用单域 Skill 修复。
 
 ### 目标
 
 各 Skill 增加增量模式，支持：
 - 在已有设计文档上追加/修改（不重新生成全文）
 - 自动检测已有内容，避免重复生成
-- 变更影响分析（改了 spec 的某个字段，哪些 DB/接口/原型需要同步更新）
+- 变更影响分析（已支持）：改字段/状态/接口/页面时，输出哪些文档需要同步更新
 
 ### 涉及的 Skill
 
@@ -98,6 +99,7 @@ wl-skills-design                          wl-skills-kit
 | api | 给已有模块加接口 / 修改接口字段 |
 | prototype | 给已有页面加按钮/字段 |
 | glossary | 新增词条（已支持，天然增量） |
+| change-impact | 分析变更影响、拆补丁任务、安排复验 |
 
 ---
 

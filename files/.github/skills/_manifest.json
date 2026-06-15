@@ -382,6 +382,60 @@
       ]
     },
     {
+      "id": "cross.changeImpact",
+      "name": "变更影响分析",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "cross/change-impact/SKILL.md",
+      "standardPaths": [
+        "standards/09-change-impact.md"
+      ],
+      "promptPaths": [
+        "prompts/analyze-change-impact.prompt.md",
+        "prompts/validate-change-impact.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "变更影响",
+          "影响分析",
+          "变更分析",
+          "补丁计划",
+          "增量设计",
+          "影响矩阵",
+          "同步哪些文档",
+          "改字段影响",
+          "改状态影响",
+          "change impact"
+        ],
+        "semantic": [
+          "分析这个设计改动会影响哪些文档",
+          "已有设计文档上做增量修改",
+          "把评审问题拆成修复任务",
+          "字段或状态变更后同步 spec DB API 原型",
+          "生成跨文档补丁计划和复验顺序"
+        ]
+      },
+      "requiredContext": [
+        "变更对象",
+        "变更动作",
+        "目标描述",
+        "涉及模块或功能编码",
+        "已有设计文档路径"
+      ],
+      "outputs": [
+        "CHANGE_IMPACT 影响分析报告",
+        "跨域影响矩阵",
+        "P0/P1/P2 补丁任务清单",
+        "复验顺序"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
       "id": "code.architecture",
       "name": "代码结构设计",
       "status": "planned",

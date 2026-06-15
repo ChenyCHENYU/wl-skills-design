@@ -1,8 +1,8 @@
 # @agile-team/wl-skills-design
 
-> **产品设计 AI 技能包** — 一条命令，把「设计规范 + AI 自动调度 + 真实样例」装进任意设计项目，支持 10 种 AI 编辑器。
+> **产品设计 AI 技能包** — 一条命令，把「设计规范 + AI 自动调度 + 真实样例 + 变更协同」装进任意设计项目，支持 10 种 AI 编辑器。
 
-让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正按团队规范做产品设计**：从流程图、需求说明书、原型标注，到数据库、接口、集成评审、术语词典，全链路 AI 辅助、生成即合规。
+让 AI 编辑器（Copilot / Cursor / Windsurf / Claude Code / Cline / Kiro / Trae / Qoder / 通用 Agents）**真正按团队规范做产品设计**：从流程图、需求说明书、原型标注，到数据库、接口、集成评审、术语词典、变更影响分析，全链路 AI 辅助、生成即合规。
 
 [![npm](https://img.shields.io/badge/npm-%40agile--team%2Fwl--skills--design-cb3837)](https://www.npmjs.com/package/@agile-team/wl-skills-design)
 
@@ -23,6 +23,7 @@ npx @agile-team/wl-skills-design          # 一键安装到当前设计项目
 "帮我设计订单模块的数据库表结构和数据字典"
 "帮我设计订单状态变更接口（RESTful）"
 "帮我建订单模块的术语字段词典，统一 spec/数据库/接口的字段命名"
+"订单状态新增退回，帮我分析会影响哪些设计文档并出补丁计划"
 "对订单模块三份设计文档做一次整体评审，给我出评分报告"
 ```
 
@@ -32,7 +33,7 @@ npx @agile-team/wl-skills-design          # 一键安装到当前设计项目
 
 - [它解决什么问题](#它解决什么问题)
 - [核心设计理念](#核心设计理念)
-- [七大设计能力](#七大设计能力)
+- [设计能力](#设计能力)
 - [每个 Skill 的双层资料：模板 + 样例](#每个-skill-的双层资料模板--样例)
 - [一次 AI 调度长什么样](#一次-ai-调度长什么样)
 - [支持的编辑器](#支持的编辑器)
@@ -50,9 +51,10 @@ npx @agile-team/wl-skills-design          # 一键安装到当前设计项目
 
 | 痛点 | 本包的解法 |
 |------|-----------|
-| **规范散落在脑子里**，每个人画得都不一样 | 8 条工具无关的设计规范（`standards/`）作为唯一权威来源 |
+| **规范散落在脑子里**，每个人画得都不一样 | 9 条工具无关的设计规范（`standards/`）作为唯一权威来源 |
 | **AI 不知道团队规范**，生成的东西要大改 | AI Skill 自动识别意图 → 加载规范 → 按规范生成（`skills/`）|
 | **字段对不齐**，spec 写一个名、库表又一个名、接口再一个名 | 术语词典作中央锚点 + 集成评审 D4 三角联动校验 |
+| **设计变更靠人肉同步**，改一个状态漏三份文档 | 变更影响分析输出影响矩阵 + 补丁任务 + 复验顺序 |
 
 一句话：**让 AI 按团队的最佳实践做设计，并且生成完就自检、自修复、可追溯。**
 
@@ -67,10 +69,11 @@ npx @agile-team/wl-skills-design          # 一键安装到当前设计项目
 3. **闭环工作流** — 每个能力都遵循「生成 → 验证 → 修复 → 复验」四阶段，带编号验证清单，不允许跳过验证直接交付。
 4. **三角联动** — spec → 数据库 → 接口形成可追溯三角，字段对齐以术语词典为锚点（O(N) 而非两两互比 O(N²)）。
 5. **双层资料** — 每个 Skill 同时提供「空白模板（起点）」和「真实样例（标杆）」，让每一层都能朝最佳实践收敛 → 见 [下一节](#每个-skill-的双层资料模板--样例)。
+6. **增量协同** — 变更先过影响分析，再按补丁计划调用单域 Skill 修复，最后复验，避免靠记忆同步。
 
 ---
 
-## 七大设计能力
+## 设计能力
 
 | 设计域 | 能力 | 关联规范 | 验证项 | 状态 |
 |-------|------|---------|-------|------|
@@ -81,6 +84,7 @@ npx @agile-team/wl-skills-design          # 一键安装到当前设计项目
 | 接口设计 | **接口**（系统集成报文 / RESTful / OpenAPI）| `04-api-design.md` | 38 项 | ✅ v1.0 |
 | 跨域评审 | **设计集成评审**（评分 / 追溯矩阵 / 跨文档一致性）| `07-design-review.md` | D4 18 项 | ✅ v1.0 |
 | 跨域词典 | **术语字段词典**（中英文名 / 枚举 / 编码统一锚点）| `08-glossary.md` | 18 项 | ✅ v1.0 |
+| 跨域协同 | **变更影响分析**（影响矩阵 / 补丁计划 / 复验顺序）| `09-change-impact.md` | 20 项 | ✅ v1.0 |
 | 代码设计 | 业务逻辑代码结构 | `05-code-design.md` | — | 🔲 规划中 |
 
 ---
@@ -118,6 +122,7 @@ skills/<category>/<skill>/
 | 接口 | `if-skeleton.md` / `interface-list.md` / `integration-def.md` / `restful-def.md` | `01-restful.md` 订单状态变更 + `02-integration.md` 订单下达推送 |
 | 集成评审 | `review-report.md`（仪表盘空白）| `01-review-report.md` 订单模块第 1 轮评审（P0 闸门演示）|
 | 术语词典 | `glossary.md`（四类词条空白）| `01-glossary.md` 订单+计划域完整词典 |
+| 变更影响 | `change-impact-report.md`（影响矩阵空白）| `01-status-change-impact.md` 设备点检新增退回状态影响分析 |
 
 ---
 
@@ -142,6 +147,15 @@ skills/<category>/<skill>/
     ▼ 综合评分 + P0 一票否决 + 追溯矩阵（Sub-03）
     ↓
 《DESIGN_REVIEW》：仪表盘 + P0 阻断清单 + spec→接口→表 追溯矩阵 + 修复任务
+
+用户说："订单状态新增退回，分析影响并出补丁计划"
+    │
+    ▼ AI 匹配 cross.changeImpact，确认变更对象/动作/目标描述
+    ▼ 加载 .github/standards/09-change-impact.md
+    ▼ 逐域判断 spec / glossary / DB / API / prototype / review
+    ▼ 输出 P0/P1/P2 补丁任务 + 推荐复验顺序
+    ↓
+《CHANGE_IMPACT》：影响矩阵 + 补丁计划 + validate/design-review 复验入口
 ```
 
 ---
@@ -190,10 +204,10 @@ wl-skills-design/                              ← 你正看的这个仓库
 ├── files/                                     ★★★ 真正会被复制到目标项目的内容 ★★★
 │   ├── .github/
 │   │   ├── copilot-instructions.md            源 AI 主入口（编辑这里）
-│   │   ├── standards/                         8 条设计规范 + index.md 门控
+│   │   ├── standards/                         9 条设计规范 + index.md 门控
 │   │   │   ├── 01-flowchart.md ✅  02-prototype.md ✅  03-database.md ✅
 │   │   │   ├── 04-api-design.md ✅  05-code-design.md 🔲  06-spec-doc.md ✅
-│   │   │   └── 07-design-review.md ✅  08-glossary.md ✅
+│   │   │   └── 07-design-review.md ✅  08-glossary.md ✅  09-change-impact.md ✅
 │   │   ├── skills/
 │   │   │   ├── _manifest.json                 ★ 机器可读执行路由：触发词/状态/上下文/输出/闭环
 │   │   │   ├── _registry.md                   人读触发词索引（doctor 校验其与 manifest 一致）
@@ -206,15 +220,16 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   ├── api/restful/                   SKILL + USAGE + 4 sub + templates/ + examples/
 │   │   │   ├── cross/design-review/           SKILL + USAGE + 3 sub + templates/ + examples/
 │   │   │   ├── cross/glossary/                SKILL + USAGE + 3 sub + templates/ + examples/
+│   │   │   ├── cross/change-impact/           SKILL + USAGE + 3 sub + templates/ + examples/
 │   │   │   └── code/                          代码设计类 🔲（stub）
-│   │   ├── prompts/                           VS Code Copilot 提示词（13 个）
+│   │   ├── prompts/                           VS Code Copilot 提示词（15 个）
 │   │   └── guides/                            人读指南（usage / architecture）
 │   ├── CLAUDE.md / AGENTS.md / .cursorrules / ...  ← 由 _compat/ 派生（9 份）
 │   └── ...
 │
 └── kit-internal/                              ★★ 仅仓库可见，不发布到 npm ★★
     ├── README.md                              维护者首页
-    ├── architecture.md                        架构决策记录（ADR-001~012）
+    ├── architecture.md                        架构决策记录（ADR-001~014）
     ├── CONTRIBUTING.md                        贡献流程（含双层资料约定）
     ├── skills/README.md                       Skill 开发状态 + 规划清单
     └── test-flowcharts/                       流程图测试样张（样例来源）
@@ -244,8 +259,8 @@ wl-skills-design/                              ← 你正看的这个仓库
 你的设计项目/
 ├── .github/
 │   ├── copilot-instructions.md           AI 主入口
-│   ├── standards/                        8 条设计规范 + index.md 门控
-│   ├── skills/                           _manifest.json + 7 个 Skill（每个含 SKILL/USAGE/sub/templates/examples）
+│   ├── standards/                        9 条设计规范 + index.md 门控
+│   ├── skills/                           _manifest.json + 8 个 Skill（每个含 SKILL/USAGE/sub/templates/examples）
 │   ├── prompts/                          VS Code Copilot 提示词
 │   └── guides/                           使用指南
 ├── CLAUDE.md / AGENTS.md                 Claude / 通用 Agents 规则
@@ -293,9 +308,10 @@ npx @agile-team/wl-skills-design --help
 | 4 | 数据库 | `/create-db-design` | `/validate-db-design` | ER / 数据字典 / DDL |
 | 5 | 接口 | `/create-if-design` | `/validate-if-design` | 集成报文 / RESTful |
 | 6 | 术语词典 | `/create-glossary` | `/validate-glossary` | 字段对齐中央锚点 |
-| 7 | 集成评审 | `/design-review` | — | 带评分的 DESIGN_REVIEW 报告 |
+| 7 | 变更影响 | `/analyze-change-impact` | `/validate-change-impact` | 影响矩阵 / 补丁计划 |
+| 8 | 集成评审 | `/design-review` | — | 带评分的 DESIGN_REVIEW 报告 |
 
-**推荐顺序**：先建词典骨架 → 再做 spec / 原型 → 推导数据库 / 接口（边做边登记词典）→ 最后集成评审出评分。
+**推荐顺序**：先建词典骨架 → 再做 spec / 原型 → 推导数据库 / 接口（边做边登记词典）→ 变更时先跑影响分析 → 最后集成评审出评分。
 词典先行能让「字段对不齐」从「评审时发现」提前到「设计时杜绝」。
 
 ---
@@ -305,8 +321,8 @@ npx @agile-team/wl-skills-design --help
 ### 新增设计规范
 
 ```bash
-# 当前已有 01~08，下一个是 09
-# 编辑 files/.github/standards/09-xxx.md
+# 当前已有 01~09，下一个是 10
+# 编辑 files/.github/standards/10-xxx.md
 # 更新门控索引 files/.github/standards/index.md
 npm run check     # 校验 index 引用与路径完整性
 ```

@@ -102,7 +102,7 @@ test("manifest 为每个已发布 Skill 提供可执行闭环要素", () => {
 
   const requiredLoop = manifest.routingPolicy.requiredCloseLoop;
   const released = manifest.skills.filter((s) => s.status === "released");
-  assert.ok(released.length >= 7, `应至少有 7 个已发布 Skill，实际 ${released.length}`);
+  assert.ok(released.length >= 8, `应至少有 8 个已发布 Skill，实际 ${released.length}`);
 
   const gh = path.join(ROOT, "files", ".github");
   const skillsDir = path.join(gh, "skills");

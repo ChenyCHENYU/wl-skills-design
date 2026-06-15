@@ -33,8 +33,8 @@
 ## 快速上手（维护者）
 
 ```bash
-# 1. 新增一条设计规范（当前已有 01~08，下一个是 09；02/05 为规划 stub）
-vim .github/standards/09-xxx.md
+# 1. 新增一条设计规范（当前已有 01~09，下一个是 10；05 为规划 stub）
+vim .github/standards/10-xxx.md
 vim .github/standards/index.md   # 更新表格
 
 # 2. 新增一个 Skill

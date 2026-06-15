@@ -6,6 +6,25 @@
 
 ---
 
+## [0.7.0] — 2026-06（变更影响分析：从生成器升级为设计协同引擎）
+
+### 新增
+- **变更影响分析 Skill（`cross/change-impact/`）**：对字段/状态/接口/页面/流程等增量变更做跨文档影响分析，输出 `CHANGE_IMPACT` 报告
+  - 新增规范 `standards/09-change-impact.md`：定义变更登记、影响传播规则、P0/P1/P2 等级、补丁任务格式、CI-A/B/C/X 20 项验证清单
+  - 新增 3 个 sub-skill：`01-change-intake`（变更采集）/ `02-impact-matrix`（影响矩阵）/ `03-patch-plan`（补丁计划）
+  - 新增模板 `templates/change-impact-report.md`
+  - 新增真实样例 `examples/01-status-change-impact.md`：设备点检新增退回状态，演示 spec/glossary/DB/API/prototype/review 六域联动
+  - 新增 prompt：`analyze-change-impact` / `validate-change-impact`
+- 新增 ADR-014：把变更影响分析作为“设计协同引擎”的第一层能力，先分析影响，再排补丁，再复验
+
+### 变更
+- `_manifest.json` / `_registry.md` / `standards/index.md` / `copilot-instructions.md` / `cross/README.md`：注册变更影响分析 ✅ v1.0、standards 09 ✅
+- README：能力数、目录树、工作流和调度示例同步更新，新增“变更影响 → 补丁计划 → 复验”的增量协同路径
+- `package.json`：version 0.6.1 → 0.7.0；description 规范数 8→9，补充变更影响分析能力
+- 同步重建 10 个编辑器配置文件（v0.6.1 → v0.7.0）
+
+---
+
 ## [0.6.1] — 2026-06（机器可读路由 + 闭环门禁增强）
 
 ### 新增

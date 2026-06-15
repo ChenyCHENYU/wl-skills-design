@@ -20,8 +20,8 @@
 
 ```bash
 # 1. 在 files/standards/ 下创建下一个编号文件
-#    当前已有 01/02/03/04/05/06/07/08，下一个是 09
-vim files/.github/standards/09-xxx.md
+#    当前已有 01/02/03/04/05/06/07/08/09，下一个是 10
+vim files/.github/standards/10-xxx.md
 
 # 2. 更新 index.md 中的规范表格
 vim files/.github/standards/index.md

@@ -17,6 +17,7 @@
 | 接口设计 | ✅ v1.0 | `api/restful/SKILL.md` | 接口、API、RESTful、OpenAPI、接口文档、报文、集成接口、swagger |
 | 设计集成评审 | ✅ v1.0 | `cross/design-review/SKILL.md` | 评审、评审报告、评分、设计评审、集成评审、质量评审、追溯矩阵、一致性检查、整体评审、review |
 | 术语字段词典 | ✅ v1.0 | `cross/glossary/SKILL.md` | 术语、词典、字段词典、统一语言、字段对齐、字段映射、glossary、术语表、数据字典对齐、命名统一 |
+| 变更影响分析 | ✅ v1.0 | `cross/change-impact/SKILL.md` | 变更影响、影响分析、变更分析、补丁计划、增量设计、影响矩阵、同步哪些文档、改字段影响、改状态影响、change impact |
 | 代码结构设计 | 🔲 规划中 | `code/architecture/SKILL.md` | 代码结构、分层设计、架构设计、领域模型、DDD |
 
 > ⚠️ **规划中（🔲）的 Skill 其 SKILL.md 文件尚未创建**。命中其触发词时，**不要尝试读取对应 SKILL.md**（会失败），应直接告知用户「该能力规划中，当前不可用」并建议改用已发布能力。
