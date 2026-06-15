@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--
+  原型页面 · 设备点检单列表（EQIP001 · LIST · D3）
+  · 复用 wl-skills-ui L3 list-page 骨架 + L0 设计令牌
+  · 可被 wl-skills-kit prototype-scan 模式 A 扫描（body data-* 锚点）
+  · 字段与 spec(4.1-inspection) / db(eqm_inspection_order) / api(EQM-IF-01) 三角对齐
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>设备点检单列表 · EQIP001</title>
+  <style>
+    :root {
+      --el-color-primary: #2254f4;
+      --el-color-primary-light-9: #f2f5ff;
+      --el-color-success: #2bb268;
+      --el-color-warning: #ea9a13;
+      --el-color-danger: #bb2d3f;
+      --el-color-info: #909399;
+      --el-text-color-primary: #303133;
+      --el-text-color-regular: #606266;
+      --el-text-color-secondary: #909399;
+      --el-border-color: #dcdfe6;
+      --el-border-color-light: #e4e7ed;
+      --el-bg-color: #ffffff;
+      --el-bg-color-page: #f5f7fa;
+      --el-border-radius-base: 4px;
+      --el-font-size-base: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; font-size: var(--el-font-size-base); color: var(--el-text-color-primary); background: var(--el-bg-color-page); }
+    .list-page { display: flex; flex-direction: column; height: 100vh; padding: 12px; gap: 12px; }
+    .list-page__search { background: var(--el-bg-color); padding: 16px 16px 4px; border-radius: var(--el-border-radius-base); }
+    .list-page__toolbar { display: flex; justify-content: flex-end; gap: 8px; padding: 0 4px; }
+    .list-page__table { flex: 1; min-height: 0; background: var(--el-bg-color); border-radius: var(--el-border-radius-base); overflow: auto; }
+    .list-page__pager { display: flex; justify-content: flex-end; align-items: center; gap: 12px; padding: 8px 4px; color: var(--el-text-color-secondary); }
+    .ep-form--inline { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; }
+    .ep-form-item { display: flex; align-items: center; gap: 8px; }
+    .ep-form-item__label { color: var(--el-text-color-regular); white-space: nowrap; }
+    .ep-input, .ep-select { height: 32px; min-width: 170px; padding: 0 11px; border: 1px solid var(--el-border-color); border-radius: var(--el-border-radius-base); color: var(--el-text-color-primary); background: var(--el-bg-color); display: inline-flex; align-items: center; }
+    .ep-select::after { content: "▾"; margin-left: auto; color: var(--el-text-color-secondary); }
+    .ep-button { height: 32px; padding: 0 15px; border-radius: var(--el-border-radius-base); border: 1px solid var(--el-border-color); background: var(--el-bg-color); color: var(--el-text-color-regular); cursor: pointer; font-size: 14px; }
+    .ep-button--primary { background: var(--el-color-primary); border-color: var(--el-color-primary); color: #fff; }
+    .ep-button--danger { background: var(--el-color-danger); border-color: var(--el-color-danger); color: #fff; }
+    .ep-button--small { height: 28px; padding: 0 9px; }
+    .ep-button--text { border: none; background: transparent; color: var(--el-color-primary); padding: 0 6px; height: 28px; cursor: pointer; }
+    .ep-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .ep-table th, .ep-table td { padding: 10px 12px; border-bottom: 1px solid var(--el-border-color-light); text-align: left; white-space: nowrap; }
+    .ep-table thead th { background: var(--el-bg-color-page); color: var(--el-text-color-regular); font-weight: 600; }
+    .ep-link { color: var(--el-color-primary); cursor: pointer; }
+    .ep-tag { padding: 1px 8px; border-radius: 10px; font-size: 12px; line-height: 20px; display: inline-block; }
+    .ep-tag--info { background: #f4f4f5; color: var(--el-color-info); }
+    .ep-tag--warning { background: #fdf6ec; color: var(--el-color-warning); }
+    .ep-tag--primary { background: var(--el-color-primary-light-9); color: var(--el-color-primary); }
+    .ep-tag--success { background: #eef9f1; color: var(--el-color-success); }
+    .ep-tag--danger { background: #fef0f0; color: var(--el-color-danger); }
+    .pm-meta { background: var(--el-color-primary-light-9); color: var(--el-color-primary); padding: 8px 16px; border-radius: var(--el-border-radius-base); font-size: 13px; display: flex; gap: 18px; flex-wrap: wrap; }
+    .pm-meta b { color: var(--el-color-primary); }
+  </style>
+</head>
+<body data-pattern="LIST" data-ipo="EQIP001" data-flow="EQIP-A-01" data-service="eqm" data-dir="inspection-order" data-depth="D3">
+  <div class="list-page">
+    <div class="pm-meta">
+      <span><b>页面</b>：设备点检单列表</span>
+      <span><b>交互模式</b>：LIST</span>
+      <span><b>关联 IPO</b>：EQIP001</span>
+      <span><b>所属流程</b>：EQIP-A-01</span>
+      <span><b>深度</b>：D3</span>
+    </div>
+
+    <div class="list-page__search">
+      <form class="ep-form ep-form--inline">
+        <div class="ep-form-item">
+          <label class="ep-form-item__label">设备编码</label>
+          <span class="ep-input" data-field="deviceCode" data-component="input">请输入</span>
+        </div>
+        <div class="ep-form-item">
+          <label class="ep-form-item__label">点检状态</label>
+          <span class="ep-select" data-field="inspectionStatus" data-component="dict" data-dict-code="inspection_status">请选择</span>
+        </div>
+        <div class="ep-form-item">
+          <label class="ep-form-item__label">点检日期</label>
+          <span class="ep-input" data-field="inspectionDate" data-component="date">yyyy-MM-dd</span>
+        </div>
+        <div class="ep-form-item">
+          <button type="button" class="ep-button ep-button--primary">查询</button>
+          <button type="button" class="ep-button">重置</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="list-page__toolbar">
+      <button class="ep-button ep-button--primary" data-action="openModal" data-perm="insp:add">新增</button>
+      <button class="ep-button ep-button--danger" data-action="batchDelete" data-perm="insp:del">删除</button>
+      <button class="ep-button" data-action="export" data-perm="insp:export">导出</button>
+    </div>
+
+    <div class="list-page__table">
+      <table class="ep-table">
+        <thead>
+          <tr>
+            <th style="width:40px"><input type="checkbox" /></th>
+            <th data-field="inspectionNo" data-width="160" data-clickable="true">点检单号</th>
+            <th data-field="deviceName" data-width="140">设备名称</th>
+            <th data-field="inspectionDate" data-width="120">点检日期</th>
+            <th data-field="inspector" data-width="100">点检人</th>
+            <th data-field="inspectionStatus" data-width="110" data-dict-code="inspection_status">点检状态</th>
+            <th data-field="result" data-width="100" data-dict-code="inspection_result">点检结论</th>
+            <th style="width:220px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td><a class="ep-link">INS20260601001</a></td>
+            <td>1号连铸机</td>
+            <td>2026-06-01</td>
+            <td>张工</td>
+            <td><span class="ep-tag ep-tag--info">草稿</span></td>
+            <td>-</td>
+            <td>
+              <button class="ep-button--text" data-action="edit" data-show="inspectionStatus==='DRAFT'">编辑</button>
+              <button class="ep-button--text" data-action="submit" data-show="inspectionStatus==='DRAFT'">提交</button>
+              <button class="ep-button--text" data-action="delete" data-show="inspectionStatus==='DRAFT'">删除</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td><a class="ep-link">INS20260601002</a></td>
+            <td>2号轧机</td>
+            <td>2026-06-01</td>
+            <td>李工</td>
+            <td><span class="ep-tag ep-tag--warning">待确认</span></td>
+            <td><span class="ep-tag ep-tag--danger">异常</span></td>
+            <td>
+              <button class="ep-button--text" data-action="confirm" data-show="inspectionStatus==='SUBMITTED' && hasPerm">确认</button>
+              <button class="ep-button--text" data-action="detail" data-show="any">查看</button>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" /></td>
+            <td><a class="ep-link">INS20260531008</a></td>
+            <td>1号连铸机</td>
+            <td>2026-05-31</td>
+            <td>张工</td>
+            <td><span class="ep-tag ep-tag--primary">已确认</span></td>
+            <td><span class="ep-tag ep-tag--success">正常</span></td>
+            <td>
+              <button class="ep-button--text" data-action="detail" data-show="any">查看</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="list-page__pager">
+      <span>共 3 条</span>
+      <span>10 条/页</span>
+      <button class="ep-button ep-button--small">‹</button>
+      <button class="ep-button ep-button--small ep-button--primary">1</button>
+      <button class="ep-button ep-button--small">›</button>
+    </div>
+  </div>
+
+  <!--
+    ⑥ 新增/编辑弹窗 FORM_MODAL 字段：
+       inspectionNo(只读,系统生成) | deviceCode(select,必填) | inspectionDate(date,必填,默认当天)
+       inspector(input,必填) | remark(textarea,否)
+       子表 items：itemName(input,必填) | standardValue(input) | actualValue(input,必填)
+    ⑦ 状态机：DRAFT→SUBMITTED→CONFIRMED；批量删除仅 DRAFT 行可勾选。
+  -->
+</body>
+</html>

@@ -63,7 +63,7 @@ npx @agile-team/wl-skills-design          # 一键安装到当前设计项目
 整个包建立在 5 条架构原则之上（详见 [`kit-internal/architecture.md`](./kit-internal/architecture.md) 的 ADR 记录）：
 
 1. **规范与工具分离** — `standards/` 存放工具无关的规范（draw.io / Axure / SQL / YAML 均适用）；`skills/` 是工具相关的触发层。规范可被任意工具复用。
-2. **单一数据源** — 所有 Skill 的触发词只在 `skills/_registry.md` 定义；多编辑器配置正文只在 `copilot-instructions.md` 维护，其余 9 份配置由脚本派生。
+2. **单一执行源** — Skill 路由以 `skills/_manifest.json` 为机器可读执行源；`_registry.md` 只是人读索引；多编辑器配置正文只在 `copilot-instructions.md` 维护，其余 9 份配置由脚本派生。
 3. **闭环工作流** — 每个能力都遵循「生成 → 验证 → 修复 → 复验」四阶段，带编号验证清单，不允许跳过验证直接交付。
 4. **三角联动** — spec → 数据库 → 接口形成可追溯三角，字段对齐以术语词典为锚点（O(N) 而非两两互比 O(N²)）。
 5. **双层资料** — 每个 Skill 同时提供「空白模板（起点）」和「真实样例（标杆）」，让每一层都能朝最佳实践收敛 → 见 [下一节](#每个-skill-的双层资料模板--样例)。
@@ -126,7 +126,7 @@ skills/<category>/<skill>/
 ```text
 用户说："帮我设计订单模块的数据库"
     │
-    ▼ AI 识别关键词 → 查 .github/skills/_registry.md 找到路由
+    ▼ AI 读取 .github/skills/_manifest.json → 精准匹配 Skill / 状态 / 前置上下文
     ▼ 读 .github/skills/data/database/SKILL.md（薄触发层）
     ▼ 加载 .github/standards/03-database.md（权威规范）
     ▼ 用 templates/ 起骨架，对照 examples/ 校准质量水位
@@ -195,7 +195,8 @@ wl-skills-design/                              ← 你正看的这个仓库
 │   │   │   ├── 04-api-design.md ✅  05-code-design.md 🔲  06-spec-doc.md ✅
 │   │   │   └── 07-design-review.md ✅  08-glossary.md ✅
 │   │   ├── skills/
-│   │   │   ├── _registry.md                   ★ 触发词路由 — 唯一数据源
+│   │   │   ├── _manifest.json                 ★ 机器可读执行路由：触发词/状态/上下文/输出/闭环
+│   │   │   ├── _registry.md                   人读触发词索引（doctor 校验其与 manifest 一致）
 │   │   │   ├── _compat/                       多编辑器适配源（editors.json + headers/）
 │   │   │   ├── requirements/
 │   │   │   │   ├── flowchart/                 SKILL + USAGE + templates/ + examples/
@@ -244,7 +245,7 @@ wl-skills-design/                              ← 你正看的这个仓库
 ├── .github/
 │   ├── copilot-instructions.md           AI 主入口
 │   ├── standards/                        8 条设计规范 + index.md 门控
-│   ├── skills/                           7 个 Skill（每个含 SKILL/USAGE/sub/templates/examples）
+│   ├── skills/                           _manifest.json + 7 个 Skill（每个含 SKILL/USAGE/sub/templates/examples）
 │   ├── prompts/                          VS Code Copilot 提示词
 │   └── guides/                           使用指南
 ├── CLAUDE.md / AGENTS.md                 Claude / 通用 Agents 规则
@@ -317,8 +318,8 @@ mkdir -p files/.github/skills/[category]/[skill-name]/templates
 mkdir -p files/.github/skills/[category]/[skill-name]/examples
 # 编辑 SKILL.md / USAGE.md
 # templates/ 放空白模板（{占位符}）；examples/ 放真实样例（+ 自检清单）
-# 在 _registry.md 注册触发词（必须）
-npm run check     # 校验 registry ✅ Skill 的文件与引用都存在
+# 在 _manifest.json 注册触发词/上下文/输出/闭环，并同步 _registry.md 人读索引（必须）
+npm run check     # 校验 manifest / registry / Skill 文件 / 引用 / 闭环完整性
 ```
 
 ### 多编辑器内容同步
@@ -327,7 +328,7 @@ npm run check     # 校验 registry ✅ Skill 的文件与引用都存在
 
 ```bash
 npm run sync      # 重建 9 个编辑器配置
-npm run check     # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
+npm run check     # 一致性自检（manifest / registry / index / 路径引用 / 闭环 / 编辑器漂移）
 ```
 
 > 同步规则：`editors.json` 注册 10 个编辑器，其中 GitHub Copilot 的输出即源文件本身（无需重建），

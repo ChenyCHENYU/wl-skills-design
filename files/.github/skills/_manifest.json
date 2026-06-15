@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 1,
+  "package": "@agile-team/wl-skills-design",
+  "routingPolicy": {
+    "sourceOfTruth": ".github/skills/_manifest.json",
+    "humanIndex": ".github/skills/_registry.md",
+    "matchOrder": [
+      "exact",
+      "semantic",
+      "context"
+    ],
+    "minimumConfidenceToRun": 70,
+    "askUserBelowConfidence": 70,
+    "neverRunStatuses": [
+      "planned",
+      "deprecated"
+    ],
+    "requiredCloseLoop": [
+      "generate",
+      "validate",
+      "repair",
+      "revalidate"
+    ]
+  },
+  "skills": [
+    {
+      "id": "requirements.flowchart",
+      "name": "流程图设计",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "requirements/flowchart/SKILL.md",
+      "standardPaths": [
+        "standards/01-flowchart.md"
+      ],
+      "promptPaths": [
+        "prompts/create-flowchart.prompt.md",
+        "prompts/validate-flowchart.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "流程图",
+          "泳道图",
+          "泳道",
+          "flowchart",
+          "draw.io",
+          "业务流程",
+          "生产流程",
+          "工作流"
+        ],
+        "semantic": [
+          "绘制跨部门流程",
+          "梳理业务流转",
+          "描述流程节点和判定分支",
+          "生成 drawio 文件"
+        ]
+      },
+      "requiredContext": [
+        "流程名称",
+        "流程范围",
+        "参与角色或泳道",
+        "开始和结束条件",
+        "关键活动节点"
+      ],
+      "outputs": [
+        "draw.io 流程图",
+        "流程验证报告"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "requirements.spec",
+      "name": "需求设计说明书",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "requirements/spec/SKILL.md",
+      "standardPaths": [
+        "standards/06-spec-doc.md"
+      ],
+      "promptPaths": [
+        "prompts/create-spec-section.prompt.md",
+        "prompts/validate-spec-section.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "需求设计说明书",
+          "spec",
+          "功能设计",
+          "IPO表",
+          "IPO",
+          "流程说明",
+          "活动说明",
+          "画面逻辑",
+          "功能规格",
+          "处理逻辑",
+          "说明书"
+        ],
+        "semantic": [
+          "编写模块设计章节",
+          "把业务需求拆成输入处理输出",
+          "描述功能规则",
+          "整理系统需求文档"
+        ]
+      },
+      "requiredContext": [
+        "模块名称",
+        "业务目标",
+        "功能范围",
+        "输入数据",
+        "处理规则",
+        "输出结果"
+      ],
+      "outputs": [
+        "需求说明书章节",
+        "IPO 表",
+        "需求验证报告"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "requirements.prototype",
+      "name": "原型设计",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "requirements/prototype/SKILL.md",
+      "standardPaths": [
+        "standards/02-prototype.md"
+      ],
+      "promptPaths": [
+        "prompts/create-prototype.prompt.md",
+        "prompts/validate-prototype.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "原型",
+          "线框图",
+          "prototype",
+          "页面设计",
+          "UI 草图",
+          "页面标注",
+          "交互模式",
+          "原型标注",
+          "页面清单"
+        ],
+        "semantic": [
+          "把 spec 转成页面清单",
+          "补齐字段标注",
+          "达到 D3 开发就绪",
+          "生成 prototype-scan 可消费的页面描述"
+        ]
+      },
+      "requiredContext": [
+        "关联 spec 功能编码",
+        "页面名称",
+        "字段来源",
+        "交互模式",
+        "按钮和状态规则"
+      ],
+      "outputs": [
+        "D3 原型标注文档",
+        "原型验证报告"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "data.database",
+      "name": "数据库设计",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "data/database/SKILL.md",
+      "standardPaths": [
+        "standards/03-database.md"
+      ],
+      "promptPaths": [
+        "prompts/create-db-design.prompt.md",
+        "prompts/validate-db-design.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "数据库",
+          "ER 图",
+          "表结构",
+          "实体关系",
+          "数据字典",
+          "DDL",
+          "database",
+          "schema"
+        ],
+        "semantic": [
+          "从 IPO 推导库表",
+          "设计主表明细表",
+          "生成建表语句",
+          "补系统字段和索引"
+        ]
+      },
+      "requiredContext": [
+        "模块名称",
+        "实体清单",
+        "字段来源",
+        "主从关系",
+        "关键查询条件"
+      ],
+      "outputs": [
+        "ER 设计",
+        "数据字典",
+        "DDL",
+        "数据库验证报告"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "api.restful",
+      "name": "接口设计",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "api/restful/SKILL.md",
+      "standardPaths": [
+        "standards/04-api-design.md"
+      ],
+      "promptPaths": [
+        "prompts/create-if-design.prompt.md",
+        "prompts/validate-if-design.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "接口",
+          "API",
+          "RESTful",
+          "OpenAPI",
+          "接口文档",
+          "报文",
+          "集成接口",
+          "swagger"
+        ],
+        "semantic": [
+          "设计系统集成报文",
+          "定义请求响应字段",
+          "生成 REST 接口说明",
+          "补错误码和幂等规则"
+        ]
+      },
+      "requiredContext": [
+        "接口目标",
+        "触发条件",
+        "请求字段",
+        "响应字段",
+        "错误场景",
+        "幂等要求"
+      ],
+      "outputs": [
+        "接口清单",
+        "RESTful 接口定义",
+        "集成报文定义",
+        "接口验证报告"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "cross.designReview",
+      "name": "设计集成评审",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "cross/design-review/SKILL.md",
+      "standardPaths": [
+        "standards/07-design-review.md"
+      ],
+      "promptPaths": [
+        "prompts/design-review.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "评审",
+          "评审报告",
+          "评分",
+          "设计评审",
+          "集成评审",
+          "质量评审",
+          "追溯矩阵",
+          "一致性检查",
+          "整体评审",
+          "review"
+        ],
+        "semantic": [
+          "检查 spec DB API 是否一致",
+          "给设计产物打分",
+          "输出 P0 阻断项",
+          "生成追溯矩阵"
+        ]
+      },
+      "requiredContext": [
+        "需求说明书路径",
+        "数据库设计路径",
+        "接口设计路径",
+        "已有验证报告"
+      ],
+      "outputs": [
+        "DESIGN_REVIEW 报告",
+        "评分仪表盘",
+        "P0 阻断清单",
+        "追溯矩阵"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "cross.glossary",
+      "name": "术语字段词典",
+      "status": "released",
+      "version": "1.0",
+      "skillPath": "cross/glossary/SKILL.md",
+      "standardPaths": [
+        "standards/08-glossary.md"
+      ],
+      "promptPaths": [
+        "prompts/create-glossary.prompt.md",
+        "prompts/validate-glossary.prompt.md"
+      ],
+      "triggers": {
+        "exact": [
+          "术语",
+          "词典",
+          "字段词典",
+          "统一语言",
+          "字段对齐",
+          "字段映射",
+          "glossary",
+          "术语表",
+          "数据字典对齐",
+          "命名统一"
+        ],
+        "semantic": [
+          "统一中英文字段名",
+          "登记枚举编码",
+          "检查字段是否三方一致",
+          "建立命名锚点"
+        ]
+      },
+      "requiredContext": [
+        "业务域",
+        "字段清单",
+        "中英文名称",
+        "枚举值",
+        "来源文档"
+      ],
+      "outputs": [
+        "术语字段词典",
+        "字段对齐验证报告"
+      ],
+      "closeLoop": [
+        "generate",
+        "validate",
+        "repair",
+        "revalidate"
+      ]
+    },
+    {
+      "id": "code.architecture",
+      "name": "代码结构设计",
+      "status": "planned",
+      "version": "0.0",
+      "skillPath": "code/architecture/SKILL.md",
+      "standardPaths": [
+        "standards/05-code-design.md"
+      ],
+      "promptPaths": [],
+      "triggers": {
+        "exact": [
+          "代码结构",
+          "分层设计",
+          "架构设计",
+          "领域模型",
+          "DDD"
+        ],
+        "semantic": [
+          "设计业务代码分层",
+          "规划领域模型",
+          "拆分 service repository"
+        ]
+      },
+      "requiredContext": [
+        "模块边界",
+        "技术栈",
+        "领域对象",
+        "依赖方向"
+      ],
+      "outputs": [
+        "代码结构设计建议"
+      ],
+      "closeLoop": []
+    }
+  ]
+}

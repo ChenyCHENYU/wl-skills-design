@@ -8,13 +8,14 @@
 ## ADR-001 · 采用 _registry.md 作为 Skill 触发词单一数据源
 
 **日期**：2025-05  
-**状态**：✅ 已采纳
+**状态**：↗️ 已升级（被 ADR-013 取代为 _manifest.json 执行源）
 
 ### 背景
 早期版本的 SKILL.md 文件中各自定义了触发关键词，维护时容易出现不一致。
 
 ### 决策
-所有 Skill 的触发词只在 `.github/skills/_registry.md` 中定义，SKILL.md 中不重复定义。
+历史决策为：所有 Skill 的触发词只在 `.github/skills/_registry.md` 中定义，SKILL.md 中不重复定义。  
+现已升级为 ADR-013：`_manifest.json` 是机器可读执行源，`_registry.md` 保留为人读索引。
 
 ### 权衡
 - **优点**：触发词一览，避免冲突，新人维护时有明确入口
@@ -155,9 +156,10 @@ ADR-003 确立了「单一内容源 + 头部差异化」的多编辑器适配，
 1. **`scripts/sync-editors.js`**：读 `editors.json` + `headers/*.txt` + `copilot-instructions.md`，
    重新生成全部 9 个编辑器配置；版本号从 `package.json` 注入（`版本：vX.Y.Z` 自动改写）。
    `--check` 模式只比对不写入，用于 CI / 发布前。
-2. **`scripts/check.js`（doctor）**：校验 ① `_registry.md` 标 ✅ 的 Skill 其 `SKILL.md` 存在；
-   ② `standards/index.md` 引用的规范文件存在；③ 各 `SKILL.md` 引用的 standards/sub/templates
-   路径存在；④ 调用 `sync --check` 检测编辑器漂移。
+2. **`scripts/check.js`（doctor）**：校验 ① `_manifest.json` 路由完整性；
+   ② `_registry.md` 与 manifest 状态/路径一致；③ `standards/index.md` 引用的规范文件存在；
+   ④ 各 `SKILL.md` / prompt 引用的路径存在；⑤ 已发布 Skill 具备 USAGE/templates/examples/闭环；
+   ⑥ 调用 `sync --check` 检测编辑器漂移。
 3. **`prepublishOnly` 闸门**：`sync --check && check`，配置漂移或引用断裂直接阻断 `npm publish`。
 4. **CLI `update` 备份**：覆盖含本地改动的文件前自动写 `.bak`，避免无声冲掉用户自定义。
 5. **`scripts/` 不发布**：`.npmignore` 排除，属维护者构建工具。
@@ -229,8 +231,8 @@ ADR-003 确立了「单一内容源 + 头部差异化」的多编辑器适配，
 ### 权衡
 - **优点**：填补了 spec→代码之间的「标注精度」空白；不重复造轮子（不做视觉规范）；
   钢铁行业特化让规范落地更快、更精准；与 wl-skills-kit 形成清晰的上下游关系。
-- **代价**：规范只覆盖「标注什么」，不覆盖「怎么画」（Axure/Figma 操作层面由各工具自身文档解决）；
-  Skill 层（SKILL.md + sub + prompt）尚未落地，需 v0.5.0 补齐。
+- **代价**：规范只覆盖「标注什么」，不覆盖「怎么画」（Axure/Figma 操作层面由各工具自身文档解决）。
+  Skill 层已在后续版本落地，后续维护重点转为样例质量和 prototype-scan 衔接精度。
 
 ---
 
@@ -307,3 +309,28 @@ skills/<category>/<skill>/
 - **代价**：
   - 发布体积略增（样例为纯文本/单个 drawio，增量可忽略）。
   - 样例需与规范同步演进——规范升级时，样例的「自检清单」也要同步抬高门槛（由 CONTRIBUTING 约束）。
+
+
+---
+
+## ADR-013 · 采用 _manifest.json 作为 AI Skill 机器可读执行路由
+
+**日期**：2026-06  
+**状态**：✅ 已采纳
+
+### 背景
+
+`_registry.md` 作为人读表格适合浏览，但不适合承担高精度 AI 调度：状态、触发词、语义意图、前置上下文、输出物、闭环阶段都混在自然语言表格里，后续新增 Skill 时容易出现「文档看着有，AI 不知道该怎么执行」的问题。
+
+### 决策
+
+1. 新增 `.github/skills/_manifest.json` 作为唯一机器可读执行源。
+2. manifest 为每个 Skill 声明：`id/name/status/version/skillPath/standardPaths/promptPaths/triggers/requiredContext/outputs/closeLoop`。
+3. `copilot-instructions.md` 要求 AI 先读 manifest，按 exact/semantic/context 评分，低置信度先询问，非 released 状态禁止读取 SKILL.md。
+4. `_registry.md` 降级为人读索引，由 `scripts/check.js` 校验其状态和路径与 manifest 一致。
+5. doctor 增强为执行闭环门禁：已发布 Skill 必须有标准文件、prompt、USAGE、templates、examples、闭环阶段和内部引用完整性。
+
+### 权衡
+
+- **优点**：AI 调度从「读表猜测」变成「按结构执行」；未来新增 Skill 时，缺少上下文、输出、闭环会被 doctor 阻断；人读索引仍保留，方便团队浏览。
+- **代价**：新增 Skill 时需同时维护 manifest 与 registry；这由 doctor 兜底校验，换取更强的执行确定性。

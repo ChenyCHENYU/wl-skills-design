@@ -1,0 +1,155 @@
+<mxfile host="Electron" agent="wl-skills-design demo" version="27.0.9" pages="2">
+  <diagram id="legend-page" name="流程标准定义">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lg-box" value="图例 · 节点与连线标准定义" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fontSize=14;fontStyle=1;align=left;spacingLeft=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="540" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-op-g" value="" style="group" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="120" y="160" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-op-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;活动编码&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="lg-op-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-op-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;系统操作&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;" vertex="1" parent="lg-op-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-op-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="lg-op-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-op-t" value="三层活动节点（编码 / 名称 / 岗位）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="220" y="174" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-off-g" value="" style="group;dashed=1;dashPattern=8 8;" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-off-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;活动编码&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="lg-off-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-off-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;线下操作&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;dashed=1;" vertex="1" parent="lg-off-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-off-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;dashed=1;" vertex="1" parent="lg-off-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-off-t" value="线下操作（整体虚线）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="220" y="254" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-dec" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;逻辑判定&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="120" y="320" width="76" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-dec-t" value="逻辑判定（菱形，分支需标是/否）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="220" y="327" width="260" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-term" value="开始/结束" style="shape=mxgraph.flowchart.terminator;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="380" y="160" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lg-flow-s" value="" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="240" as="sourcePoint" />
+            <mxPoint x="480" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg-flow-t" value="数据/流程流向（直角折线箭头）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="380" y="250" width="240" height="26" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="inspection-flow" name="设备点检流程">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="outer" value="&lt;p style=&quot;line-height: 130%;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;设备点检流程（EQIP-A-01）&lt;/font&gt;&lt;/p&gt;" style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;spacing=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="620" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lane1" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;点检员&lt;/span&gt;" style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;" vertex="1" parent="outer">
+          <mxGeometry y="30" width="310" height="670" as="geometry" />
+        </mxCell>
+        <mxCell id="lane2" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;班长&lt;/span&gt;" style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;" vertex="1" parent="outer">
+          <mxGeometry x="310" y="30" width="310" height="670" as="geometry" />
+        </mxCell>
+        <mxCell id="start" value="开始" style="shape=mxgraph.flowchart.terminator;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;" vertex="1" parent="lane1">
+          <mxGeometry x="120" y="60" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a01-g" value="" style="group" connectable="0" vertex="1" parent="lane1">
+          <mxGeometry x="116" y="140" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a01-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQIP-A-01-E-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="a01-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a01-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;录入点检单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;" vertex="1" parent="a01-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a01-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;点检员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="a01-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a02-g" value="" style="group" connectable="0" vertex="1" parent="lane1">
+          <mxGeometry x="116" y="260" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a02-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQIP-A-01-E-02&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="a02-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a02-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;提交点检单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;" vertex="1" parent="a02-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a02-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;点检员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="a02-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a03-g" value="" style="group" connectable="0" vertex="1" parent="lane2">
+          <mxGeometry x="116" y="260" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a03-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQIP-A-01-E-03&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="a03-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a03-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;确认点检结果&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;" vertex="1" parent="a03-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a03-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;班长&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="a03-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;点检结论正常？&lt;/font&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="lane2">
+          <mxGeometry x="100" y="360" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a04-g" value="" style="group" connectable="0" vertex="1" parent="lane2">
+          <mxGeometry x="40" y="480" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a04-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQIP-A-01-E-04&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="a04-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a04-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;点检归档&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;" vertex="1" parent="a04-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a04-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;班长&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="a04-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a05-g" value="" style="group" connectable="0" vertex="1" parent="lane2">
+          <mxGeometry x="190" y="480" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a05-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;EQIP-A-01-E-05&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="a05-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a05-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;生成报修单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;align=center;verticalAlign=middle;" vertex="1" parent="a05-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a05-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;班长&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="a05-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="end" value="结束" style="shape=mxgraph.flowchart.terminator;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;" vertex="1" parent="lane2">
+          <mxGeometry x="120" y="600" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="start" target="a01-code" />
+        <mxCell id="e2" value="" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="a01-name" target="a02-code" />
+        <mxCell id="e3" value="提交" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="a02-name" target="a03-code" />
+        <mxCell id="e4" value="" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="a03-name" target="d1" />
+        <mxCell id="e5" value="正常" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="d1" target="a04-code" />
+        <mxCell id="e6" value="异常" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="d1" target="a05-code" />
+        <mxCell id="e7" value="" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="a04-name" target="end" />
+        <mxCell id="e8" value="" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;rounded=0;" edge="1" parent="1" source="a05-name" target="end" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

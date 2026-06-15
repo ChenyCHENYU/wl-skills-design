@@ -23,7 +23,7 @@
 
 本包遵循以下核心设计原则（详见 `architecture.md`）：
 
-1. **单一数据源**：`_registry.md` 是所有 Skill 触发词的唯一来源
+1. **单一执行源**：`_manifest.json` 是 AI 路由的机器可读来源，`_registry.md` 只做人读索引
 2. **规范与工具分离**：`standards/` 存放工具无关的规范，`skills/` 是工具相关的触发层
 3. **多编辑器适配**：`_compat/` 统一管理多编辑器头部格式
 4. **架构先行**：目录结构反映未来规划，stub 占位确保扩展路径清晰
@@ -41,11 +41,12 @@ vim .github/standards/index.md   # 更新表格
 mkdir -p .github/skills/[category]/[skill-name]
 vim .github/skills/[category]/[skill-name]/SKILL.md
 vim .github/skills/[category]/[skill-name]/USAGE.md
-vim .github/skills/_registry.md   # 注册触发词
+vim .github/skills/_manifest.json # 注册触发词、上下文、输出、闭环
+vim .github/skills/_registry.md   # 同步人读索引
 
 # 3. 同步多编辑器配置（改 copilot-instructions.md 后）
 npm run sync     # 由 scripts/sync-editors.js 重建 9 个编辑器配置
-npm run check    # 一致性自检（registry / index / 路径引用 / 编辑器漂移）
+npm run check    # 一致性自检（manifest / registry / index / 路径引用 / 编辑器漂移）
 ```
 
 ---

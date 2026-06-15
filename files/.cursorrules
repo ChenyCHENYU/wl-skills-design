@@ -1,12 +1,12 @@
-# Cursor 产品设计规范（.cursorrules）。由 wl-skills-design 维护，请勿手动编辑正文内容。
-# 源文件：.github/copilot-instructions.md，更新方式：手动同步正文内容
+﻿# Cursor 产品设计规范（.cursorrules）。由 wl-skills-design 维护，请勿手动编辑正文内容。
+# 源文件：.github/copilot-instructions.md，更新方式：运行 npm run sync 自动派生
 
 ---
 
 # wl-skills-design · 产品设计 AI 技能包
 
 > 维护者：[@ChenyCHENYU](https://github.com/ChenyCHENYU)  
-> 版本：v0.6.0  
+> 版本：v0.6.1  
 > 更新此文件后，运行各编辑器对应的同步命令使其他配置文件生效。
 
 ---
@@ -39,22 +39,37 @@
 > 规范是工具无关的（draw.io / Axure / SQL / YAML 均适用），  
 > Skill 是工具/编辑器相关的触发层。
 
-### 2.2 Skill 触发路由（Skill Registry）
+### 2.2 Skill 精准路由（Executable Manifest）
 
-所有 Skill 的**触发关键词、路径、状态**统一由以下文件维护：
+所有 Skill 的**触发词、语义意图、路径、状态、前置上下文、输出和闭环阶段**统一由以下机器可读文件维护：
 
 ```
-.github/skills/_registry.md   ← 唯一数据源，禁止在 SKILL.md 中重复定义触发规则
+.github/skills/_manifest.json   ← AI 执行路由唯一数据源
+.github/skills/_registry.md     ← 人读索引，仅作说明，不作为执行依据
 ```
+
+执行路由时必须按以下顺序：
+
+1. 读取 `_manifest.json`
+2. 对用户意图做评分：
+   - 命中 `triggers.exact`：+80
+   - 命中 `triggers.semantic` 或同义表达：+50
+   - 用户上下文满足 `requiredContext`：每项 +5，最多 +25
+3. 选择最高分 Skill；低于 `routingPolicy.minimumConfidenceToRun` 时，先询问用户确认
+4. 若 Skill `status` 不是 `released`，禁止读取其 `SKILL.md`，直接说明该能力未发布
+5. 只询问缺失的 `requiredContext`，已能从上下文推断的不要重复问
 
 ### 2.3 操作流程
 
 当用户提出设计需求时：
-1. 识别意图 → 查阅 `_registry.md` 找到对应 Skill
+1. 识别意图 → 查阅 `_manifest.json` 精准匹配 Skill
 2. 读取该 Skill 的 `SKILL.md` 获取操作指令
 3. 按需读取 `standards/` 中的规范文件
 4. 用 `templates/`（空白模板）起骨架，对照 `examples/`（真实样例）校准质量——**生成结果必须不低于样例**
-5. 执行操作，输出符合规范的设计产物
+5. 按该 Skill 的 `closeLoop` 执行：生成 → 验证 → 修复 → 复验
+6. 输出符合规范的设计产物和验证结论
+
+> 禁止直接跳到最终答案。所有生成类任务必须至少执行一次验证；有 P0/P1 失败项时必须先修复再交付。
 
 > **每个 Skill 双层资料**：`templates/` = 空白起点（纯结构 + 占位符）；`examples/` = 真实样例（质量标杆，含「自检：本样例为何达标」清单）。两者并存，确保既不漏结构、又达到最佳实践水位。
 
@@ -81,7 +96,8 @@
 │   └── 08-glossary.md                   ★ 术语/字段词典规范（字段对齐锚点，18 项）✅
 │
 ├── skills/
-│   ├── _registry.md                     ★ Skill 触发词路由（唯一数据源）
+│   ├── _manifest.json                   ★ Skill 精准路由（机器可读唯一执行源）
+│   ├── _registry.md                     ← Skill 触发词路由（人读索引）
 │   ├── _compat/                         ← 多编辑器适配层（维护者使用，AI 不读）
 │   │   ├── editors.json                 ← 10 个编辑器注册表
 │   │   ├── README.md                    ← 适配层设计说明
@@ -129,6 +145,6 @@
 ## 四、维护说明
 
 - **新增规范**：在 `standards/` 下创建下一个编号文件，并更新 `index.md`
-- **新增 Skill**：在对应类别目录创建 `SKILL.md` + `USAGE.md`，并在 `_registry.md` 注册
-- **多编辑器同步**：修改本文件后，手动同步各编辑器的根配置文件（参见 `_compat/README.md`）
+- **新增 Skill**：在对应类别目录创建 `SKILL.md` + `USAGE.md` + `templates/` + `examples/`，并在 `_manifest.json` 注册执行路由，同时同步 `_registry.md` 人读索引
+- **多编辑器同步**：修改本文件后，运行 `npm run sync` 派生各编辑器根配置文件（参见 `_compat/README.md`）
 - **架构决策记录**：请在 `kit-internal/architecture.md` 中记录 ADR

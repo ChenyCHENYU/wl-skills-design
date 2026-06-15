@@ -79,6 +79,25 @@ test("init 将 files/ 复制到目标目录", () => {
   }
 });
 
+test("init 默认保护已有且不同的本地文件", () => {
+  const dir = tmpDir();
+  try {
+    const target = path.join(dir, "CLAUDE.md");
+    fs.writeFileSync(target, "用户已有规则，不应被 init 覆盖");
+    const r = runCli(["init"], dir);
+    assert.strictEqual(r.code, 0);
+    assert.match(r.stdout, /保护跳过/);
+    assert.strictEqual(
+      fs.readFileSync(target, "utf8"),
+      "用户已有规则，不应被 init 覆盖"
+    );
+    const baks = fs.readdirSync(dir).filter((f) => f.startsWith("CLAUDE.md.bak."));
+    assert.strictEqual(baks.length, 0, "init 默认保护跳过，不生成备份");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("--dry-run 不实际写盘", () => {
   const dir = tmpDir();
   try {

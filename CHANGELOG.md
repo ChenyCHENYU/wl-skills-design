@@ -6,6 +6,23 @@
 
 ---
 
+## [0.6.1] — 2026-06（机器可读路由 + 闭环门禁增强）
+
+### 新增
+- 新增 `.github/skills/_manifest.json`：作为 AI Skill 的机器可读执行路由，显式声明 Skill 状态、规范路径、prompt、精确触发词、语义触发、必要上下文、输出物和闭环阶段
+- 新增 ADR-013：记录 `_manifest.json` 取代 `_registry.md` 成为执行源，`_registry.md` 降级为人读索引
+- `scripts/check.js` 增强 manifest/闭环检查：已发布 Skill 必须具备 `USAGE.md`、`templates/`、`examples/`、规范文件、prompt、触发词、必要上下文、输出定义和完整生成-验证-修复-复验闭环
+- 新增测试：覆盖 manifest 执行要素，以及 `init` 默认保护已有文件
+
+### 变更
+- `copilot-instructions.md` 路由规则改为先读 `_manifest.json`，按 exact / semantic / context 评分；低置信度先询问，非 released 状态禁止读取 `SKILL.md`
+- CLI `init` 默认不再覆盖目标项目已有且不同的文件；`update` / `--force` 覆盖前仍自动备份 `.bak.<时间戳>`
+- CLI `--help` 改为动态统计规范数、Skill 数、prompt 数和编辑器数，减少文档漂移
+- 维护文档同步更新：触发词维护改为先改 `_manifest.json`，再同步 `_registry.md`
+- `package.json`：version 0.6.0 → 0.6.1；`prepare` 在无 `.git` 场景不再输出 husky 噪音
+
+---
+
 ## [0.6.0] — 2026-06（每个 Skill 双层资料：模板 + 样例，且随包发布）
 
 ### 新增

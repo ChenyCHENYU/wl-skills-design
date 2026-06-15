@@ -1,6 +1,6 @@
 {
   "name": "@agile-team/wl-skills-design",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "产品设计 AI 技能包 — 8 条设计规范 + AI Skill 自动调度（流程图/原型标注/说明书/数据库/接口/集成评审/术语词典），支持 10 种 AI 编辑器，一条命令导入设计项目",
   "main": "./bin/wl-skills-design.js",
   "bin": {
@@ -38,7 +38,7 @@
     "check": "node scripts/check.js",
     "test": "node --test tests/*.test.js",
     "prepublishOnly": "node scripts/sync-editors.js --check && node scripts/check.js",
-    "prepare": "husky || true"
+    "prepare": "node -e \"const fs=require('fs');const cp=require('child_process');const bin='node_modules/husky/bin.js';if(fs.existsSync('.git')&&fs.existsSync(bin))cp.execFileSync(process.execPath,[bin],{stdio:'inherit'});\""
   },
   "publishConfig": {
     "access": "public"

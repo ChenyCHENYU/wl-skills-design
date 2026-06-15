@@ -30,6 +30,7 @@ jobs:
           TMP="$(mktemp -d)"
           (cd "$TMP" && node "$GITHUB_WORKSPACE/bin/wl-skills-design.js" init)
           test -f "$TMP/.github/copilot-instructions.md"
+          test -f "$TMP/.github/skills/_manifest.json"
           test -f "$TMP/.github/skills/_registry.md"
           test -f "$TMP/CLAUDE.md"
           test -f "$TMP/AGENTS.md"

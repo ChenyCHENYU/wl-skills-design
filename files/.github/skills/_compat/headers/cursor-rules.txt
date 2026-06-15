@@ -1,5 +1,5 @@
-# Cursor 产品设计规范（.cursorrules）。由 wl-skills-design 维护，请勿手动编辑正文内容。
-# 源文件：.github/copilot-instructions.md，更新方式：手动同步正文内容
+﻿# Cursor 产品设计规范（.cursorrules）。由 wl-skills-design 维护，请勿手动编辑正文内容。
+# 源文件：.github/copilot-instructions.md，更新方式：运行 npm run sync 自动派生
 
 ---
 
