@@ -1,0 +1,26 @@
+openapi: 3.1.0
+jsonSchemaDialect: "https://json-schema.org/draft/2020-12/schema"
+info:
+  title: "{接口分册名称}"
+  version: "{契约版本}"
+paths:
+  /{resource}:
+    get:
+      operationId: "{operationId}"
+      summary: "{接口摘要}"
+      responses:
+        "200":
+          description: "成功"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/{ResponseSchema}"
+components:
+  schemas:
+    "{ResponseSchema}":
+      type: object
+      properties:
+        "{fieldName}":
+          type: string
+      required:
+        - "{fieldName}"

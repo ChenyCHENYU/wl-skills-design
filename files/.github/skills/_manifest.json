@@ -1,474 +1,220 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "package": "@agile-team/wl-skills-design",
   "routingPolicy": {
     "sourceOfTruth": ".github/skills/_manifest.json",
     "humanIndex": ".github/skills/_registry.md",
-    "matchOrder": [
-      "exact",
-      "semantic",
-      "context"
-    ],
-    "minimumConfidenceToRun": 70,
-    "askUserBelowConfidence": 70,
-    "neverRunStatuses": [
-      "planned",
-      "deprecated"
-    ],
-    "requiredCloseLoop": [
-      "generate",
-      "validate",
-      "repair",
-      "revalidate"
-    ]
+    "normalization": ["NFKC", "lowercase", "trim", "collapse-whitespace"],
+    "matchMode": "phrase-boundary",
+    "intentPriority": ["impact", "review", "validate", "repair", "maintain", "create"],
+    "scoreWeights": {
+      "exact": 60,
+      "intent": 30,
+      "context": 10,
+      "negative": -100
+    },
+    "minimumScore": 70,
+    "minimumMargin": 15,
+    "onAmbiguous": "ask-one-question",
+    "neverRunStatuses": ["planned", "deprecated"],
+    "closeLoopByIntent": {
+      "create": ["generate", "validate", "repair-generated", "revalidate"],
+      "validate": ["validate-readonly", "report"],
+      "repair": ["validate", "repair-authorized", "revalidate"],
+      "review": ["review-readonly", "report"],
+      "impact": ["analyze-readonly", "validate", "report"],
+      "maintain": ["update-authorized", "validate", "report"]
+    }
   },
   "skills": [
     {
       "id": "requirements.flowchart",
       "name": "流程图设计",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "requirements/flowchart/SKILL.md",
-      "standardPaths": [
-        "standards/01-flowchart.md"
-      ],
-      "promptPaths": [
-        "prompts/create-flowchart.prompt.md",
-        "prompts/validate-flowchart.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 60,
+      "skillPath": "requirements-flowchart/SKILL.md",
+      "standardPaths": ["standards/01-flowchart.md"],
+      "promptPaths": ["prompts/create-flowchart.prompt.md", "prompts/validate-flowchart.prompt.md"],
+      "intents": ["create", "validate", "review", "repair"],
       "triggers": {
-        "exact": [
-          "流程图",
-          "泳道图",
-          "泳道",
-          "flowchart",
-          "draw.io",
-          "业务流程",
-          "生产流程",
-          "工作流"
-        ],
-        "semantic": [
-          "绘制跨部门流程",
-          "梳理业务流转",
-          "描述流程节点和判定分支",
-          "生成 drawio 文件"
-        ]
+        "exact": ["流程图", "泳道图", "flowchart", "draw.io", "业务流程图", "流程节点"],
+        "negative": ["代码流程", "算法流程", "ci workflow", "github actions"]
       },
-      "requiredContext": [
-        "流程名称",
-        "流程范围",
-        "参与角色或泳道",
-        "开始和结束条件",
-        "关键活动节点"
-      ],
-      "outputs": [
-        "draw.io 流程图",
-        "流程验证报告"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["流程名称或目标"],
+        "optional": ["流程范围", "参与角色或泳道", "开始和结束条件", "关键活动节点"],
+        "signals": ["drawio", ".drawio", "泳道", "节点", "连线"]
+      },
+      "outputs": ["draw.io 流程图", "流程验证报告"]
     },
     {
       "id": "requirements.spec",
       "name": "需求设计说明书",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "requirements/spec/SKILL.md",
-      "standardPaths": [
-        "standards/06-spec-doc.md"
-      ],
-      "promptPaths": [
-        "prompts/create-spec-section.prompt.md",
-        "prompts/validate-spec-section.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 60,
+      "skillPath": "requirements-spec-doc/SKILL.md",
+      "standardPaths": ["standards/06-spec-doc.md"],
+      "promptPaths": ["prompts/create-spec-section.prompt.md", "prompts/validate-spec-section.prompt.md"],
+      "intents": ["create", "validate", "review", "repair"],
       "triggers": {
-        "exact": [
-          "需求设计说明书",
-          "spec",
-          "功能设计",
-          "IPO表",
-          "IPO",
-          "流程说明",
-          "活动说明",
-          "画面逻辑",
-          "功能规格",
-          "处理逻辑",
-          "说明书"
-        ],
-        "semantic": [
-          "编写模块设计章节",
-          "把业务需求拆成输入处理输出",
-          "描述功能规则",
-          "整理系统需求文档"
-        ]
+        "exact": ["需求设计说明书", "功能设计", "ipo 表", "ipo表", "流程说明", "活动说明", "画面逻辑", "功能规格", "需求说明书"],
+        "negative": ["openapi specification", "json schema", "代码规范"]
       },
-      "requiredContext": [
-        "模块名称",
-        "业务目标",
-        "功能范围",
-        "输入数据",
-        "处理规则",
-        "输出结果"
-      ],
-      "outputs": [
-        "需求说明书章节",
-        "IPO 表",
-        "需求验证报告"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["模块或功能目标"],
+        "optional": ["业务范围", "输入数据", "处理规则", "输出结果"],
+        "signals": ["spec", "ipo", "章节", "说明书", "功能"]
+      },
+      "outputs": ["需求说明书章节", "IPO 表", "需求验证报告"]
     },
     {
       "id": "requirements.prototype",
       "name": "原型设计",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "requirements/prototype/SKILL.md",
-      "standardPaths": [
-        "standards/02-prototype.md"
-      ],
-      "promptPaths": [
-        "prompts/create-prototype.prompt.md",
-        "prompts/validate-prototype.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 60,
+      "skillPath": "requirements-prototype/SKILL.md",
+      "standardPaths": ["standards/02-prototype.md"],
+      "promptPaths": ["prompts/create-prototype.prompt.md", "prompts/validate-prototype.prompt.md"],
+      "intents": ["create", "validate", "review", "repair"],
       "triggers": {
-        "exact": [
-          "原型",
-          "线框图",
-          "prototype",
-          "页面设计",
-          "UI 草图",
-          "页面标注",
-          "交互模式",
-          "原型标注",
-          "页面清单"
-        ],
-        "semantic": [
-          "把 spec 转成页面清单",
-          "补齐字段标注",
-          "达到 D3 开发就绪",
-          "生成 prototype-scan 可消费的页面描述"
-        ]
+        "exact": ["原型设计", "线框图", "prototype", "页面设计", "ui 草图", "页面标注", "原型标注", "页面清单"],
+        "negative": ["原型链", "prototype pattern"]
       },
-      "requiredContext": [
-        "关联 spec 功能编码",
-        "页面名称",
-        "字段来源",
-        "交互模式",
-        "按钮和状态规则"
-      ],
-      "outputs": [
-        "D3 原型标注文档",
-        "原型验证报告"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["页面名称或关联功能"],
+        "optional": ["字段来源", "交互模式", "按钮", "状态规则"],
+        "signals": ["页面", "交互", "字段标注", "按钮", "线框"]
+      },
+      "outputs": ["D3 原型标注文档", "原型验证报告"]
     },
     {
       "id": "data.database",
       "name": "数据库设计",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "data/database/SKILL.md",
-      "standardPaths": [
-        "standards/03-database.md"
-      ],
-      "promptPaths": [
-        "prompts/create-db-design.prompt.md",
-        "prompts/validate-db-design.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 60,
+      "skillPath": "data-database-design/SKILL.md",
+      "standardPaths": ["standards/03-database.md"],
+      "promptPaths": ["prompts/create-db-design.prompt.md", "prompts/validate-db-design.prompt.md"],
+      "intents": ["create", "validate", "review", "repair"],
       "triggers": {
-        "exact": [
-          "数据库",
-          "ER 图",
-          "表结构",
-          "实体关系",
-          "数据字典",
-          "DDL",
-          "database",
-          "schema"
-        ],
-        "semantic": [
-          "从 IPO 推导库表",
-          "设计主表明细表",
-          "生成建表语句",
-          "补系统字段和索引"
-        ]
+        "exact": ["数据库设计", "er 图", "表结构", "实体关系", "数据字典", "ddl", "database schema", "建表语句"],
+        "negative": ["内存数据库测试", "数据库连接报错", "orm bug"]
       },
-      "requiredContext": [
-        "模块名称",
-        "实体清单",
-        "字段来源",
-        "主从关系",
-        "关键查询条件"
-      ],
-      "outputs": [
-        "ER 设计",
-        "数据字典",
-        "DDL",
-        "数据库验证报告"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["目标数据库方言或模块"],
+        "optional": ["实体清单", "字段来源", "主从关系", "关键查询条件", "租户和审计策略"],
+        "signals": ["数据库", "db", "表", "字段", "索引", "sql"]
+      },
+      "outputs": ["ER 设计", "数据字典", "DDL", "数据库验证报告"]
     },
     {
       "id": "api.restful",
       "name": "接口设计",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "api/restful/SKILL.md",
-      "standardPaths": [
-        "standards/04-api-design.md"
-      ],
-      "promptPaths": [
-        "prompts/create-if-design.prompt.md",
-        "prompts/validate-if-design.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 60,
+      "skillPath": "api-interface-design/SKILL.md",
+      "standardPaths": ["standards/04-api-design.md"],
+      "promptPaths": ["prompts/create-if-design.prompt.md", "prompts/validate-if-design.prompt.md"],
+      "intents": ["create", "validate", "review", "repair"],
       "triggers": {
-        "exact": [
-          "接口",
-          "API",
-          "RESTful",
-          "OpenAPI",
-          "接口文档",
-          "报文",
-          "集成接口",
-          "swagger"
-        ],
-        "semantic": [
-          "设计系统集成报文",
-          "定义请求响应字段",
-          "生成 REST 接口说明",
-          "补错误码和幂等规则"
-        ]
+        "exact": ["接口设计", "api 设计", "restful", "openapi", "接口文档", "接口报文", "集成接口", "swagger"],
+        "negative": ["api 调用报错", "sdk bug", "网络抓包"]
       },
-      "requiredContext": [
-        "接口目标",
-        "触发条件",
-        "请求字段",
-        "响应字段",
-        "错误场景",
-        "幂等要求"
-      ],
-      "outputs": [
-        "接口清单",
-        "RESTful 接口定义",
-        "集成报文定义",
-        "接口验证报告"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["接口目标或调用场景"],
+        "optional": ["触发条件", "请求字段", "响应字段", "错误场景", "幂等要求"],
+        "signals": ["api", "接口", "http", "endpoint", "operationid"]
+      },
+      "outputs": ["接口清单", "RESTful 接口定义", "集成报文定义", "接口验证报告"]
     },
     {
       "id": "cross.designReview",
       "name": "设计集成评审",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "cross/design-review/SKILL.md",
-      "standardPaths": [
-        "standards/07-design-review.md"
-      ],
-      "promptPaths": [
-        "prompts/design-review.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 90,
+      "skillPath": "cross-design-review/SKILL.md",
+      "standardPaths": ["standards/07-design-review.md"],
+      "promptPaths": ["prompts/design-review.prompt.md"],
+      "intents": ["review"],
       "triggers": {
-        "exact": [
-          "评审",
-          "评审报告",
-          "评分",
-          "设计评审",
-          "集成评审",
-          "质量评审",
-          "追溯矩阵",
-          "一致性检查",
-          "整体评审",
-          "review"
-        ],
-        "semantic": [
-          "检查 spec DB API 是否一致",
-          "给设计产物打分",
-          "输出 P0 阻断项",
-          "生成追溯矩阵"
-        ]
+        "exact": ["集成评审", "设计集成评审", "跨文档设计评审", "全套设计评审", "设计评分", "设计追溯矩阵", "跨文档一致性检查", "integration design review", "cross-document review"],
+        "negative": ["代码 review", "code review", "pr review", "pull request", "代码评审"]
       },
-      "requiredContext": [
-        "需求说明书路径",
-        "数据库设计路径",
-        "接口设计路径",
-        "已有验证报告"
-      ],
-      "outputs": [
-        "DESIGN_REVIEW 报告",
-        "评分仪表盘",
-        "P0 阻断清单",
-        "追溯矩阵"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["至少两个不同设计域的产物或验证报告，或一份既有集成评审报告"],
+        "optional": ["需求说明书路径", "数据库设计路径", "接口设计路径", "词典路径", "原型路径"],
+        "signals": ["spec", "需求", "数据库", "db", "接口", "api", "原型", "词典", "验证报告"]
+      },
+      "outputs": ["DESIGN_REVIEW 报告", "评分仪表盘", "P0 阻断清单", "追溯矩阵"]
     },
     {
       "id": "cross.glossary",
       "name": "术语字段词典",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "cross/glossary/SKILL.md",
-      "standardPaths": [
-        "standards/08-glossary.md"
-      ],
-      "promptPaths": [
-        "prompts/create-glossary.prompt.md",
-        "prompts/validate-glossary.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 80,
+      "skillPath": "cross-glossary/SKILL.md",
+      "standardPaths": ["standards/08-glossary.md"],
+      "promptPaths": ["prompts/create-glossary.prompt.md", "prompts/validate-glossary.prompt.md"],
+      "intents": ["create", "maintain", "validate", "review", "repair"],
       "triggers": {
-        "exact": [
-          "术语",
-          "词典",
-          "字段词典",
-          "统一语言",
-          "字段对齐",
-          "字段映射",
-          "glossary",
-          "术语表",
-          "数据字典对齐",
-          "命名统一"
-        ],
-        "semantic": [
-          "统一中英文字段名",
-          "登记枚举编码",
-          "检查字段是否三方一致",
-          "建立命名锚点"
-        ]
+        "exact": ["术语词典", "字段词典", "统一语言", "字段对齐", "字段映射", "glossary", "术语表", "命名统一"],
+        "negative": ["编程语言词典", "翻译词典"]
       },
-      "requiredContext": [
-        "业务域",
-        "字段清单",
-        "中英文名称",
-        "枚举值",
-        "来源文档"
-      ],
-      "outputs": [
-        "术语字段词典",
-        "字段对齐验证报告"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["业务域或待登记字段"],
+        "optional": ["中英文名称", "枚举值", "来源文档"],
+        "signals": ["术语", "字段", "枚举", "命名", "映射"]
+      },
+      "outputs": ["术语字段词典", "字段对齐验证报告"]
     },
     {
       "id": "cross.changeImpact",
       "name": "变更影响分析",
       "status": "released",
-      "version": "1.0",
-      "skillPath": "cross/change-impact/SKILL.md",
-      "standardPaths": [
-        "standards/09-change-impact.md"
-      ],
-      "promptPaths": [
-        "prompts/analyze-change-impact.prompt.md",
-        "prompts/validate-change-impact.prompt.md"
-      ],
+      "version": "1.1",
+      "priority": 100,
+      "skillPath": "cross-change-impact/SKILL.md",
+      "standardPaths": ["standards/09-change-impact.md"],
+      "promptPaths": ["prompts/analyze-change-impact.prompt.md", "prompts/validate-change-impact.prompt.md"],
+      "intents": ["impact", "validate"],
       "triggers": {
-        "exact": [
-          "变更影响",
-          "影响分析",
-          "变更分析",
-          "补丁计划",
-          "增量设计",
-          "影响矩阵",
-          "同步哪些文档",
-          "改字段影响",
-          "改状态影响",
-          "change impact"
-        ],
-        "semantic": [
-          "分析这个设计改动会影响哪些文档",
-          "已有设计文档上做增量修改",
-          "把评审问题拆成修复任务",
-          "字段或状态变更后同步 spec DB API 原型",
-          "生成跨文档补丁计划和复验顺序"
-        ]
+        "exact": ["变更影响", "影响分析", "变更分析", "字段变更", "状态变更", "接口变更", "页面变更", "流程变更", "会影响什么", "补丁计划", "增量设计", "影响矩阵", "同步哪些文档", "change impact"],
+        "negative": ["代码改动影响", "依赖包升级影响"]
       },
-      "requiredContext": [
-        "变更对象",
-        "变更动作",
-        "目标描述",
-        "涉及模块或功能编码",
-        "已有设计文档路径"
-      ],
-      "outputs": [
-        "CHANGE_IMPACT 影响分析报告",
-        "跨域影响矩阵",
-        "P0/P1/P2 补丁任务清单",
-        "复验顺序"
-      ],
-      "closeLoop": [
-        "generate",
-        "validate",
-        "repair",
-        "revalidate"
-      ]
+      "context": {
+        "blocking": ["变更对象", "变更动作", "目标描述"],
+        "optional": ["涉及模块或功能编码", "已有设计文档路径"],
+        "signals": ["字段", "状态", "接口", "页面", "流程", "文档"]
+      },
+      "outputs": ["CHANGE_IMPACT 报告", "跨域影响矩阵", "补丁任务清单", "复验顺序"]
     },
     {
       "id": "code.architecture",
       "name": "代码结构设计",
       "status": "planned",
       "version": "0.0",
-      "skillPath": "code/architecture/SKILL.md",
-      "standardPaths": [
-        "standards/05-code-design.md"
-      ],
+      "priority": 0,
+      "skillPath": "code-architecture/SKILL.md",
+      "standardPaths": ["standards/05-code-design.md"],
       "promptPaths": [],
+      "intents": ["create"],
       "triggers": {
-        "exact": [
-          "代码结构",
-          "分层设计",
-          "架构设计",
-          "领域模型",
-          "DDD"
-        ],
-        "semantic": [
-          "设计业务代码分层",
-          "规划领域模型",
-          "拆分 service repository"
-        ]
+        "exact": ["代码结构", "分层设计", "领域模型", "ddd"],
+        "negative": []
       },
-      "requiredContext": [
-        "模块边界",
-        "技术栈",
-        "领域对象",
-        "依赖方向"
-      ],
-      "outputs": [
-        "代码结构设计建议"
-      ],
-      "closeLoop": []
+      "context": {
+        "blocking": ["模块边界", "技术栈"],
+        "optional": ["领域对象", "依赖方向"],
+        "signals": ["代码", "架构", "分层", "模块"]
+      },
+      "outputs": ["代码结构设计建议"]
     }
   ]
 }

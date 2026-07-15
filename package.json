@@ -1,8 +1,7 @@
 {
   "name": "@agile-team/wl-skills-design",
-  "version": "0.7.0",
-  "description": "产品设计 AI 技能包 — 9 条设计规范 + AI Skill 自动调度（流程图/原型标注/说明书/数据库/接口/集成评审/术语词典/变更影响分析），支持 10 种 AI 编辑器，一条命令导入设计项目",
-  "main": "./bin/wl-skills-design.js",
+  "version": "0.7.1",
+  "description": "产品设计 AI 技能包 — 9 条设计规范、8 个原生 Agent Skill、可验证路由与按编辑器安装",
   "bin": {
     "wl-skills-design": "bin/wl-skills-design.js"
   },
@@ -33,12 +32,12 @@
     "url": "https://github.com/ChenyCHENYU/wl-skills-design/issues"
   },
   "scripts": {
-    "cz": "cz",
     "sync": "node scripts/sync-editors.js",
     "check": "node scripts/check.js",
     "test": "node --test tests/*.test.js",
-    "prepublishOnly": "node scripts/sync-editors.js --check && node scripts/check.js",
-    "prepare": "node -e \"const fs=require('fs');const cp=require('child_process');const bin='node_modules/husky/bin.js';if(fs.existsSync('.git')&&fs.existsSync(bin))cp.execFileSync(process.execPath,[bin],{stdio:'inherit'});\""
+    "verify": "node scripts/sync-editors.js --check && node scripts/check.js && node --test tests/*.test.js && node scripts/package-smoke.js",
+    "prepublishOnly": "npm run verify",
+    "prepare": "node -e \"const fs=require('fs'),cp=require('child_process');const bin='node_modules/husky/bin.js';const git=cp.spawnSync('git',['rev-parse','--is-inside-work-tree'],{stdio:'ignore'});if(git.status===0&&fs.existsSync(bin))cp.execFileSync(process.execPath,[bin],{stdio:'inherit'});\""
   },
   "publishConfig": {
     "access": "public"
@@ -48,13 +47,11 @@
     "url": "git+https://github.com/ChenyCHENYU/wl-skills-design.git"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.1",
-    "@commitlint/config-conventional": "^21.0.1",
-    "commitizen": "^4.3.1",
-    "cz-customizable": "^7.5.4",
+    "@commitlint/cli": "20.5.3",
+    "@commitlint/config-conventional": "20.5.3",
     "husky": "^9.1.7"
   }
 }

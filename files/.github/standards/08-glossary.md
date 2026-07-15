@@ -27,7 +27,7 @@
                   D4 联动校验 = 三方各自与词典比对（07）
 ```
 
-> 配套技能：`.github/skills/cross/glossary/SKILL.md`（操作流程） + `.github/prompts/create-glossary.prompt.md`（生成） + `validate-glossary.prompt.md`（验证）。
+> 配套技能：`.github/skills/cross-glossary/SKILL.md`（操作流程） + `.github/prompts/create-glossary.prompt.md`（生成） + `validate-glossary.prompt.md`（验证）。
 > **规范定义"做什么"，Skill 定义"怎么做"，两者不重复。**
 
 ---
@@ -60,9 +60,9 @@
 
 | 序号 | 字段中文名 | 字段英文名 | 逻辑类型 | 所属域 | 枚举组 | 定义 | spec 出处 | DB 落点 | 接口出现 |
 |------|-----------|-----------|---------|-------|-------|------|----------|---------|---------|
-| 1 | 订单号 | `orderNo` | varchar(40) | 订单 | - | 业务唯一单据号 | PMOM IPO | `pmom_order_main.orderNo` | QM_PM_B_01 |
-| 2 | 订单状态 | `orderStatus` | tinyint | 订单 | `ORDER_STATUS` | 订单生命周期状态 | PMOM IPO | `pmom_order_main.orderStatus` | QM_PM_B_01 |
-| 3 | 目标件重 | `aimPackWt` | decimal(10,2) | 生产 | - | 单件目标重量（吨）| PMPM IPO | `pmpm_plan_dtl.aimPackWt` | QM_PM_B_01 |
+| 1 | 订单号 | `orderNo` | varchar(40) | 订单 | - | 业务唯一单据号 | ORDR IPO | `ordr_order_main.orderNo` | SRC_DST_B_01 |
+| 2 | 订单状态 | `orderStatus` | tinyint | 订单 | `ORDER_STATUS` | 订单生命周期状态 | ORDR IPO | `ordr_order_main.orderStatus` | SRC_DST_B_01 |
+| 3 | 目标件重 | `targetQuantity` | decimal(10,2) | 生产 | - | 单件目标重量（吨）| PLAN IPO | `plan_plan_dtl.targetQuantity` | SRC_DST_B_01 |
 
 ### 列填写规则
 
@@ -121,20 +121,20 @@
 
 | 子模块代码（spec）| DB 前缀 | 子模块 |
 |------------------|--------|-------|
-| `PMOM` | `pmom` | 生产 · 订单管理 |
-| `PMPM` | `pmpm` | 生产 · 计划管理 |
-| `PMMB` | `pmmb` | 生产 · 目标管理 |
+| `ORDR` | `ordr` | 生产 · 订单管理 |
+| `PLAN` | `plan` | 生产 · 计划管理 |
+| `BASE` | `base` | 生产 · 目标管理 |
 
 ### 4.3 系统简码（接口源/目标系统，大写）
 
 | 简码 | 系统 |
 |------|------|
 | `PM` | 生产系统 |
-| `QM` | 品质系统 |
-| `MW` | 中间件 |
-| `BIP` | 用友 BIP |
+| `SRC` | 源系统代号 |
+| `DST` | 目标系统代号 |
+| `MID` | 中间服务代号 |
 
-> spec 子模块代码（`PMOM`）与 DB 前缀（`pmom`）必须大小写一一对应，由本表保证。
+> spec 子模块代码（`ORDR`）与 DB 前缀（`ordr`）必须大小写一一对应，由本表保证。
 
 ---
 
@@ -181,8 +181,8 @@
 
 | 字段英文名 | 词典中文名 | spec 出现 | DB 落点 | 接口出现 | 一致性 |
 |-----------|-----------|----------|---------|---------|-------|
-| `orderNo` | 订单号 | ✅ PMOM IPO | ✅ pmom_order_main | ✅ QM_PM_B_01 | ✅ 一致 |
-| `aimPackWt` | 目标件重 | ✅ PMPM IPO | ✅ pmpm_plan_dtl | ✅ QM_PM_B_01 | ✅ 一致 |
+| `orderNo` | 订单号 | ✅ ORDR IPO | ✅ ordr_order_main | ✅ SRC_DST_B_01 | ✅ 一致 |
+| `targetQuantity` | 目标件重 | ✅ PLAN IPO | ✅ plan_plan_dtl | ✅ SRC_DST_B_01 | ✅ 一致 |
 
 ---
 
@@ -207,7 +207,7 @@
 ### GL-C 命名合规（3 项）
 - [ ] C01 — 字段英文名为 camelCase，符合 `03 §一.3` 后缀约定
 - [ ] C02 — 枚举组名为 UPPER_SNAKE
-- [ ] C03 — 子模块代码大写与 DB 前缀小写一一对应（如 PMOM ↔ pmom）
+- [ ] C03 — 子模块代码大写与 DB 前缀小写一一对应（如 ORDR ↔ ordr）
 
 ### GL-X 与三方联动（5 项）⬅ 闭环核心
 - [ ] X01 — **DB 字段覆盖**：DB 数据字典所有字段英文名 ⊆ 词典字段词条（无词典外字段）

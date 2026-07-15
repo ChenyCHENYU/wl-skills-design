@@ -1,17 +1,9 @@
-﻿---
-description: "产品设计 AI 技能规范（8 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）"
-globs:
-  - "**/*.drawio"
-  - "**/*.md"
-  - "**/*.axure"
-  - "**/*.sql"
-  - "**/*.yaml"
-  - "**/*.yml"
-alwaysApply: true
+---
+description: "按需调用产品设计 Agent Skills；适用于流程图、原型、需求、数据库、接口、词典、评审和变更影响任务"
+alwaysApply: false
 ---
 
-<!-- Cursor MDC 规则文件。由 wl-skills-design 维护，请勿手动编辑正文内容。 -->
+<!-- Cursor Project Rule。按需加载，避免占用所有对话上下文。 -->
 <!-- 源文件：.github/copilot-instructions.md -->
 
 ---
-

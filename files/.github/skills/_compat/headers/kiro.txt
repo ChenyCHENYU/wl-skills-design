@@ -1,10 +1,9 @@
-﻿---
-inclusion: always
-description: 产品设计 AI 技能规范（8 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）
+---
+inclusion: auto
+description: 按需调用产品设计 Skills，覆盖流程图、原型、需求、数据库、接口、词典、评审和变更影响
 ---
 
-<!-- Kiro Steering 规则。由 wl-skills-design 维护，请勿手动编辑正文内容。 -->
+<!-- Kiro Steering 规则。使用 auto inclusion，避免无关任务加载。 -->
 <!-- 源文件：.github/copilot-instructions.md -->
 
 ---
-

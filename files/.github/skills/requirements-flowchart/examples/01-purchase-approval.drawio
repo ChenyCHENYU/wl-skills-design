@@ -1,0 +1,279 @@
+<mxfile host="Electron" agent="wl-skills-design/v1.0" version="27.0.9" pages="2">
+  <!-- Tab 1: 流程标准定义（图例页，固定不变） -->
+  <diagram id="tab-legend" name="流程标准定义">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hdr" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;流程图绘制规范 · wl-skills-design&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="80" y="30" width="1000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="&lt;span style=&quot;font-size: 12px;&quot;&gt;本页为标准图例，详见 .github/standards/01-flowchart.md&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=#fff2cc;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="90" width="600" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- Tab 2: 采购申请审批流程 -->
+  <diagram id="caig-proc-01" name="采购申请审批流程（CAIG-PROC-01）">
+    <mxGraphModel dx="1665" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 外层主容器 -->
+        <mxCell id="outer"
+          value="&lt;p style=&quot;line-height: 130%;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;采购申请审批流程（CAIG-PROC-01）&lt;/font&gt;&lt;/p&gt;"
+          style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;spacing=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="1100" height="710" as="geometry" />
+        </mxCell>
+
+        <!-- lane-a: 申请人 -->
+        <mxCell id="lane-a"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;申请人&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="366" height="680" as="geometry" />
+        </mxCell>
+
+        <!-- lane-b: 部门主管 -->
+        <mxCell id="lane-b"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;部门主管&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="367" height="680" as="geometry" />
+        </mxCell>
+
+        <!-- lane-c: 采购部 -->
+        <mxCell id="lane-c"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;采购部&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="367" height="680" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-a 节点
+        ============================================================ -->
+
+        <!-- 开始 -->
+        <mxCell id="flow-start" value="开始"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-a">
+          <mxGeometry x="152" y="35" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- a1: 填写采购申请单（线下人工，dashed） -->
+        <mxCell id="a1-g" value="" style="group;dashed=1;dashPattern=8 8;" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="145" y="90" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-M-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="a1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;填写采购申请单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;dashed=1;" vertex="1" parent="a1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;申请人&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;dashed=1;" vertex="1" parent="a1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- a2: 提交系统申请 -->
+        <mxCell id="a2-g" value="" style="group" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="145" y="200" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-E-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="a2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;提交系统申请&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="a2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;申请人&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="a2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-b 节点
+        ============================================================ -->
+
+        <!-- b1: 审核采购申请（同行 y=200，跨泳道对齐） -->
+        <mxCell id="b1-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="145" y="200" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="b1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-E-02&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="b1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="b1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;审核采购申请&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="b1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;部门主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="b1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- dec1: 是否批准? -->
+        <mxCell id="dec1" value="是否批准?"
+          style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=10;"
+          vertex="1" parent="lane-b">
+          <mxGeometry x="148" y="315" width="70" height="46" as="geometry" />
+        </mxCell>
+
+        <!-- b2: 退回并填写意见 -->
+        <mxCell id="b2-g" value="" style="group" connectable="0" vertex="1" parent="lane-b">
+          <mxGeometry x="145" y="420" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="b2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-E-03&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="b2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="b2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;退回并填写意见&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="b2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;部门主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="b2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             lane-c 节点
+        ============================================================ -->
+
+        <!-- c1: 接收采购申请（同行 y=315，跨泳道对齐 dec1） -->
+        <mxCell id="c1-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="145" y="315" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="c1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-E-04&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="c1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;接收采购申请&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="c1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;采购专员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="c1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- c2: 审核供应商报价 -->
+        <mxCell id="c2-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="145" y="425" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="c2-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-E-05&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="c2-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c2-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;审核供应商报价&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="c2-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c2-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;采购专员&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="c2-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- c3: 下达采购订单 -->
+        <mxCell id="c3-g" value="" style="group" connectable="0" vertex="1" parent="lane-c">
+          <mxGeometry x="145" y="535" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="c3-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;CAIG-E-06&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="c3-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="c3-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;下达采购订单&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="c3-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c3-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;采购主管&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="c3-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 结束 -->
+        <mxCell id="flow-end" value="结束"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-c">
+          <mxGeometry x="152" y="620" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================
+             连接线
+             规则：source=name层，target=code层，同泳道parent=lane，跨泳道parent=outer
+        ============================================================ -->
+
+        <!-- 1. 开始 → a1-code（vertical，lane-a） -->
+        <mxCell id="e-start-a1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="flow-start" target="a1-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. a1-name → a2-code（vertical，lane-a） -->
+        <mxCell id="e-a1-a2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="a1-name" target="a2-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. a2-name → b1-code（跨泳道 a→b，horizontal，parent=outer） -->
+        <mxCell id="e-a2-b1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="a2-name" target="b1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. b1-name → dec1（vertical，lane-b） -->
+        <mxCell id="e-b1-dec1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="b1-name" target="dec1" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. dec1(否) → b2-code（vertical，lane-b） -->
+        <mxCell id="e-dec1-b2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="dec1" target="b2-code" parent="lane-b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell value="否" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="e-dec1-b2">
+          <mxGeometry x="-0.2" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 6. dec1(是) → c1-code（跨泳道 b→c，horizontal，parent=outer） -->
+        <mxCell id="e-dec1-c1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="dec1" target="c1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="e-dec1-c1">
+          <mxGeometry x="-0.2" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <!-- 7. b2-name → a1-code（跨泳道 b→a 反向回环，parent=outer，带折点绕行） -->
+        <!-- 绕行路径：b2-name左侧 → 外层左边缘 → 上行 → a1-code右侧 -->
+        <!-- outer本地坐标：b2-name中心y=477，a1-code中心y=126 -->
+        <mxCell id="e-b2-a1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+          edge="1" source="b2-name" target="a1-code" parent="outer">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="10" y="477" />
+              <mxPoint x="10" y="126" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. c1-name → c2-code（vertical，lane-c） -->
+        <mxCell id="e-c1-c2"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="c1-name" target="c2-code" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 9. c2-name → c3-code（vertical，lane-c） -->
+        <mxCell id="e-c2-c3"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="c2-name" target="c3-code" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 10. c3-name → flow-end（vertical，lane-c） -->
+        <mxCell id="e-c3-end"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="c3-name" target="flow-end" parent="lane-c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

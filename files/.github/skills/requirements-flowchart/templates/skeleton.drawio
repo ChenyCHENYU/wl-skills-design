@@ -1,0 +1,251 @@
+<mxfile host="Electron" agent="wl-skills-design/v1.0" version="27.0.9" pages="2">
+  <diagram id="tab-legend" name="流程标准定义">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 主标题 -->
+        <mxCell id="hdr" value="&lt;b&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;流程图绘制规范 · wl-skills-design v1.0&lt;/font&gt;&lt;/b&gt;" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="30" width="1000" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 节点结构示例区 -->
+        <mxCell id="ns-box" value="节点结构（3层 GROUP）" style="swimlane;html=1;startSize=22;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="90" width="1000" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- 系统操作节点 -->
+        <mxCell id="ns-sys-g" value="" style="group" connectable="0" vertex="1" parent="ns-box">
+          <mxGeometry x="20" y="35" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sys-a" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;XXXX-E-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ns-sys-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sys-b" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;系统操作&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;" vertex="1" parent="ns-sys-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sys-c" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ns-sys-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sys-lbl" value="系统在线操作（E）" style="text;html=1;align=center;verticalAlign=top;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ns-box">
+          <mxGeometry x="20" y="96" width="76.82" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- 子流程节点 -->
+        <mxCell id="ns-sub-g" value="" style="group" connectable="0" vertex="1" parent="ns-box">
+          <mxGeometry x="130" y="35" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sub-a" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;XXXX-A-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="ns-sub-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sub-b" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;子流程引用&lt;/span&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;" vertex="1" parent="ns-sub-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sub-c" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;" vertex="1" parent="ns-sub-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-sub-lbl" value="子流程引用节点" style="text;html=1;align=center;verticalAlign=top;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ns-box">
+          <mxGeometry x="130" y="96" width="76.82" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- 线下操作节点（虚线） -->
+        <mxCell id="ns-off-g" value="" style="group;dashed=1;dashPattern=8 8;" connectable="0" vertex="1" parent="ns-box">
+          <mxGeometry x="240" y="35" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-off-a" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;XXXX-M-01&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="ns-off-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-off-b" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;线下操作&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;" vertex="1" parent="ns-off-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-off-c" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;dashed=1;" vertex="1" parent="ns-off-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-off-lbl" value="线下/人工操作（M）（虚线）" style="text;html=1;align=center;verticalAlign=top;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ns-box">
+          <mxGeometry x="240" y="96" width="90" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- 开始结束 -->
+        <mxCell id="ns-start" value="开始/结束" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;" vertex="1" parent="ns-box">
+          <mxGeometry x="365" y="44" width="80" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-start-lbl" value="开始/结束（紫色终点）" style="text;html=1;align=center;verticalAlign=top;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ns-box">
+          <mxGeometry x="355" y="72" width="100" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- 判定菱形 -->
+        <mxCell id="ns-dec" value="逻辑判定" style="rhombus;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=10;" vertex="1" parent="ns-box">
+          <mxGeometry x="495" y="35" width="70" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-dec-lbl" value="判定菱形（分支必须有标签）" style="text;html=1;align=center;verticalAlign=top;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ns-box">
+          <mxGeometry x="480" y="87" width="100" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- 多文档 -->
+        <mxCell id="ns-doc" value="系统表单/数据" style="shape=mxgraph.flowchart.multi-document;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#36393d;fontSize=9;" vertex="1" parent="ns-box">
+          <mxGeometry x="618" y="38" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ns-doc-lbl" value="多文档（系统表单/数据）" style="text;html=1;align=center;verticalAlign=top;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ns-box">
+          <mxGeometry x="605" y="74" width="105" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- 编码格式 -->
+        <mxCell id="ns-enc" value="编码：[流程编码]-[操作类型]-[NN]　例：ORD-A-01-E-01　E=系统  C=外部系统  M=人工" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fillColor=#fff2cc;strokeColor=#d6b656;whiteSpace=wrap;" vertex="1" parent="ns-box">
+          <mxGeometry x="740" y="35" width="250" height="54" as="geometry" />
+        </mxCell>
+
+        <!-- 模块色标区 -->
+        <mxCell id="cs-box" value="模块色标" style="swimlane;html=1;startSize=22;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="240" width="1000" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cs1" value="生产/物流" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="10" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs2" value="质量管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="105" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs3" value="销售/营销" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#ffcc99;strokeColor=#36393d;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="200" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs4" value="采购管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="295" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs5" value="成本管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="390" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs6" value="安全管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#ffff88;strokeColor=#36393d;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="485" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs7" value="安防管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="580" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs8" value="IT/数据平台" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="675" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs9" value="设备管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#b0e3e6;strokeColor=#0e8088;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="770" y="30" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs10" value="能源管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="10" y="60" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs11" value="环保管理" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="105" y="60" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs12" value="业务域 A" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="200" y="60" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs13" value="业务域 B" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="295" y="60" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs14" value="外部系统" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#e6d0de;strokeColor=#996185;gradientColor=#d5739d;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="390" y="60" width="85" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cs15" value="子流程通用" style="rounded=0;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;fontSize=9;" vertex="1" parent="cs-box">
+          <mxGeometry x="485" y="60" width="85" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- 连接线类型 -->
+        <mxCell id="ct-box" value="连接线类型" style="swimlane;html=1;startSize=22;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="350" width="500" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ct-lbl1" value="主流程线（直角折线）" style="text;html=1;align=left;verticalAlign=middle;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ct-box">
+          <mxGeometry x="10" y="28" width="130" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="ct-e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="ct-box">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="38" as="sourcePoint" />
+            <mxPoint x="290" y="38" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ct-lbl2" value="数据标注线（虚线）" style="text;html=1;align=left;verticalAlign=middle;fontSize=9;fillColor=none;strokeColor=none;" vertex="1" parent="ct-box">
+          <mxGeometry x="10" y="52" width="130" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="ct-e2" style="endArrow=classic;html=1;rounded=0;dashed=1;dashPattern=4 4;" edge="1" parent="ct-box">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="62" as="sourcePoint" />
+            <mxPoint x="290" y="62" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="tab-flow" name="[流程名称]（[流程编码]）">
+    <mxGraphModel dx="1665" dy="849" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 外层主容器（蓝色，22px标题） -->
+        <mxCell id="outer"
+          value="&lt;p style=&quot;line-height: 130%;&quot;&gt;&lt;font style=&quot;font-size: 22px;&quot;&gt;[流程名称]（[流程编码]）&lt;/font&gt;&lt;/p&gt;"
+          style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;gradientColor=#7ea6e0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;spacing=2;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="1100" height="750" as="geometry" />
+        </mxCell>
+
+        <!-- 子泳道 A（灰色，18px标题，不写x由stackLayout管理） -->
+        <mxCell id="lane-a"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;[部门A]&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="366" height="720" as="geometry" />
+        </mxCell>
+
+        <!-- 开始节点 -->
+        <mxCell id="flow-start" value="开始"
+          style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;"
+          vertex="1" parent="lane-a">
+          <mxGeometry x="153" y="40" width="61" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- 第一个活动节点（3层GROUP） -->
+        <mxCell id="a1-g" value="" style="group" connectable="0" vertex="1" parent="lane-a">
+          <mxGeometry x="145" y="100" width="76.82" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="a1-code"
+          value="&lt;font style=&quot;font-size: 10px;&quot;&gt;XXXX-E-01&lt;/font&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;"
+          vertex="1" parent="a1-g">
+          <mxGeometry width="76.82" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="a1-name"
+          value="&lt;span style=&quot;font-size: 14px;&quot;&gt;[活动名称]&lt;/span&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;"
+          vertex="1" parent="a1-g">
+          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="a1-dept"
+          value="&lt;span style=&quot;font-size: 10px;&quot;&gt;[岗位]&lt;/span&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;"
+          vertex="1" parent="a1-g">
+          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+        </mxCell>
+
+        <!-- 连接：开始 → 活动节点1（连到code层顶部） -->
+        <mxCell id="e-s-a1"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="flow-start" target="a1-code" parent="lane-a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 子泳道 B -->
+        <mxCell id="lane-b"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;[部门B]&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="367" height="720" as="geometry" />
+        </mxCell>
+
+        <!-- 子泳道 C -->
+        <mxCell id="lane-c"
+          value="&lt;span style=&quot;font-size: 18px;&quot;&gt;[部门C]&lt;/span&gt;"
+          style="swimlane;html=1;startSize=25;fillColor=#f5f5f5;strokeColor=#666666;gradientColor=#b3b3b3;"
+          vertex="1" parent="outer">
+          <mxGeometry y="30" width="367" height="720" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

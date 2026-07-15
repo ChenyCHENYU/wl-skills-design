@@ -1,33 +1,26 @@
 {
-  "version": "0.0.1",
-  "description": "wl-skills-design 多编辑器适配注册表",
+  "version": "1.0.0",
+  "description": "wl-skills-design 编辑器安装 profile 注册表",
   "source": ".github/copilot-instructions.md",
   "editors": [
     {
-      "id": "github-copilot",
+      "id": "copilot",
       "name": "GitHub Copilot",
       "enabled": true,
       "outputPath": ".github/copilot-instructions.md",
       "headerFile": "headers/github-copilot.txt",
-      "note": "源文件即为输出，无需额外生成"
+      "note": "原生 Agent Skills + 按需调度说明"
     },
     {
-      "id": "claude-code",
+      "id": "claude",
       "name": "Claude Code",
       "enabled": true,
       "outputPath": "CLAUDE.md",
       "headerFile": "headers/claude-code.txt"
     },
     {
-      "id": "cursor-rules",
-      "name": "Cursor (.cursorrules)",
-      "enabled": true,
-      "outputPath": ".cursorrules",
-      "headerFile": "headers/cursor-rules.txt"
-    },
-    {
-      "id": "cursor-mdc",
-      "name": "Cursor MDC",
+      "id": "cursor",
+      "name": "Cursor Project Rules",
       "enabled": true,
       "outputPath": ".cursor/rules/conventions.mdc",
       "headerFile": "headers/cursor-mdc.txt"
@@ -36,14 +29,14 @@
       "id": "windsurf",
       "name": "Windsurf",
       "enabled": true,
-      "outputPath": ".windsurfrules",
+      "outputPath": ".windsurf/rules/conventions.md",
       "headerFile": "headers/windsurf.txt"
     },
     {
       "id": "cline",
       "name": "Cline",
       "enabled": true,
-      "outputPath": ".clinerules",
+      "outputPath": ".clinerules/conventions.md",
       "headerFile": "headers/cline.txt"
     },
     {
@@ -62,7 +55,7 @@
     },
     {
       "id": "agents",
-      "name": "Generic Agents (AGENTS.md)",
+      "name": "通用 Agents（推荐）",
       "enabled": true,
       "outputPath": "AGENTS.md",
       "headerFile": "headers/agents.txt"

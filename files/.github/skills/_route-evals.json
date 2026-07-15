@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    { "prompt": "帮我画一个采购审批泳道图", "skill": "requirements.flowchart", "intent": "create" },
+    { "prompt": "校验这个 draw.io 流程图", "skill": "requirements.flowchart", "intent": "validate" },
+    { "prompt": "为订单创建需求设计说明书", "skill": "requirements.spec", "intent": "create" },
+    { "prompt": "检查这份 IPO 表是否完整", "skill": "requirements.spec", "intent": "validate" },
+    { "prompt": "生成订单列表页的原型标注", "skill": "requirements.prototype", "intent": "create" },
+    { "prompt": "按 PostgreSQL 设计订单表结构", "skill": "data.database", "intent": "create" },
+    { "prompt": "验证现有数据库设计", "skill": "data.database", "intent": "validate" },
+    { "prompt": "输出 OpenAPI 接口设计", "skill": "api.restful", "intent": "create" },
+    { "prompt": "评审一下接口设计", "skill": "api.restful", "intent": "review" },
+    { "prompt": "需求说明书整体评审", "skill": "requirements.spec", "intent": "review" },
+    { "prompt": "接口设计评审", "skill": "api.restful", "intent": "review" },
+    { "prompt": "对需求数据库接口做集成评审", "skill": "cross.designReview", "intent": "review" },
+    { "prompt": "校验数据库设计，不要修改", "skill": "data.database", "intent": "validate" },
+    { "prompt": "API 字段词典需要统一", "skill": "cross.glossary", "intent": "maintain" },
+    { "prompt": "数据库变更影响分析", "skill": "cross.changeImpact", "intent": "impact" },
+    { "prompt": "原型字段变更会影响什么", "skill": "cross.changeImpact", "intent": "impact" },
+    { "prompt": "画一个接口调用流程图", "skill": "requirements.flowchart", "intent": "create" },
+    { "prompt": "OpenAPI specification", "skill": "api.restful", "intent": "create" },
+    { "prompt": "帮我做代码 review", "skill": null, "intent": "review" },
+    { "prompt": "排查数据库连接报错", "skill": null, "intent": "create" },
+    { "prompt": "分析依赖包升级影响", "skill": null, "intent": "impact" }
+  ]
+}

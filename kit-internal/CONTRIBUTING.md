@@ -1,140 +1,92 @@
 # 贡献指南
 
-> 本指南面向 `wl-skills-design` 包的维护者。
+## 修改原则
 
----
+- 保持 Skill 原生、精简和渐进加载：`SKILL.md` 只描述何时使用、核心流程和资源入口。
+- 规范是规则真源；模板是空白起点；匿名合成样例只用于校准质量。
+- 不为缺失上下文猜默认技术栈。数据库、接口、安全、分页和并发策略先读取设计画像；缺失时询问或标暂挂。
+- validate、review、impact 默认只读；repair 必须明确授权。
+- 新增触发词时必须同时新增正例、负例或歧义例路由回归。
+- 不修改与当前任务无关的工作区文件。
 
-## 一、贡献类型
+## 新增 Skill
 
-| 类型 | 说明 | 优先级 |
-|------|------|-------|
-| 完善已有规范 | 补充 `standards/0x-xxx.md` 中的 TODO 内容 | 🔴 高 |
-| 新增 Skill | 为某个设计域创建 `SKILL.md` + `USAGE.md` | 🟡 中 |
-| 新增设计规范 | 创建新的 `standards/0N-xxx.md` | 🟡 中 |
-| 修复触发词 | 更新 `_manifest.json` 中的触发词，并同步 `_registry.md` 人读索引 | 🟢 低 |
-| 编辑器适配 | 调整 `_compat/headers/` 或 `editors.json` | 🟢 低 |
+```text
+files/.github/skills/<skill-name>/
+├── SKILL.md
+├── templates/
+├── examples/
+└── sub/                 # 仅在确有渐进加载价值时添加
 
----
+files/.github/guides/skills/<skill-name>.md
+```
 
-## 二、新增设计规范
+要求：
+
+1. `<skill-name>` 使用小写字母、数字和连字符，且与 frontmatter `name` 一致。
+2. frontmatter 只保留 `name` 和 `description`；description 同时说明能力与触发场景。
+3. 所有资源使用相对 Markdown 链接。
+4. 模板只含占位符；样例在首段声明“匿名合成”。
+5. 在 `_manifest.json` 注册路径、intent、触发词、负向词、上下文和输出。
+6. 在 `_route-evals.json` 增加回归语料，并同步 `_registry.md`。
+7. 若提供 prompt，使用当前 `agent` frontmatter，不声明旧版 `mode` 或内置工具名。
+
+## 修改规范或计数
+
+规范中的编号检查项是唯一口径。调整数量时同步检查：
+
+- 对应 Skill 和 sub 文件；
+- create / validate / repair prompt；
+- templates、examples 和人读指南；
+- 集成评审的维度总数；
+- README、CHANGELOG 与 doctor 断言。
+
+不要只替换总数；必须验证编号连续、计算公式和样例问题数量一致。
+
+## 编辑器适配
+
+编辑器定义在 `files/.github/skills/_compat/editors.json`，头部模板在 `_compat/headers/`。当前输出路径：
+
+```text
+.github/copilot-instructions.md
+CLAUDE.md
+.cursor/rules/conventions.mdc
+.windsurf/rules/conventions.md
+.clinerules/conventions.md
+.kiro/steering/conventions.md
+.trae/rules/conventions.md
+AGENTS.md
+.qoder/rules/conventions.md
+```
+
+修改单一内容源或头部后运行：
 
 ```bash
-# 1. 在 files/standards/ 下创建下一个编号文件
-#    当前已有 01/02/03/04/05/06/07/08/09，下一个是 10
-vim files/.github/standards/10-xxx.md
-
-# 2. 更新 index.md 中的规范表格
-vim files/.github/standards/index.md
-
-# 3. 如有对应 Skill，创建 SKILL.md + USAGE.md（见下节）
+npm run sync
+node scripts/sync-editors.js --check
 ```
 
-**规范文件结构模板**：
-```markdown
-# NN — 规范名称
+不得重新生成 `.cursorrules`、`.windsurfrules` 或文件形态的 `.clinerules`。
 
-## 一、[章节]
-...
-
-## 验证清单
-- [ ] 检查项 1
-- [ ] 检查项 2
-```
-
----
-
-## 三、新增 Skill
+## 验证门禁
 
 ```bash
-# 1. 确定 Skill 所属类别（requirements / data / api / code / cross）
-#    cross = 跨域聚合类（如设计集成评审，消费多个产物的结论）
-mkdir -p files/.github/skills/[category]/[skill-name]/templates
-mkdir -p files/.github/skills/[category]/[skill-name]/examples
-
-# 2. 创建 SKILL.md（AI 触发文件）
-vim files/.github/skills/[category]/[skill-name]/SKILL.md
-
-# 3. 创建 USAGE.md（人读指南）
-vim files/.github/skills/[category]/[skill-name]/USAGE.md
-
-# 4. 在 _manifest.json 中注册（！必须！）
-vim files/.github/skills/_manifest.json
-# → 补充 status / skillPath / standardPaths / promptPaths / triggers / requiredContext / outputs / closeLoop
-
-# 5. 同步 _registry.md 人读索引
-vim files/.github/skills/_registry.md
-# → 将状态从 🔲 改为 ✅，补充触发关键词
+npm run verify
+npm audit --audit-level=moderate
+npm pack --dry-run --ignore-scripts
+git diff --check
 ```
 
-**SKILL.md 结构要求**：
-- YAML frontmatter：`name`, `description`, `tools`
-- 第一步：读取规范文件（`read_file`）
-- 第二步：读取模板（如有）
-- 快速参考表（颜色、尺寸、格式等高频查询项）
-- 操作入口（对应 prompt 或操作指令）
+`npm run verify` 覆盖结构、链接、路由、隐私、模板纯度、draw.io、编辑器漂移、CLI 事务行为、安装烟测和测试套件。新增行为必须补回归测试。
 
-### 双层资料约定（templates vs examples · 见 ADR-012）
+## 提交与发布
 
-每个 Skill **必须**提供两层资料，且**两层都随包发布**：
+提交信息使用简洁 Conventional Commit，例如：
 
-| 目录 | 角色 | 内容要求 |
-|------|------|---------|
-| `templates/` | **默认模板（空白起点）** | 纯结构 + `{占位符}`，**零业务数据**；由本 Skill 的 skills 规则派生 |
-| `examples/` | **真实样例（质量标杆）** | 真实场景填充内容；AI 生成时**必须做得不低于它** |
-
-约定：
-- 模板里**不得**出现成片真实业务数据（那是样例的职责）；模板只示意结构与占位。
-- 每个样例文件结尾附「**自检：本样例为何达标**」清单，把标杆显式化为可对照的检查点。
-- SKILL.md 第三步同时指向两层，并注明 examples 是「质量标杆，须不低于它」。
-- 规范升级时，样例的自检清单门槛要同步抬高，确保样例始终是最佳实践。
-
----
-
-## 四、多编辑器同步
-
-修改 `files/.github/copilot-instructions.md` 后，运行同步脚本自动重建全部编辑器配置
-（内容从 `copilot-instructions.md` 派生，版本号从 `package.json` 注入）：
-
-```bash
-npm run sync       # 重建 9 个编辑器配置
-npm run check      # 一致性自检（manifest / registry / index / 路径引用 / 闭环 / 编辑器漂移）
+```text
+feat: 强化技能包安全与兼容性
+fix: 修正接口路由歧义
+docs: 同步发布说明
 ```
 
-> ℹ️ 脚本直接在仓库根目录运行即可，无需额外准备。
-
-派生关系（由 `scripts/sync-editors.js` 自动处理，无需手动操作）：
-
-```
-# 所有路径均相对于 files/ 目录根
-files/CLAUDE.md         ← headers/claude-code.txt + 正文
-files/.cursorrules      ← headers/cursor-rules.txt + 正文
-files/.cursor/rules/conventions.mdc  ← headers/cursor-mdc.txt + 正文
-files/.windsurfrules    ← headers/windsurf.txt + 正文
-files/.clinerules       ← headers/cline.txt + 正文
-files/.kiro/steering/conventions.md  ← headers/kiro.txt + 正文
-files/.trae/rules/conventions.md     ← headers/trae.txt + 正文
-files/AGENTS.md         ← headers/agents.txt + 正文
-files/.qoder/rules/conventions.md    ← headers/qoder.txt + 正文
-```
-
----
-
-## 五、记录架构决策
-
-每次做出重大架构决策时，在 `kit-internal/architecture.md` 中追加 ADR：
-
-```markdown
-## ADR-NNN · 标题
-
-**日期**：YYYY-MM  
-**状态**：✅ 已采纳 / 🔲 提案中 / ❌ 已否决
-
-### 背景
-...
-
-### 决策
-...
-
-### 权衡
-...
-```
+版本发布步骤以 [维护者入口](./README.md) 为准。

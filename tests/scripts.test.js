@@ -1,125 +1,83 @@
-/**
- * 构建脚本测试 — scripts/sync-editors.js + scripts/check.js
- *
- * 覆盖：sync --check 通过 / check 通过 /
- *       editors.json 启用数与生成产物数一致 /
- *       check.js 的 registry 正则能解析到 ✅ Skill
- *
- * 运行：node --test
- */
+"use strict";
 
 const { test } = require("node:test");
 const assert = require("node:assert");
-const { execFileSync } = require("node:child_process");
+const { spawnSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..");
-const SYNC = path.join(ROOT, "scripts", "sync-editors.js");
 const CHECK = path.join(ROOT, "scripts", "check.js");
-const EDITORS = path.join(
-  ROOT,
-  "files",
-  ".github",
-  "skills",
-  "_compat",
-  "editors.json"
-);
-const REGISTRY = path.join(
-  ROOT,
-  "files",
-  ".github",
-  "skills",
-  "_registry.md"
-);
-const MANIFEST = path.join(
-  ROOT,
-  "files",
-  ".github",
-  "skills",
-  "_manifest.json"
-);
+const SYNC = path.join(ROOT, "scripts", "sync-editors.js");
+const SMOKE = path.join(ROOT, "scripts", "package-smoke.js");
+const MANIFEST = path.join(ROOT, "files", ".github", "skills", "_manifest.json");
+const EVALS = path.join(ROOT, "files", ".github", "skills", "_route-evals.json");
+const { route } = require(CHECK);
 
 function run(script, args = []) {
-  try {
-    const stdout = execFileSync(process.execPath, [script, ...args], {
-      cwd: ROOT,
-      stdio: "pipe",
-    }).toString();
-    return { code: 0, stdout, stderr: "" };
-  } catch (e) {
-    return {
-      code: e.status ?? 1,
-      stdout: (e.stdout || "").toString(),
-      stderr: (e.stderr || "").toString(),
-    };
-  }
+  return spawnSync(process.execPath, [script, ...args], { cwd: ROOT, encoding: "utf8" });
 }
 
-test("sync-editors --check 当前应无漂移", () => {
-  const r = run(SYNC, ["--check"]);
-  assert.strictEqual(r.code, 0, `sync --check 失败:\n${r.stdout}\n${r.stderr}`);
+test("sync-editors --check 无漂移", () => {
+  const result = run(SYNC, ["--check"]);
+  assert.strictEqual(result.status, 0, `${result.stdout}\n${result.stderr}`);
 });
 
-test("check.js doctor 全部通过", () => {
-  const r = run(CHECK);
-  assert.strictEqual(r.code, 0, `doctor 失败:\n${r.stdout}\n${r.stderr}`);
-  assert.match(r.stdout, /全部检查通过/);
+test("doctor 全部通过", () => {
+  const result = run(CHECK);
+  assert.strictEqual(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /全部检查通过/);
 });
 
-test("doctor 报告的编辑器数与 editors.json 启用数一致", () => {
-  const json = JSON.parse(fs.readFileSync(EDITORS, "utf8"));
-  const enabled = json.editors.filter((e) => e.enabled).length;
-  const r = run(CHECK);
-  const m = r.stdout.match(/编辑器配置漂移检查：(\d+) 个配置/);
-  assert.ok(m, "doctor 输出应含编辑器配置数");
-  assert.strictEqual(Number(m[1]), enabled);
-});
-
-test("registry 解析正则能命中 ✅ Skill 行", () => {
-  const reg = fs.readFileSync(REGISTRY, "utf8");
-  const rowRe = /^\|.*?\|\s*(✅|🔲|⚠️).*?\|\s*`([^`]+SKILL\.md)`\s*\|/gm;
-  const released = [];
-  let m;
-  while ((m = rowRe.exec(reg)) !== null) {
-    if (m[1] === "✅") released.push(m[2]);
-  }
-  assert.ok(released.length >= 5, `应至少解析到 5 个 ✅ Skill，实际 ${released.length}`);
-  // 每个 ✅ Skill 的 SKILL.md 必须真实存在
-  const skillsDir = path.join(ROOT, "files", ".github", "skills");
-  for (const rel of released) {
-    assert.ok(
-      fs.existsSync(path.join(skillsDir, rel)),
-      `缺少文件 skills/${rel}`
-    );
-  }
-});
-
-test("manifest 为每个已发布 Skill 提供可执行闭环要素", () => {
+test("所有已发布 Skill 满足原生命名和最小 frontmatter", () => {
   const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
-  assert.strictEqual(manifest.schemaVersion, 1);
-  assert.ok(Array.isArray(manifest.skills));
-
-  const requiredLoop = manifest.routingPolicy.requiredCloseLoop;
-  const released = manifest.skills.filter((s) => s.status === "released");
-  assert.ok(released.length >= 8, `应至少有 8 个已发布 Skill，实际 ${released.length}`);
-
-  const gh = path.join(ROOT, "files", ".github");
-  const skillsDir = path.join(gh, "skills");
-  for (const skill of released) {
-    assert.ok(skill.triggers.exact.length > 0, `${skill.id} 缺少 exact 触发词`);
-    assert.ok(skill.triggers.semantic.length > 0, `${skill.id} 缺少 semantic 触发描述`);
-    assert.ok(skill.requiredContext.length > 0, `${skill.id} 缺少 requiredContext`);
-    assert.ok(skill.outputs.length > 0, `${skill.id} 缺少 outputs`);
-    for (const stage of requiredLoop) {
-      assert.ok(skill.closeLoop.includes(stage), `${skill.id} 缺少闭环阶段 ${stage}`);
-    }
-    assert.ok(fs.existsSync(path.join(skillsDir, skill.skillPath)), `${skill.id} 缺少 SKILL.md`);
-    for (const rel of skill.standardPaths) {
-      assert.ok(fs.existsSync(path.join(gh, rel)), `${skill.id} 规范不存在：${rel}`);
-    }
-    for (const rel of skill.promptPaths) {
-      assert.ok(fs.existsSync(path.join(gh, rel)), `${skill.id} prompt 不存在：${rel}`);
-    }
+  assert.strictEqual(manifest.schemaVersion, 2);
+  for (const skill of manifest.skills.filter((item) => item.status === "released")) {
+    const file = path.join(ROOT, "files", ".github", "skills", skill.skillPath);
+    const content = fs.readFileSync(file, "utf8");
+    const name = content.match(/^---\r?\nname:\s*([^\r\n]+)/)?.[1];
+    assert.strictEqual(name, path.basename(path.dirname(file)));
+    const header = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] || "";
+    const keys = [...header.matchAll(/^([a-zA-Z][a-zA-Z0-9-]*):/gm)].map((match) => match[1]).sort();
+    assert.deepStrictEqual(keys, ["description", "name"]);
+    assert.ok(content.split(/\r?\n/).length <= 500);
   }
+});
+
+test("路由回归语料全部命中", () => {
+  const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
+  const evals = JSON.parse(fs.readFileSync(EVALS, "utf8"));
+  for (const item of evals.cases) {
+    const actual = route(item.prompt, manifest);
+    assert.strictEqual(actual.skill, item.skill, item.prompt);
+    assert.strictEqual(actual.intent, item.intent, item.prompt);
+  }
+});
+
+test("路由实际计入上下文信号且保留判定证据", () => {
+  const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
+  const actual = route("评审一下接口设计", manifest);
+  const api = actual.candidates.find((item) => item.id === "api.restful");
+  assert.strictEqual(api.exact, true);
+  assert.strictEqual(api.context, true);
+  assert.strictEqual(api.negative, false);
+  assert.strictEqual(api.score, 100);
+});
+
+test("Prompt 使用当前 agent 元数据且验证默认只读", () => {
+  const dir = path.join(ROOT, "files", ".github", "prompts");
+  const prompts = fs.readdirSync(dir).filter((name) => name.endsWith(".prompt.md"));
+  assert.strictEqual(prompts.length, 15);
+  for (const name of prompts) {
+    const content = fs.readFileSync(path.join(dir, name), "utf8");
+    assert.match(content, /^---\r?\nagent: agent/m);
+    assert.doesNotMatch(content, /^mode:/m);
+    assert.doesNotMatch(content, /read_file|create_file|replace_string_in_file/);
+    if (name.startsWith("validate-")) assert.match(content, /默认不修改|不修改目标|只读/);
+  }
+});
+
+test("package smoke 通过", () => {
+  const result = run(SMOKE);
+  assert.strictEqual(result.status, 0, `${result.stdout}\n${result.stderr}`);
 });

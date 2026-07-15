@@ -6,14 +6,43 @@
 
 ---
 
+## [0.7.1] — 2026-07-15（原生 Skill、安全路由与隐私加固）
+
+### 新增
+
+- manifest v2 确定性路由：短语边界、intent、上下文、负向词、阈值与最小分差，并提供 21 条路由回归语料。
+- JSON Schema 2020-12 设计模型，以稳定 ID 连接术语、字段、功能、流程、页面、表、接口和追溯关系。
+- OpenAPI 3.1 模板、九类编辑器 profile、CLI 状态哈希、dry-run、restore、安全卸载和打包安装烟测。
+
+### 变更
+
+- 八个已发布 Skill 改为原生平铺目录与最小 frontmatter；长说明迁移到 `.github/guides/skills/`。
+- validate、review、impact 默认只读；repair 需要明确授权，创建流程只可修正本轮新产物。
+- 数据库与接口规范改为画像驱动，不再隐式假设方言、系统字段、响应包装、分页、认证、幂等或并发策略；接口契约采用 OpenAPI 3.1 / JSON Schema 逻辑类型、RFC 3339 时间和原生 JSON 语义。
+- 所有发布样例改为匿名合成标识，移除组织、地点、行业背景、专有模块码和系统缩写；模板增加纯度门禁。
+- 删除无法证明为纯合成来源的旧 DOCX、流程图、原型和分析附件；二进制隐私检查覆盖元数据、修订标识、嵌入媒体和自定义属性。
+- Cursor、Windsurf、Cline 使用当前目录式规则路径，不再生成旧版单文件。
+
+### 修复与安全
+
+- CLI 改为全量预检、事务写入、失败回滚、覆盖前备份与本地改动保护，避免半安装或静默覆盖。
+- doctor 新增 Skill 命名、frontmatter、相对链接、路由、隐私、模板、draw.io、适配器和设计模型检查。
+- CI 覆盖 Windows/Linux 与 Node 20/22/24；移除存在审计问题的未使用提交流程依赖，当前依赖审计为 0 个已知漏洞。
+
+### 文档
+
+- README、使用指南、架构、贡献说明、Skill 清单和发布流程同步更新。
+
+---
+
 ## [0.7.0] — 2026-06（变更影响分析：从生成器升级为设计协同引擎）
 
 ### 新增
-- **变更影响分析 Skill（`cross/change-impact/`）**：对字段/状态/接口/页面/流程等增量变更做跨文档影响分析，输出 `CHANGE_IMPACT` 报告
+- **变更影响分析 Skill（`cross-change-impact/`）**：对字段/状态/接口/页面/流程等增量变更做跨文档影响分析，输出 `CHANGE_IMPACT` 报告
   - 新增规范 `standards/09-change-impact.md`：定义变更登记、影响传播规则、P0/P1/P2 等级、补丁任务格式、CI-A/B/C/X 20 项验证清单
   - 新增 3 个 sub-skill：`01-change-intake`（变更采集）/ `02-impact-matrix`（影响矩阵）/ `03-patch-plan`（补丁计划）
   - 新增模板 `templates/change-impact-report.md`
-  - 新增真实样例 `examples/01-status-change-impact.md`：设备点检新增退回状态，演示 spec/glossary/DB/API/prototype/review 六域联动
+  - 新增匿名合成样例 `examples/01-status-change-impact.md`：设备点检新增退回状态，演示 spec/glossary/DB/API/prototype/review 六域联动
   - 新增 prompt：`analyze-change-impact` / `validate-change-impact`
 - 新增 ADR-014：把变更影响分析作为“设计协同引擎”的第一层能力，先分析影响，再排补丁，再复验
 
@@ -45,20 +74,20 @@
 ## [0.6.0] — 2026-06（每个 Skill 双层资料：模板 + 样例，且随包发布）
 
 ### 新增
-- **真实样例随包发布 + 全域覆盖**（ADR-012）：每个 Skill 目录新增 `examples/`，存放源自真实项目的「真实样例（质量标杆）」，`npx` 安装后在目标项目内可直接打开，AI 生成时**对照自检且必须做得不低于它**
+- **匿名合成样例随包发布 + 全域覆盖**（ADR-012）：每个 Skill 目录新增 `examples/`，存放基于匿名合成场景的「匿名合成样例（质量标杆）」，`npx` 安装后在目标项目内可直接打开，AI 生成时**对照自检且必须做得不低于它**
   - 流程图：`examples/01-purchase-approval.drawio`（采购审批全规范流程）+ `examples/README.md`
   - 需求说明书：`examples/00-doc-outline` / `01-flow-desc` / `02-function-ipo` / `03-flow-screen-map` / `04-api` 共 5 份
-  - **原型（新增样例）**：`examples/01-page-annotation.md` 炼钢计划列表 D3 完整标注
+  - **原型（新增样例）**：`examples/01-page-annotation.md` 匿名任务列表 D3 完整标注
   - 数据库：`examples/01-data-dictionary.md` 订单主表+明细表（7 系统字段 + 索引 + 三方联动）
   - 接口：`examples/01-restful.md` 订单状态变更 + `examples/02-integration.md` 订单下达推送
   - **集成评审（新增样例）**：`examples/01-review-report.md` 订单模块第 1 轮评审（P0 一票否决 + 暂挂排除分母演示）
   - **术语词典（新增样例）**：`examples/01-glossary.md` 订单+计划域完整词典（四类词条 + 联动矩阵）
   - 每个样例结尾固定附「**自检：本样例为何达标**」清单，把质量标杆显式化为可逐条对照的检查点
-- 新增 ADR-012（每个 Skill 双层资料：templates 空白模板 + examples 真实样例，两层都随包发布）
+- 新增 ADR-012（每个 Skill 双层资料：templates 空白模板 + examples 匿名合成样例，两层都随包发布）
 
 ### 变更
-- **templates 归零职责**：把此前混入真实业务数据的模板改写为纯 `{占位符}` 空白骨架——`data-dictionary.md` / `table-definition.md` / `restful-def.md` / `integration-def.md` / `interface-list.md`。自此 `templates/` 永远是空白起点，`examples/` 永远是质量标杆，职责零歧义
-- **各 SKILL.md 第三步双指**：同时标注「空白模板（templates）」与「真实样例（examples，质量标杆，须不低于它）」
+- **templates 归零职责**：把此前混入项目业务数据的模板改写为纯 `{占位符}` 空白骨架——`data-dictionary.md` / `table-definition.md` / `restful-def.md` / `integration-def.md` / `interface-list.md`。自此 `templates/` 永远是空白起点，`examples/` 永远是质量标杆，职责零歧义
+- **各 SKILL.md 第三步双指**：同时标注「空白模板（templates）」与「匿名合成样例（examples，质量标杆，须不低于它）」
 - **修复发布期断链**：此前 `files/` 内多处文档（`06-spec-doc.md §十二`、spec `USAGE.md`、`create-spec-section.prompt.md`、`sub/03-function-ipo.md`）引用 `kit-internal/examples/`——该路径在目标项目里不存在。现全部改指随包发布的 `examples/`（doctor 的 SKILL 引用检查 18 → 23 项且全过）
 - **README 重写**：新增「核心设计理念」「双层资料：模板 + 样例」「一次 AI 调度长什么样」等章节，目录层级与架构讲解更清晰
 - `kit-internal/`：`README.md` / `CONTRIBUTING.md`（新增双层资料约定）/ `skills/README.md`（补原型 + 各域样例计数）同步更新
@@ -72,8 +101,8 @@
 ## [0.5.0] — 2026-06（新增原型设计 Skill + spec-gen 瘦身）
 
 ### 新增
-- **原型设计标注 Skill（`requirements/prototype/`）**：把 spec 功能设计转成结构化原型标注，达到「开发就绪（D3）」深度，可被 `prototype-scan`（wl-skills-kit）直接消费生成代码
-  - 规范 `standards/02-prototype.md` 从 stub 升级为完整规范：8 种交互模式 + 决策树、每页 7 项必标内容、三级深度（D1/D2/D3）、与 spec 的字段对齐规则、钢铁行业特化（页面模式映射/高频字典/组炉组浇等特殊交互）、**23 项验证清单（PT-A/B/C/X 四组）** + 闭环修复协议
+- **原型设计标注 Skill（`requirements-prototype/`）**：把 spec 功能设计转成结构化原型标注，达到「开发就绪（D3）」深度，可被 `prototype-scan`（wl-skills-kit）直接消费生成代码
+  - 规范 `standards/02-prototype.md` 从 stub 升级为完整规范：8 种交互模式 + 决策树、每页 7 项必标内容、三级深度（D1/D2/D3）、与 spec 的字段对齐规则、特定行业行业特化（页面模式映射/高频字典/批次合并批次拆分等特殊交互）、**23 项验证清单（PT-A/B/C/X 四组）** + 闭环修复协议
   - 薄 SKILL + 2 sub（`01-page-layout` 定模式骨架 / `02-field-annotation` 字段标注核心）+ 1 template（`page-annotation` 7 项必标）
   - 2 个 prompt：`create-prototype` / `validate-prototype`
   - **页面编码复用 spec 功能编码**（不另起编码体系），PT-X X05 校验原型「关联 IPO」编码 ∈ spec 4.x.4
@@ -86,7 +115,7 @@
 - `kit-internal/skills/README.md`：原型从规划中移至已发布；补充增量设计/版本追踪/错误恢复的后续规划
 
 ### 移除
-- **spec-gen 瘦身**：删除 `generate_spec_doc.py`（华新项目特定硬编码，不可复用）与 `create_skeleton.py`（一次性骨架提取工具，已完成使命）；保留通用的 `draw_flow.py`（流程图双轨生成器）。设计文档生成的正确路径是 Skill 体系（`create-spec-section`），不再维护项目特定的 Python 生成器
+- **spec-gen 瘦身**：删除 `generate_spec_doc.py`（示例项目特定硬编码，不可复用）与 `create_skeleton.py`（一次性骨架提取工具，已完成使命）；保留通用的 `draw_flow.py`（流程图双轨生成器）。设计文档生成的正确路径是 Skill 体系（`create-spec-section`），不再维护项目特定的 Python 生成器
 
 ---
 
@@ -94,7 +123,7 @@
 
 ### 修复
 - **husky v9 弃用警告**：`.husky/commit-msg` 移除已弃用的 `#!/usr/bin/env sh` + `. "$(dirname ...)/_/husky.sh"` 两行（husky v9+ 不再需要，v10 将直接失败），仅保留 commitlint 调用
-- **README 错别字**：TL;DR 示例「废**钓**采购流程图」→「废**钢**采购流程图」
+- **README 错别字**：修正流程图示例中的错别字
 
 ### 待决策（未改）
 - `package.json` `license: UNLICENSED` 与 `publishConfig.access: public` 的语义矛盾仍待团队拍板（开源 MIT / 保持内部受限），本版未改动发布行为
@@ -126,7 +155,7 @@
 ## [0.4.0] — 2026-06（新增术语/字段词典 Skill，字段对齐中央锚点 + 工程化收尾）
 
 ### 新增
-- **术语/字段词典 Skill（`cross/glossary/`）**：为全链路建立统一语言（Ubiquitous Language）中央词典——把同一业务概念在 spec/DB/接口的**中文名↔英文名↔类型↔枚举↔模块码**钉成单一映射，作为字段对齐的**中央锚点**，让字段对不齐从「评审时发现」提前到「设计时杜绝」
+- **术语/字段词典 Skill（`cross-glossary/`）**：为全链路建立统一语言（Ubiquitous Language）中央词典——把同一业务概念在 spec/DB/接口的**中文名↔英文名↔类型↔枚举↔模块码**钉成单一映射，作为字段对齐的**中央锚点**，让字段对不齐从「评审时发现」提前到「设计时杜绝」
   - 规范 `standards/08-glossary.md`：四类词条（业务术语/字段/枚举/编码注册）、字段词条 9 列单一映射格式、与 spec/DB/接口联动 G1~G5、对既有 DB-X/IF-X/D4 校验的**锚点化增强**（两两互比 O(N²) → 与词典比对 O(N)）、**18 项验证清单（GL-A/B/C/X 四组）**+ 闭环修复协议
   - 3 个 sub-skill：`01-build-glossary`（编码注册+业务术语）/ `02-field-entry`（字段+枚举，核心）/ `03-glossary-review`（三方 ⊆ 词典校验+联动矩阵+报告）
   - 1 个模板：`glossary`（四类词条骨架）
@@ -180,7 +209,7 @@
 
 ### 新增
 - **spec 验证落盘报告**：`validate-spec-section.prompt.md` 验证完成后落盘 `docs/spec/reports/SPEC_REVIEW_{模块}_{日期}.md`，与 `DB_REVIEW_*` / `IF_REVIEW_*` 三者对齐——补齐「设计集成评审」采集 D1 需求维度的数据源（此前 D1 只能现场重验）
-- **db / api 真实样例**：`kit-internal/examples/db/01-data-dictionary-example.md`（10 列数据字典 + 7 系统字段 + 索引 + 三方联动）、`kit-internal/examples/api/01-restful-example.md`（RESTful 定义 + 统一包装 + spec/DB 联动），补足 few-shot 参考
+- **db / api 匿名合成样例**：`kit-internal/examples/db/01-data-dictionary-example.md`（10 列数据字典 + 7 系统字段 + 索引 + 三方联动）、`kit-internal/examples/api/01-restful-example.md`（RESTful 定义 + 统一包装 + spec/DB 联动），补足 few-shot 参考
 - kit-internal README 新增**发布到 npm** 流程（特殊字符路径需复制到临时目录发布）
 
 ### 变更
@@ -191,20 +220,20 @@
 - 同步重建 9 个编辑器配置文件版本号
 
 ### 移除
-- 删除历史遗留 `docs/spec/huaxin/`（华新项目业务文档，不属于通用工具包）
-- 解除 `spec-gen/output/assets/PMPM-A-01.drawio` git 追踪（项目生成物）
+- 删除历史遗留的项目业务文档目录（不属于通用工具包）
+- 解除 `spec-gen/output/assets/PLAN-A-01.drawio` git 追踪（项目生成物）
 - `.gitignore` 补全 `*.drawio` / `__pycache__/` / `docs/` 排除规则
 
 ### 修复
 - `copilot-instructions.md` 及 9 个编辑器配置版本号 v1.0.0 → 与 npm 包对齐
-- README：examples 树补 db/api，去除项目特定（华新）注释
+- README：examples 树补 db/api，去除项目特定（示例组织）注释
 
 ---
 
 ## [0.2.0] — 2026-05（新增设计集成评审 Skill，三份产物聚合评分闭环）
 
 ### 新增
-- **设计集成评审 Skill（`cross/design-review/`）**：把需求设计（spec）、数据库设计（DB）、接口设计（IF）三份产物聚合成一份带评分的评审报告——**第二层报告**，消费各产物 validate 结论再叠加跨文档联动与综合评分
+- **设计集成评审 Skill（`cross-design-review/`）**：把需求设计（spec）、数据库设计（DB）、接口设计（IF）三份产物聚合成一份带评分的评审报告——**第二层报告**，消费各产物 validate 结论再叠加跨文档联动与综合评分
   - 规范 `standards/07-design-review.md`：评分模型（维度得分 = 通过/(总−暂挂)，4 等级 🟢🟡🟠🔴）、**P0 一票否决闸门**、问题分级 P0/P1/P2/P3、**D4 跨文档三角联动 18 项**（spec→DB / spec→IF / IF→DB / 命名口径 / 可追溯）、追溯矩阵、报告六部分结构、评审执行清单 RV 12 项、复评协议、报告模板
   - 3 个 sub-skill：`01-collect`（采集三维度结论）/ `02-cross-check`（三角联动 + 追溯矩阵，核心）/ `03-score-report`（评分 + 分级 + 出报告）
   - 1 个模板：`review-report`（仪表盘 + P0 清单 + 追溯矩阵 + 修复任务）
@@ -224,27 +253,27 @@
 ## [0.1.0] — 2026-05（新增数据库设计 + 接口设计两大 Skill，全链路闭环）
 
 ### 新增
-- **数据库设计 Skill（`data/database/`）**：从需求说明书 IPO 表推导数据库设计，输出 ER 图 / DB 清单 / 数据字典（10 列标准表）/ DDL 全套产物
+- **数据库设计 Skill（`data-database-design/`）**：从需求说明书 IPO 表推导数据库设计，输出 ER 图 / DB 清单 / 数据字典（10 列标准表）/ DDL 全套产物
   - 规范 `standards/03-database.md`：命名约定、**7 个强制系统字段**、主键与索引、文档 4 节结构、变更履历设计、与 spec 字段联动、**30 项验证清单（DB-A/B/C/D/X 五组）**+ 闭环修复协议
   - 4 个 sub-skill：`01-erd`（实体推导）/ `02-table-design`（字段+系统字段+索引，核心）/ `03-ddl`（建表脚本）/ `04-db-review`（验证+自动修复+报告）
   - 3 个模板：`db-skeleton` / `data-dictionary`（10 列）/ `table-definition`
   - 2 个 prompt：`create-db-design` / `validate-db-design`
-- **接口设计 Skill（`api/restful/`）**：从需求说明书功能编码推导接口清单，覆盖系统集成报文 + HTTP/RESTful 两类
+- **接口设计 Skill（`api-interface-design/`）**：从需求说明书功能编码推导接口清单，覆盖系统集成报文 + HTTP/RESTful 两类
   - 规范 `standards/04-api-design.md`：接口分类与命名、HTTP/RESTful 规范、请求/应答报文结构、触发条件五要素、**统一响应包装 `{code,msg,data,traceId}`**、错误码、安全设计、幂等与重试、与 spec/DB 联动、**35 项验证清单（IF-A/B/C/D/X 五组）**+ 闭环修复协议
   - 4 个 sub-skill：`01-interface-list`（清单推导+覆盖检查）/ `02-integration`（集成报文，核心）/ `03-restful`（RESTful）/ `04-if-review`（验证+自动修复+报告）
   - 4 个模板：`if-skeleton` / `interface-list` / `integration-def` / `restful-def`
   - 2 个 prompt：`create-if-design` / `validate-if-design`
 - **spec → DB → 接口三角联动验证**：DB-X 校验 spec IPO 字段 ⊆ DB 字段；IF-X 校验 spec 功能编码 → 接口覆盖、接口字段英文名 ⊆ DB 字段英文名；跨文件缺对端时标「跨文件暂挂」
 
-### 设计基线（来自真实项目文档）
+### 设计基线（来自匿名合成场景文档）
 - 数据字典严格沿用 10 列：序号/字段英文名/字段中文名/主外键/是否索引/类型/长度/空否/缺省/备注
 - 接口报文沿用 6 列主档/明细档 + 触发条件六行表
-- 在真实格式基线上叠加最佳实践：系统字段、索引章节、命名前缀、统一响应、错误码、安全/幂等、接口编码唯一递增
+- 在既有格式基线上叠加最佳实践：系统字段、索引章节、命名前缀、统一响应、错误码、安全/幂等、接口编码唯一递增
 
 ### 变更
 - `_registry.md` / `standards/index.md` / `copilot-instructions.md` / `data/README.md` / `api/README.md`：数据库设计、接口设计状态 🔲 规划中 → ✅ 可用
 - 同步重建 9 个编辑器配置文件（CLAUDE.md / .cursorrules / .clinerules / .windsurfrules / AGENTS.md 等）
-- 新增 ADR-006（架构决策：复用 spec 闭环 + 真实文档格式基线）
+- 新增 ADR-006（架构决策：复用 spec 闭环 + 既有文档格式基线）
 
 ---
 
@@ -264,13 +293,13 @@
 - **验证总项数从 42 修正为 43**：逐组实际清点（A5+B6+C4+D4+E11+F3+G2+H2+X6）并全文同步；`create-spec` prompt / `SKILL.md` / `06-spec-doc.md` §十一标题、§十三、§十四 全部改为 43
 - **Sub-Skill 生成表列数对齐规范（M4）**：
   - `sub/01-overview.md`：岗位定义表 3 列→5 列（增序号/岗位职责/在本系统中的角色），专有名称表 2 列→4 列（增序号/类别）
-  - `sub/04-data-report.md`：BIP 输入表补「取数条件」列、数据输出表「触发条件」改为「推送时机」并补「用途说明」列、报表清单 5 列→8 列（增主要使用角色/数据刷新策略/导出支持）
+  - `sub/04-data-report.md`：外部输入表补「取数条件」列、数据输出表「触发条件」改为「推送时机」并补「用途说明」列、报表清单 5 列→8 列（增主要使用角色/数据刷新策略/导出支持）
   - `templates/doc-skeleton.md`：占位表列数同步
-- **活动编码格式统一（M5）**：`01-flowchart.md §七` 从旧 `FGPM-E-01` 格式重写为指向 spec §十.2/§十.3 单一权威（`[流程编码]-[E/C/M]-[NN]`），示例改为 `PMMB-A-02-E-01`；`06-spec-doc.md §十.3` 补 C/M 类型说明及 FC-01 互引要求；验证清单 C02、flowchart SKILL 快速参考均同步
+- **活动编码格式统一（M5）**：`01-flowchart.md §七` 从旧 `FGPM-E-01` 格式重写为指向 spec §十.2/§十.3 单一权威（`[流程编码]-[E/C/M]-[NN]`），示例改为 `BASE-A-02-E-01`；`06-spec-doc.md §十.3` 补 C/M 类型说明及 FC-01 互引要求；验证清单 C02、flowchart SKILL 快速参考均同步
 - **06-spec §六.2 流程说明格式（A1）**：从旧叙事段落（"第一步…第二步…"）改为五要素结构（`【触发条件】【主要角色】【核心路径】【关键判断】【流程产出】`），与 `sub/02-module-flow.md` 保持一致
 - **Sub-Skill 落盘路径统一（A2）**：02/03 均写入同一 `docs/spec/{项目代号}/4.{序号}-{子模块名}.md`，04 写入 `4.N-data-report.md`，消除多文件分散与五文件结构冲突；各 Sub-Skill 内旧 validate 调用的"X 类 N 项"硬编码改为引用适用检查组名
 - **`sub/01-overview.md` 删除冗余信息确认表（A7）**：删除与推断/确认双表重叠的「章节\|必须知道的信息」旧表，保留精简版
-- **`sub/03-function-ipo.md` PMMB001 示例补「重置」按钮（A6）**：列表页由 4 行→5 行，与标准列表页模板一致
+- **`sub/03-function-ipo.md` BASE001 示例补「重置」按钮（A6）**：列表页由 4 行→5 行，与标准列表页模板一致
 - **`sub/02-module-flow.md` 图例格式统一（B4）**：从自定义表格改为与 spec §六.2 一致的固定 list 格式
 
 ### 新增
@@ -295,10 +324,10 @@
 ### 新增
 - **`templates/doc-skeleton.md`**：完整文档「拆分蓝图」文件，明确规定一份说明书由 5 个文件组成（`ch1-3.md` / `4.x-{name}.md` × N / `4.N-data-report.md`），每文件的内容边界、生成职责、命名规则、7步生成操作流程、速查表
 - **`SKILL.md` 重写**：删除内联骨架模板，改为强制首读 `templates/doc-skeleton.md`，明确每个 Sub-Skill 对应写入哪个目标文件（流程节和 IPO 节写入同一子模块文件），新增「写入文件」列
-- **实际验证样例** `docs/spec/huaxin/4.3-plan.md`：PMPM007 炼钢计划编制完整 IPO 表（列表页7行+新增页3行，含状态机、四段式确认逻辑）
+- **匿名验证样例**：通用任务功能完整 IPO 表（列表页 + 新增页，含状态机和提交逻辑）
 
 ### 修复
-- `docs/spec/huaxin/4.3-plan.md` A10 自动修复：取消按钮处理逻辑去除「返回」字眼
+- 匿名 IPO 样例 A10 自动修复：取消按钮处理逻辑去除「返回」字眼
 
 ---
 
@@ -316,13 +345,13 @@
 ## [0.0.4] — 2026-05（需求设计说明书 Skill + 闭环升级）
 
 ### 新增
-- **需求设计说明书 Skill 全套**（`requirements/spec/`）
+- **需求设计说明书 Skill 全套**（`requirements-spec-doc/`）
   - 权威规范：`standards/06-spec-doc.md`（8章，18项验证清单，IPO表四段式格式规范）
   - 主入口：`SKILL.md` + `USAGE.md`
   - 4 个 Sub-Skill：总体设计 / 流程说明体系 / 功能 IPO 表（核心）/ 数据报表
   - VS Code Prompt：`create-spec-section.prompt.md`（含文件落盘）
   - VS Code Prompt：`validate-spec-section.prompt.md`（A类12项+B类8项+C类5项，自动修复）
-  - 真实样例：`kit-internal/examples/spec/`，4个文件（如菜项目 199 条目大纲、PMMB001 完整 IPO、流程画面对照表）
+  - 匿名合成样例：`kit-internal/examples/spec/`，4个文件（如菜项目 199 条目大纲、BASE001 完整 IPO、流程画面对照表）
 - **IPO 表 Sub-Skill 补充场景模板**：多 Tab 页 / 状态机功能 / 主从表功能
 
 ### 调整
@@ -358,8 +387,8 @@
 ### 新增
 - 流程图设计 Skill（draw.io 泳道图规范）
   - 完整规范文件：`.github/standards/01-flowchart.md`（15 章节，画布/泳道/节点/色标/连线/编码/验证）
-  - AI 触发文件：`.github/skills/requirements/flowchart/SKILL.md`
-  - 骨架模板：`.github/skills/requirements/flowchart/templates/skeleton.drawio`
+  - AI 触发文件：`.github/skills/requirements-flowchart/SKILL.md`
+  - 骨架模板：`.github/skills/requirements-flowchart/templates/skeleton.drawio`
   - VS Code 创建提示词：`.github/prompts/create-flowchart.prompt.md`
   - VS Code 验证提示词：`.github/prompts/validate-flowchart.prompt.md`
 - 多编辑器适配层（`_compat/`）支持 10 种编辑器

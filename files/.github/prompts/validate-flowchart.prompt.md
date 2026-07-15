@@ -1,97 +1,14 @@
 ---
-mode: agent
-description: '验证 draw.io 流程图是否符合 wl-skills-design 规范，输出结构化报告，并自动修复不合格项'
-tools:
-  - read_file
-  - replace_string_in_file
+agent: agent
+description: 只读验证 draw.io 业务流程图并输出 20 项结构化报告
 ---
 
-## 验证流程图（wl-skills-design 规范）
+# 验证业务流程图
 
-### 第一步：加载规范
+目标：`${input:file:请输入 .drawio 文件路径}`
 
-读取 `.github/standards/01-flowchart.md`，作为验证基准。
-
----
-
-### 第二步：读取目标文件
-
-读取用户指定的 `.drawio` 文件（或当前对话中提到的文件路径）。
-
----
-
-### 第三步：逐项检查（15 项）
-
-对文件内容逐一核查，标记每项结果（✅ PASS / ❌ FAIL / ⚠️ WARNING）：
-
-| 项 | 检查内容 | 检查方式 |
-|----|---------|---------|
-| 1 | 存在 Tab 1「流程标准定义」图例页 | `<diagram name>` 包含「流程标准定义」 |
-| 2 | 外层容器：蓝色（`fillColor=#dae8fc`），标题字号 22px | 检查 `childLayout=stackLayout` 容器 style |
-| 3 | 子泳道：灰色（`fillColor=#f5f5f5`），标题字号 18px | 检查直接子 swimlane style 和 value |
-| 4 | 每个操作节点是 3 层 GROUP（code / name / dept） | 检查所有 `style="group"` 是否有 3 个子 cell |
-| 5 | GROUP 宽度 ≈ 76.82px，总高 ≈ 54px | 检查 `<mxGeometry>` 的 width 和 height |
-| 6 | code 层：10px 字体，无自定义 fillColor（白底） | 检查第一子层 style 不含非白 fillColor |
-| 7 | name 层（第二子层）：颜色匹配模块色标 | 检查 fillColor 在色标表中 |
-| 8 | dept 层（第三子层）：`fillColor=#eeeeee` | 检查最后子层 fillColor |
-| 9 | 开始/结束：`shape=mxgraph.flowchart.terminator`，`fillColor=#76608a` | 检查 terminator 节点 style |
-| 10 | 所有判定菱形（rhombus）的出线有「是/否」标签 | 检查 rhombus 的边 value 或 edgeLabel |
-| 11 | 所有连接线使用 `edgeStyle=orthogonalEdgeStyle` | 检查 edge 类型，无斜线 |
-| 12 | 节点无几何重叠（同泳道内 x/y/w/h 不交叉） | 计算同 parent 下节点的 bounding box 是否有交集 |
-| 13 | 线下操作节点有 `dashed=1` | 检查 M 类编码节点的 GROUP style |
-| 14 | 活动编码格式符合规范（含字母段和数字段） | 正则验证编码层 value 的文本内容 |
-| 15 | 模块色标无串色（同流程域用同一色系） | 检查 name 层 fillColor 的一致性 |
-
----
-
-### 第四步：输出验证报告
-
-按以下格式输出（不省略任何项）：
-
-```
-## 验证报告：[文件名]
-
-生成时间：[当前时间]
-
-### 总体结论
-[✅ 全部通过 / ❌ 存在问题 / ⚠️ 存在警告]   通过 X / 15 项
-
----
-
-### ❌ 不合格项（需修复）
-
-- **第 N 项 [检查项名称]**
-  - 问题：[具体描述，包含 cell id 或节点名称]
-  - 修复方案：[一句话说明如何修复]
-
----
-
-### ⚠️ 警告项（建议改进）
-
-- **第 N 项 [检查项名称]**
-  - 说明：[描述]
-  - 建议：[改进方向]
-
----
-
-### ✅ 通过项
-
-- 第 1 项：图例页存在
-- 第 2 项：外层容器色标正确
-- ...（逐项列出）
-```
-
----
-
-### 第五步：自动修复不合格项
-
-如果存在 ❌ 不合格项，**直接使用 `replace_string_in_file` 逐项执行修复**，无需等待用户确认。
-
-修复优先级：
-1. **结构性错误**（连接线 parent 错误、source/target 层级错误、节点 GROUP 结构缺层）
-2. **样式错误**（颜色串色、字号不符、dashed 缺失）
-3. **内容错误**（缺少标签、编码格式）
-
-每项修复后，输出：`✅ 已修复第 N 项：[]问题描述]`
-
-如所有项均通过，输出：`✅ 流程图已符合所有规范，无需修复。`
+1. 读取 [流程图 Skill](../skills/requirements-flowchart/SKILL.md) 和 [流程图标准](../standards/01-flowchart.md)。
+2. 验证 XML 可解析、ID 唯一、引用有效、节点和连线完整。
+3. 执行标准第十五章 20 项检查；spec 缺失时将第 16–20 项标记 Pending。
+4. 输出规则 ID、结果、证据位置、问题和建议，不修改目标文件。
+5. 只有用户明确要求“修复”时才进入 repair 模式，展示差异后修改并复验。

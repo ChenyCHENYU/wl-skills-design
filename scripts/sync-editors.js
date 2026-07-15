@@ -4,8 +4,8 @@
  * sync-editors.js — 多编辑器配置同步器
  *
  * 单一数据源：files/.github/copilot-instructions.md
- * 由 _compat/editors.json + _compat/headers/*.txt 派生出 9 个编辑器配置文件，
- * 并从 package.json 注入版本号（消除 10 处手改版本号的漂移）。
+ * 由 _compat/editors.json + _compat/headers/*.txt 派生编辑器 profile，
+ * 并从 package.json 注入版本号。
  *
  * 用法：
  *   node scripts/sync-editors.js          # 写入所有编辑器配置
@@ -40,7 +40,7 @@ function buildOutputs() {
     .map((e) => {
       const outPath = path.join(FILES, e.outputPath);
       // GitHub Copilot：源文件即输出，不加头部
-      if (e.id === "github-copilot") {
+      if (e.id === "copilot") {
         return { id: e.id, outPath, content: body };
       }
       const header = fs.readFileSync(path.join(COMPAT, e.headerFile), "utf8");

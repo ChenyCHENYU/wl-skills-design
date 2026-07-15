@@ -36,7 +36,7 @@
         "id": "1001",
         "inspectionNo": "INS20260601001",
         "deviceCode": "DEV-001",
-        "deviceName": "1号连铸机",
+        "deviceName": "1号设备B",
         "inspectionDate": "2026-06-01",
         "inspector": "张工",
         "inspectionStatus": "SUBMITTED",

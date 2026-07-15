@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pyright: reportMissingImports=false
 """
 draw_flow.py  —  流程图双轨生成器
   1. generate_flow_png(flow, out_png)    → 用 Pillow 渲染泳道流程图 PNG，可直接插入 Word
@@ -8,14 +9,14 @@ draw_flow.py  —  流程图双轨生成器
 Flow 数据结构
 ─────────────
 flow = {
-    'id'    : 'PMPM-A-01',
-    'title' : '炼钢计划编制流程（PMPM-A-01）',
-    'lanes' : ['计划员', '车间主任', '系统'],
+    'id'    : 'DEMO-A-01',
+    'title' : '示例审批流程（DEMO-A-01）',
+    'lanes' : ['申请人', '审核人', '系统'],
     'nodes' : [
         # (node_id, lane_idx, type, main_label, sub_label)
         # type: 'start' | 'end' | 'process' | 'decision'
         ('E1', 2, 'start',    '开始',             ''),
-        ('N1', 2, 'process',  '接收炼钢订单',      'PMPM-E-01 / 系统'),
+        ('N1', 0, 'process',  '提交申请',          'DEMO-E-01 / 申请人'),
         ...
     ],
     'edges' : [
@@ -465,84 +466,40 @@ def img_placeholder_png(label: str, out_png: str,
     return out_png
 
 
-# ─────────────────────── 流程数据定义 ────────────────────────────────
-
-FLOW_PMPM_A01 = {
-    'id'   : 'PMPM-A-01',
-    'title': '炼钢计划编制流程（PMPM-A-01）',
-    'lanes': ['计划员', '车间主任', '系统'],
+DEMO_FLOW = {
+    'id': 'DEMO-A-01',
+    'title': '示例审批流程（DEMO-A-01）',
+    'lanes': ['申请人', '审核人', '系统'],
     'nodes': [
-        ('E1', 2, 'start',    '开始',              ''),
-        ('N1', 2, 'process',  '接收炼钢订单',       'PMPM-E-01 / 系统'),
-        ('N2', 0, 'process',  '编制炼钢计划',       'PMPM007 / 计划员'),
-        ('D1', 0, 'decision', '数据完整？',          ''),
-        ('N3', 0, 'process',  '修正并保存',          'PMPM007 / 计划员'),
-        ('N4', 1, 'process',  '确认 / 审核计划',    'PMPM008 / 车间主任'),
-        ('D2', 1, 'decision', '审核通过？',          ''),
-        ('N5', 0, 'process',  '修改并重提',          'PMPM007 / 计划员'),
-        ('N6', 1, 'process',  '下发计划至 MES',     'PMPM009 / 车间主任'),
-        ('N7', 2, 'process',  '推送下发通知',        'API-PMPM-001 / 系统'),
-        ('E2', 2, 'end',      '结束',               ''),
+        ('E1', 2, 'start', '开始', ''),
+        ('N1', 0, 'process', '提交申请', 'DEMO-E-01 / 申请人'),
+        ('N2', 2, 'process', '校验内容', 'DEMO-E-02 / 系统'),
+        ('D1', 1, 'decision', '是否通过？', ''),
+        ('N3', 0, 'process', '补充信息', 'DEMO-E-03 / 申请人'),
+        ('E2', 2, 'end', '结束', ''),
     ],
     'edges': [
         ('E1', 'N1', ''),
         ('N1', 'N2', ''),
         ('N2', 'D1', ''),
         ('D1', 'N3', '否'),
-        ('N3', 'N2', ''),       # 回环
-        ('D1', 'N4', '是'),
-        ('N4', 'D2', ''),
-        ('D2', 'N5', '否'),
-        ('N5', 'N4', ''),       # 回环
-        ('D2', 'N6', '是'),
-        ('N6', 'N7', ''),
-        ('N7', 'E2', ''),
-    ],
-}
-
-FLOW_PMPM_A06 = {
-    'id'   : 'PMPM-A-06',
-    'title': '利库计划流程（PMPM-A-06）',
-    'lanes': ['计划员', '库管员', '系统'],
-    'nodes': [
-        ('E1', 2, 'start',    '开始',              ''),
-        ('N1', 2, 'process',  '识别可利库库存',     'PMPM-E-03 / 系统'),
-        ('D1', 0, 'decision', '是否发起利库？',      ''),
-        ('N2', 0, 'process',  '创建利库计划',       'PMPM030 / 计划员'),
-        ('N3', 1, 'process',  '确认出库数量',        'PMPM030 / 库管员'),
-        ('D2', 1, 'decision', '数量匹配？',          ''),
-        ('N4', 0, 'process',  '调整计划数量',        'PMPM030 / 计划员'),
-        ('N5', 2, 'process',  '生成利库单',          'PMPM030 / 系统'),
-        ('E2', 2, 'end',      '结束',               ''),
-    ],
-    'edges': [
-        ('E1', 'N1', ''),
-        ('N1', 'D1', ''),
-        ('D1', 'E2', '否'),
-        ('D1', 'N2', '是'),
-        ('N2', 'N3', ''),
-        ('N3', 'D2', ''),
-        ('D2', 'N4', '否'),
-        ('N4', 'N3', ''),       # 回环
-        ('D2', 'N5', '是'),
-        ('N5', 'E2', ''),
+        ('N3', 'N1', ''),
+        ('D1', 'E2', '是'),
     ],
 }
 
 
 if __name__ == '__main__':
-    # 独立测试
-    import sys
     out_dir = os.path.dirname(os.path.abspath(__file__))
 
-    png1 = generate_flow_png(FLOW_PMPM_A01,
-                              os.path.join(out_dir, '_test_A01.png'))
+    png1 = generate_flow_png(DEMO_FLOW,
+                              os.path.join(out_dir, '_test_DEMO.png'))
     print('PNG  生成：', png1)
 
-    dx1 = generate_flow_drawio(FLOW_PMPM_A01,
-                                os.path.join(out_dir, '_test_A01.drawio'))
+    dx1 = generate_flow_drawio(DEMO_FLOW,
+                                os.path.join(out_dir, '_test_DEMO.drawio'))
     print('drawio 生成：', dx1)
 
-    ph = img_placeholder_png('PMPM007 炼钢计划编制',
+    ph = img_placeholder_png('示例列表页',
                               os.path.join(out_dir, '_test_placeholder.png'))
     print('占位图生成：', ph)

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ChenyCHENYU/wl-skills-design/design-model.schema.json",
+  "title": "wl-skills-design canonical design model",
+  "type": "object",
+  "required": ["schemaVersion", "projectCode", "fields", "functions", "traceLinks"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "projectCode": { "$ref": "#/$defs/id" },
+    "profiles": {
+      "type": "object",
+      "properties": {
+        "database": {
+          "type": "object",
+          "properties": {
+            "dialect": { "type": "string" },
+            "tenantMode": { "enum": ["single", "multi", "pending"] },
+            "deleteStrategy": { "enum": ["soft", "hard", "archive", "pending"] },
+            "auditStrategy": { "type": "string" },
+            "idStrategy": { "type": "string" },
+            "concurrencyStrategy": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "api": {
+          "type": "object",
+          "properties": {
+            "contract": { "enum": ["markdown", "openapi-3.1", "both"] },
+            "protocol": { "type": "string" },
+            "auth": { "type": "string" },
+            "responseModel": { "type": "string" },
+            "errorModel": { "type": "string" },
+            "pagination": { "type": "string" },
+            "versioning": { "type": "string" },
+            "idempotency": { "type": "string" },
+            "dateTime": { "type": "string" },
+            "decimal": { "type": "string" },
+            "batch": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "terms": { "type": "array", "items": { "$ref": "#/$defs/term" } },
+    "fields": { "type": "array", "items": { "$ref": "#/$defs/field" } },
+    "functions": { "type": "array", "items": { "$ref": "#/$defs/function" } },
+    "flows": { "type": "array", "items": { "$ref": "#/$defs/flow" } },
+    "screens": { "type": "array", "items": { "$ref": "#/$defs/screen" } },
+    "tables": { "type": "array", "items": { "$ref": "#/$defs/table" } },
+    "apis": { "type": "array", "items": { "$ref": "#/$defs/api" } },
+    "traceLinks": { "type": "array", "items": { "$ref": "#/$defs/trace" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]{1,63}$" },
+    "source": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "anchor": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "term": {
+      "type": "object",
+      "required": ["id", "name", "definition", "source"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "definition": { "type": "string", "minLength": 1 },
+        "aliases": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "required": ["id", "nameZh", "nameEn", "logicalType", "source"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "nameZh": { "type": "string", "minLength": 1 },
+        "nameEn": { "type": "string", "pattern": "^[a-z][A-Za-z0-9]*$" },
+        "logicalType": { "type": "string", "minLength": 1 },
+        "enumId": { "$ref": "#/$defs/id" },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": false
+    },
+    "function": {
+      "type": "object",
+      "required": ["id", "code", "name", "inputFieldIds", "outputFieldIds", "source"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "code": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "inputFieldIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "outputFieldIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": false
+    },
+    "flow": {
+      "type": "object",
+      "required": ["id", "code", "name", "activityIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "code": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "activityIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "screen": {
+      "type": "object",
+      "required": ["id", "name", "functionIds", "fieldIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "functionIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "fieldIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "table": {
+      "type": "object",
+      "required": ["id", "physicalName", "fieldIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "physicalName": { "type": "string", "minLength": 1 },
+        "fieldIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "api": {
+      "type": "object",
+      "required": ["id", "operationId", "functionIds", "requestFieldIds", "responseFieldIds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "operationId": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$" },
+        "functionIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "requestFieldIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+        "responseFieldIds": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "trace": {
+      "type": "object",
+      "required": ["from", "to", "type"],
+      "properties": {
+        "from": { "$ref": "#/$defs/id" },
+        "to": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["implements", "reads", "writes", "exposes", "renders", "depends-on"] }
+      },
+      "additionalProperties": false
+    }
+  }
+}

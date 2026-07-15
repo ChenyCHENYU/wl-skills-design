@@ -1,73 +1,33 @@
 # 使用指南
 
-> 本文档面向**业务团队成员**，说明如何在日常设计工作中使用 AI 技能包。
+## 触发能力
 
----
+直接描述“动作 + 设计对象”，例如：
 
-## 一、快速开始
+- “创建订单审批泳道图” → `requirements-flowchart`
+- “检查这份 IPO 表” → `requirements-spec-doc` 的只读验证
+- “按 PostgreSQL 设计订单表” → `data-database-design`
+- “输出 OpenAPI 3.1 接口契约” → `api-interface-design`
+- “评审需求、数据库和接口是否闭环” → `cross-design-review`
+- “订单状态新增驳回会影响哪些文档” → `cross-change-impact`
 
-### 1.1 触发 Skill
+路由有歧义时，Agent 只询问一个关键问题。普通代码 review、运行故障和依赖升级不会触发产品设计 Skill。
 
-直接在 AI 对话中描述你的设计需求，AI 会自动识别并调用对应 Skill：
+## 创建、验证与修复
 
-| 你说的话 | 触发的 Skill |
-|---------|------------|
-| "帮我画一个废钢采购流程图" | 流程图设计 ✅ |
-| "生成泳道图，流程是..." | 流程图设计 ✅ |
-| "帮我编写需求设计说明书 / IPO 表" | 需求设计说明书 ✅ |
-| "帮我设计数据库表结构 / 数据字典" | 数据库设计 ✅ |
-| "帮我设计接口 / 集成报文 / RESTful" | 接口设计 ✅ |
-| "对这个模块做整体设计评审、打分" | 设计集成评审 ✅ |
-| "帮我建术语字段词典 / 统一字段命名" | 术语字段词典 ✅ |
-| "帮我设计原型" | 原型设计（🔲 规划中） |
+- 创建：生成新产物，允许对本轮新内容执行验证、修复和复验。
+- 验证：默认只读，输出规则 ID、证据位置、差异和建议。
+- 修复：必须明确提出“修复”或同等授权；修改前先说明范围。
+- 评审/影响分析：默认只读，只在要求保存报告时创建报告文件。
 
-### 1.2 使用 Prompt 模板（VS Code Copilot）
+## VS Code Prompt
 
-在 VS Code Copilot 中，可以使用预置的 Prompt：
+在 Chat 中输入 `/` 选择 `.github/prompts/` 下的快捷入口。Prompt 使用当前 `agent` 元数据和相对链接；若环境缺少某工具，使用当前 Agent 的等价能力。
 
-1. 打开命令面板 `Ctrl+Shift+P`
-2. 输入 `Chat: Use Prompt` 或在聊天框输入 `/`
-3. 选择：
-   - `create-flowchart` — 引导式创建流程图
-   - `validate-flowchart` — 验证流程图是否符合规范
+## 统一设计模型
 
----
+跨文档较多时，可维护 `docs/design-model.json`。Schema 位于 `.github/skills/_design-model.schema.json`，说明见 [统一设计模型](./design-model.md)。
 
-## 二、流程图创建（完整流程）
+## 隐私
 
-### 2.1 新建流程图
-
-**推荐方式**：使用 `create-flowchart.prompt.md`
-
-```
-1. 打开 VS Code Copilot 聊天
-2. 选择 create-flowchart prompt
-3. 按提示回答：流程名称、所属系统、涉及部门
-4. AI 生成符合规范的 .drawio XML
-5. 将 XML 保存为 .drawio 文件后用 draw.io 打开
-```
-
-**手动方式**：
-
-```
-"我需要画一个[流程名称]的流程图，
- 涉及部门：[部门A、部门B...]，
- 主要步骤是：..."
-```
-
-### 2.2 验证已有流程图
-
-```
-"帮我验证 [文件路径]/xxx.drawio 是否符合规范"
-```
-
-或使用 `validate-flowchart.prompt.md`。
-
----
-
-## 三、注意事项
-
-- AI 输出的是 **draw.io XML 代码**，需要粘贴到 draw.io 的 `Extras → Edit Diagram` 中使用
-- 骨架模板位于：`.github/skills/requirements/flowchart/templates/skeleton.drawio`，可直接用 draw.io 打开作为起点
-- 完整规范见：`.github/standards/01-flowchart.md`
-- 有疑问或发现规范问题，请联系维护者更新 `standards/` 文件
+安装包中的 `examples/` 都是匿名合成场景。生成新样例前删除或替换客户、项目、地点、合同号、地址、账号、令牌和生产数据。

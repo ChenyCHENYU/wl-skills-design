@@ -1,60 +1,36 @@
-# 架构说明（业务团队视角）
+# 架构说明
 
-> 本文档面向**业务团队**，解释技能包的组织方式，帮助团队理解如何扩展和维护。
+## 分层
 
----
-
-## 一、整体架构
-
-```
-wl-skills-design
-│
-├── AI 工具链（.github/）          ← AI 可以读取的部分
-│   ├── copilot-instructions.md   ← AI 主入口（所有 AI 编辑器共用的内容源）
-│   ├── standards/                ← 设计规范（工具无关）
-│   ├── skills/                   ← AI 技能（触发层）
-│   ├── prompts/                  ← VS Code 提示词
-│   └── guides/                   ← 你正在读的文档
-│
-└── 维护者文档（kit-internal/）   ← AI 不读，仅维护者使用
-    ├── architecture.md           ← 架构决策记录
-    ├── CONTRIBUTING.md           ← 贡献指南
-    └── skills/README.md          ← Skill 规划清单
+```text
+_manifest.json   路由、状态、动作和上下文事实源
+SKILL.md         原生发现元数据与核心工作流
+standards/       唯一规则源
+sub/             按需加载的领域步骤
+templates/       无业务数据的输出骨架
+examples/        匿名合成质量对照
+prompts/         人工调用快捷入口
+guides/          人读文档
 ```
 
----
+Skill 目录扁平化放在 `.github/skills/{skill-name}/`，目录名必须与 frontmatter `name` 一致。SKILL 只保留 `name`、`description` 和必要流程，通过相对 Markdown 链接渐进加载资源。
 
-## 二、核心设计理念
+## 路由
 
-### 2.1 规范与工具分离
+动作优先级为 impact、review、validate、repair、maintain、create。精确领域词、负向词、最低分和领先分差共同决定是否运行；回归语料在 `_route-evals.json`。
 
-```
-standards/01-flowchart.md    ← 规范：说"应该怎么画"（工具无关）
-skills/requirements/flowchart/SKILL.md  ← 技能：说"如何在 draw.io 里画"
-```
+## 安全边界
 
-这样设计的好处：规范可以被多个工具的 Skill 复用，不和具体工具绑定。
+验证、评审和影响分析默认只读。创建过程可修复本轮新产物；修改既有文件必须获得明确授权。
 
-### 2.2 单一数据源
+## 多编辑器
 
-Skill 的触发关键词只在 `skills/_registry.md` 中定义一次，避免分散维护造成不一致。
+`.github/copilot-instructions.md` 是精简调度正文，`_compat/editors.json` 和 headers 生成 9 个 profile。CLI 默认只安装 `agents`，避免同一客户端同时读取 AGENTS、Copilot、Cursor 或兼容规则造成重复上下文。
 
-### 2.3 多编辑器适配
+## 扩展 Skill
 
-内容只维护在 `copilot-instructions.md`，通过 `skills/_compat/` 中的头部模板，适配 10 种 AI 编辑器。
-
----
-
-## 三、扩展新能力
-
-### 新增设计规范
-
-1. 在 `standards/` 下创建编号文件（当前已有 01/03/04/06/07/08，下一个是 `09-xxx.md`；02/05 为规划 stub）
-2. 更新 `standards/index.md` 的规范表格
-
-### 新增 AI 技能
-
-1. 在对应类别目录创建 `SKILL.md` + `USAGE.md`
-2. 在 `_registry.md` 中注册触发词
-
-详细步骤：`kit-internal/CONTRIBUTING.md`
+1. 创建 `.github/skills/{skill-name}/SKILL.md`，名称使用小写连字符。
+2. frontmatter 只写 `name` 和包含使用场景/负例的 `description`。
+3. 详细规则放 standards，资源放 sub/templates/examples 并从 SKILL 直接链接。
+4. 更新 manifest、registry、路由语料、README 和测试。
+5. 运行 `npm run sync && npm run verify`。
