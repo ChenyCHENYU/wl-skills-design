@@ -26,6 +26,10 @@ try {
   assert.ok(!fs.existsSync(path.join(agents, "CLAUDE.md")));
   assert.ok(!fs.existsSync(path.join(agents, ".github", "copilot-instructions.md")));
   run(["doctor", "--json"], agents);
+  const modelDir = path.join(agents, "docs");
+  fs.mkdirSync(modelDir);
+  fs.writeFileSync(path.join(modelDir, "design-model.json"), JSON.stringify({ schemaVersion: 1, projectCode: "SMOKE_APP", fields: [], functions: [], traceLinks: [] }));
+  run(["validate-model", "--json"], agents);
 
   const cursor = path.join(tempRoot, "cursor");
   fs.mkdirSync(cursor);

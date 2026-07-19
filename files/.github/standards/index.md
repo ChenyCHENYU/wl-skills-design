@@ -12,7 +12,7 @@
 | 02 | [02-prototype.md](./02-prototype.md) | 系统需求 · 原型 | ✅ v1.0 | 用户要求设计原型、页面标注、交互模式、原型验证 |
 | 03 | [03-database.md](./03-database.md) | 数据设计 · 数据库 | ✅ v1.0 | 用户要求设计数据库、ER 图、表结构、数据字典、DDL |
 | 04 | [04-api-design.md](./04-api-design.md) | 接口设计 · RESTful | ✅ v1.0 | 用户要求设计接口、API 文档、报文、集成接口、OpenAPI |
-| 05 | [05-code-design.md](./05-code-design.md) | 代码设计 · 业务逻辑 | 🔲 规划中 | 用户要求设计代码结构、业务逻辑分层 |
+| 05 | [05-code-design.md](./05-code-design.md) | 代码结构 · 模块分层 · 契约边界 | ✅ v1.0 | 用户要求代码结构、模块划分、分层或领域边界 |
 | 06 | [06-spec-doc.md](./06-spec-doc.md) | 系统需求设计 · 说明书 | ✅ v1.0 | 用户要求编写需求设计说明书、IPO 表、功能规格、流程说明 |
 | 07 | [07-design-review.md](./07-design-review.md) | 跨域 · 集成评审 | ✅ v1.0 | 用户要求评审、评分、出评审报告、检查三份设计一致性、追溯矩阵 |
 | 08 | [08-glossary.md](./08-glossary.md) | 跨域 · 术语字段词典 | ✅ v1.0 | 用户要求建术语表/字段词典、统一字段命名、对齐 spec/DB/接口字段、统一语言 |

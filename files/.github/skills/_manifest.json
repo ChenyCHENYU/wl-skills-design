@@ -198,23 +198,23 @@
     {
       "id": "code.architecture",
       "name": "代码结构设计",
-      "status": "planned",
-      "version": "0.0",
-      "priority": 0,
+      "status": "released",
+      "version": "1.0",
+      "priority": 55,
       "skillPath": "code-architecture/SKILL.md",
       "standardPaths": ["standards/05-code-design.md"],
       "promptPaths": [],
-      "intents": ["create"],
+      "intents": ["create", "validate", "review", "repair"],
       "triggers": {
-        "exact": ["代码结构", "分层设计", "领域模型", "ddd"],
-        "negative": []
+        "exact": ["代码结构", "分层设计", "模块划分", "领域模型", "架构设计", "ddd"],
+        "negative": ["代码 review", "pr review", "依赖升级", "运行故障"]
       },
       "context": {
         "blocking": ["模块边界", "技术栈"],
         "optional": ["领域对象", "依赖方向"],
         "signals": ["代码", "架构", "分层", "模块"]
       },
-      "outputs": ["代码结构设计建议"]
+      "outputs": ["代码结构设计", "模块依赖矩阵", "契约边界", "质量门与追踪矩阵"]
     }
   ]
 }

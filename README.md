@@ -1,6 +1,6 @@
 # wl-skills-design
 
-产品设计 Agent Skills 包：9 份设计标准、8 个可发现 Skill、15 个 VS Code Prompt、匿名合成样例和安全安装 CLI。
+产品设计 Agent Skills 包：9 份设计标准、9 个可发现 Skill、15 个 VS Code Prompt、机器设计模型校验、匿名合成样例和安全安装 CLI。
 
 ## 快速开始
 
@@ -33,6 +33,7 @@ npx @agile-team/wl-skills-design update
 | `cross-glossary` | 术语、字段、枚举、编码注册 | 18 项 |
 | `cross-design-review` | 评分、问题、追溯矩阵 | D4 18 项 + RV 12 项 |
 | `cross-change-impact` | 影响矩阵、补丁任务、复验顺序 | 20 项 |
+| `code-architecture` | 模块边界、分层、契约和质量门 | AC01–AC20 |
 
 Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全一致，只保留最小元数据，并通过相对链接按需加载标准、模板和匿名合成样例。
 
@@ -52,6 +53,7 @@ wl-skills-design init       安装
 wl-skills-design update     安全升级
 wl-skills-design status     查看受管文件状态
 wl-skills-design doctor     检查安装和 Skill 清单
+wl-skills-design validate-model  只读校验设计模型和引用完整性
 wl-skills-design restore    恢复最近一次变更
 wl-skills-design uninstall  安全卸载
 ```
@@ -110,7 +112,7 @@ guides/        人读说明，不参与 Skill 发现
 
 新项目可选择维护 `docs/design-model.json`，schema 位于 `.github/skills/_design-model.schema.json`。它使用稳定 ID 表达字段、功能、流程、页面、表、API 和追踪关系，供跨文档集合验证使用；Markdown、DDL、OpenAPI 和 draw.io 仍是交付层。
 
-详见安装后的 `.github/guides/design-model.md`。
+它是可选增强，不是 kit/bd 的硬依赖。运行 `wl-skills-design validate-model --model docs/design-model.json` 可机械检查稳定 ID 和引用；跨包默认约定见安装后的 `.github/guides/delivery-compatibility.md`。
 
 ## 包结构
 
@@ -118,7 +120,7 @@ guides/        人读说明，不参与 Skill 发现
 files/
 ├── .github/
 │   ├── standards/             9 份标准
-│   ├── skills/                8 个已发布 Skill + manifest/schema
+│   ├── skills/                9 个已发布 Skill + manifest/schema
 │   ├── prompts/               15 个 Prompt
 │   └── guides/                使用、架构和各 Skill 指南
 ├── AGENTS.md / CLAUDE.md      适配器产物

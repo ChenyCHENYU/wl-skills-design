@@ -21,6 +21,8 @@
     { "prompt": "OpenAPI specification", "skill": "api.restful", "intent": "create" },
     { "prompt": "帮我做代码 review", "skill": null, "intent": "review" },
     { "prompt": "排查数据库连接报错", "skill": null, "intent": "create" },
+    { "prompt": "设计前后端模块划分和依赖方向", "skill": "code.architecture", "intent": "create" },
+    { "prompt": "评审这份代码结构设计", "skill": "code.architecture", "intent": "review" },
     { "prompt": "分析依赖包升级影响", "skill": null, "intent": "impact" }
   ]
 }

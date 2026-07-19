@@ -2,6 +2,15 @@
 
 `docs/design-model.json` 是可选的机器可读事实层，schema 位于 [设计模型 schema](../skills/_design-model.schema.json)。Markdown、DDL、OpenAPI、原型和 draw.io 仍是交付层。
 
+它不是 kit 或 bd 的必需输入。未维护 design-model 时，下游仍可从已评审需求独立建立契约；维护时则使用稳定 ID 增强跨文档追踪。
+
+```bash
+wl-skills-design validate-model --model docs/design-model.json
+wl-skills-design validate-model --model docs/design-model.json --json
+```
+
+校验器检查 JSON、稳定 ID 格式与全局唯一性、字段/功能/页面/表/API 引用、追踪端点和兼容 profile 版本。后端实体 externalId 对应 `table.id`，前端页面 externalId 对应 `screen.id`，字段对应 `field.id`。
+
 ## 使用原则
 
 1. 为字段、功能、流程、页面、表和 API 分配稳定 ID。

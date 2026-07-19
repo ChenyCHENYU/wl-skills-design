@@ -6,6 +6,22 @@
 
 ---
 
+## [0.8.0] — 2026-07-18（独立闭环与可选兼容协议）
+
+### 新增
+
+- 发布 `code-architecture` Skill 与 AC01–AC20，覆盖模块边界、前后端分层、契约、依赖方向、测试和发布质量门。
+- 新增 `validate-model` 只读命令，机械校验实际项目 design-model 的稳定 ID、引用完整性、追踪端点和 profile 版本。
+- 内置 WL 交付兼容协议 v1 与 `jh4j3-openapi3@1.0` 快照，明确 kit/bd 独立使用、可选握手和自定义 profile 规则。
+
+### 修复与变更
+
+- 明确 design-model 是可选追踪增强，不是前后端生成的硬依赖。
+- 修正稳定 ID 语义：前端页面映射 `screen.id`，后端实体映射 `table.id`，字段映射 `field.id`。
+- 设计模型 API profile 增加 `profileId/protocolVersion`，避免跨包默认约定漂移。
+
+---
+
 ## [0.7.1] — 2026-07-15（原生 Skill、安全路由与隐私加固）
 
 ### 新增

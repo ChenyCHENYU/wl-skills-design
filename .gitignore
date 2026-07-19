@@ -38,3 +38,7 @@ spec-gen/scripts/__pycache__/
 docs/
 spec-gen/__pycache__/
 spec-gen/scripts/__pycache__/
+
+# drawio/office 临时锁文件
+~$*.dtmp
+~$*.docx#

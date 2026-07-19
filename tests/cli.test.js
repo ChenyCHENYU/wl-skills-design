@@ -49,6 +49,37 @@ test("require CLI 不执行安装", () => withTemp((dir) => {
   assert.deepStrictEqual(fs.readdirSync(dir), []);
 }));
 
+test("validate-model 只读校验实际项目模型", () => withTemp((dir) => {
+  fs.mkdirSync(path.join(dir, "docs"));
+  fs.writeFileSync(path.join(dir, "docs", "design-model.json"), JSON.stringify({
+    schemaVersion: 1,
+    projectCode: "TASK_APP",
+    fields: [],
+    functions: [],
+    traceLinks: [],
+  }), "utf8");
+  const before = fs.readdirSync(dir).sort();
+  const result = runCli(["validate-model", "--json"], dir);
+  assert.strictEqual(result.code, 0, result.stderr);
+  assert.strictEqual(JSON.parse(result.stdout).ok, true);
+  assert.deepStrictEqual(fs.readdirSync(dir).sort(), before);
+  assert.ok(!fs.existsSync(path.join(dir, ".wl-skills-design")));
+}));
+
+test("validate-model 对断链引用返回失败", () => withTemp((dir) => {
+  const file = path.join(dir, "model.json");
+  fs.writeFileSync(file, JSON.stringify({
+    schemaVersion: 1,
+    projectCode: "TASK_APP",
+    fields: [],
+    functions: [{ id: "FUNC_QUERY", code: "QUERY", name: "查询", inputFieldIds: ["FIELD_MISSING"], outputFieldIds: [], source: { path: "requirements.md" } }],
+    traceLinks: [],
+  }), "utf8");
+  const result = runCli(["validate-model", "--model", file, "--json"], dir);
+  assert.strictEqual(result.code, 1);
+  assert.ok(JSON.parse(result.stdout).errors.some((item) => item.code === "DM008"));
+}));
+
 test("init 默认只安装 agents profile 并写状态", () => withTemp((dir) => {
   const result = runCli(["init", "--json"], dir);
   assert.strictEqual(result.code, 0, result.stderr);

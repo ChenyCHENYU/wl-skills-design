@@ -1,6 +1,6 @@
 # wl-skills-design 产品设计调度说明
 
-> 版本：v0.7.1。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v0.8.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 
@@ -18,6 +18,7 @@
 - 缺失业务事实使用 `【待补充：说明】`，不得编造客户、系统、字段或审批结论。
 - 模板不得包含组织名称、项目标识、地点、业务单号或线上业务数据。
 - 工作区存在 `docs/design-model.json` 时，优先用稳定 ID 做跨文档集合校验；冲突先报告，不静默覆盖。
+- 各包必须独立可用；WL 兼容协议是内置约定而非包依赖。没有 design-model 时不得阻断前后端契约建立。
 - 输出必须说明所用 Skill、标准、产物路径、验证结果和暂挂项。
 
 ## 能力索引
@@ -30,5 +31,6 @@
 - `cross-glossary`：术语、字段、枚举与编码注册
 - `cross-design-review`：跨文档评审和追溯矩阵
 - `cross-change-impact`：增量变更影响矩阵和补丁计划
+- `code-architecture`：模块边界、分层依赖、契约和质量门设计
 
 人读索引见 `.github/skills/_registry.md`，使用说明见 `.github/guides/usage.md`。

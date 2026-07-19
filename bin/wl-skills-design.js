@@ -9,6 +9,7 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const FILES_DIR = path.join(ROOT, "files");
 const PACKAGE = require(path.join(ROOT, "package.json"));
+const { validateDesignModelFile } = require(path.join(ROOT, "lib", "design-model.js"));
 const EDITORS_FILE = path.join(
   FILES_DIR,
   ".github",
@@ -51,10 +52,11 @@ function parseArgs(argv) {
     json: false,
     editor: null,
     target: null,
+    model: null,
     help: false,
     version: false,
   };
-  const commands = new Set(["init", "update", "status", "doctor", "restore", "uninstall"]);
+  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "restore", "uninstall"]);
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -68,12 +70,13 @@ function parseArgs(argv) {
     else if (arg === "--json") result.json = true;
     else if (arg === "--help" || arg === "-h") result.help = true;
     else if (arg === "--version" || arg === "-v") result.version = true;
-    else if (arg === "--editor" || arg === "--target") {
+    else if (arg === "--editor" || arg === "--target" || arg === "--model") {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result[arg.slice(2)] = value;
     } else if (arg.startsWith("--editor=")) result.editor = arg.slice(9);
     else if (arg.startsWith("--target=")) result.target = arg.slice(9);
+    else if (arg.startsWith("--model=")) result.model = arg.slice(8);
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
     else throw new Error(`未知命令：${arg}`);
   }
@@ -86,19 +89,21 @@ function helpText(editors) {
 wl-skills-design v${PACKAGE.version}
 
 用法：
-  wl-skills-design [init|update|status|doctor|restore|uninstall] [选项]
+  wl-skills-design [init|update|status|doctor|validate-model|restore|uninstall] [选项]
 
 命令：
   init       安装技能包；默认使用 agents profile
   update     安全升级；本地改动默认视为冲突
   status     查看受管文件状态
   doctor     检查安装状态与 Skill 清单
+  validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
   restore    恢复最近一次安装、升级或卸载前状态
   uninstall  卸载受管文件；不会静默删除本地改动
 
 选项：
   --editor <id[,id]>  选择适配器：${ids} | all
   --target <dir>      目标项目目录，默认当前目录
+  --model <file>      design-model 路径，默认 docs/design-model.json
   --dry-run           只输出计划，不写文件
   --force             明确覆盖或删除本地改动，并先备份
   --json              输出机器可读 JSON
@@ -109,7 +114,23 @@ wl-skills-design v${PACKAGE.version}
   npx @agile-team/wl-skills-design init --editor agents
   npx @agile-team/wl-skills-design init --editor cursor --target ./my-project
   npx @agile-team/wl-skills-design update --dry-run
+  npx @agile-team/wl-skills-design validate-model --model docs/design-model.json --json
 `;
+}
+
+function runValidateModel(options, target) {
+  const requested = options.model || path.join("docs", "design-model.json");
+  const modelFile = path.isAbsolute(requested) ? requested : path.resolve(target, requested);
+  const result = validateDesignModelFile(modelFile);
+  const output = { ...result, model: normalizeRel(path.relative(target, modelFile)) };
+  if (options.json) console.log(JSON.stringify(output, null, 2));
+  else {
+    console.log(`\n  design-model 校验：${output.model}`);
+    for (const issue of result.errors) console.error(`  ✖ ${issue.code} ${issue.location}: ${issue.message}`);
+    for (const issue of result.warnings) console.warn(`  ! ${issue.code} ${issue.location}: ${issue.message}`);
+    console.log(`\n  ${result.ok ? "✔" : "✖"} errors=${result.summary.errors}, warnings=${result.summary.warnings}\n`);
+  }
+  return result.ok ? 0 : 1;
 }
 
 function readEditors() {
@@ -505,11 +526,11 @@ function main(argv = process.argv.slice(2)) {
     return 0;
   }
   const target = path.resolve(process.cwd(), options.target || ".");
-  if (!options.dryRun) fs.mkdirSync(target, { recursive: true });
-
   if (options.command === "init" || options.command === "update") {
+    if (!options.dryRun) fs.mkdirSync(target, { recursive: true });
     return runInstall(options, target, editors);
   }
+  if (options.command === "validate-model") return runValidateModel(options, target);
   if (options.command === "status") return runStatus(options, target, false);
   if (options.command === "doctor") return runStatus(options, target, true);
   if (options.command === "restore") return runRestore(options, target);

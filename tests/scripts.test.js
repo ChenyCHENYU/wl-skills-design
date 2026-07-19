@@ -44,6 +44,15 @@ test("所有已发布 Skill 满足原生命名和最小 frontmatter", () => {
   }
 });
 
+test("兼容协议快照使用独立模式和默认 jh4j3 profile", () => {
+  const profile = JSON.parse(fs.readFileSync(path.join(ROOT, "files", ".github", "contracts", "wl-delivery-profile.v1.json"), "utf8"));
+  assert.strictEqual(profile.protocolVersion, "1.0");
+  assert.strictEqual(profile.profileId, "jh4j3-openapi3");
+  assert.strictEqual(profile.independentUse, true);
+  assert.deepStrictEqual(profile.transport.operations.update, { method: "PUT", path: "updateById" });
+  assert.deepStrictEqual(profile.transport.operations.remove, { method: "DELETE", path: "deleteById/{id}" });
+});
+
 test("路由回归语料全部命中", () => {
   const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
   const evals = JSON.parse(fs.readFileSync(EVALS, "utf8"));
