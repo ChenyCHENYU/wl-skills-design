@@ -11,6 +11,17 @@ wl-skills-design validate-model --model docs/design-model.json --json
 
 校验器检查 JSON、稳定 ID 格式与全局唯一性、字段/功能/页面/表/API 引用、追踪端点和兼容 profile 版本。后端实体 externalId 对应 `table.id`，前端页面 externalId 对应 `screen.id`，字段对应 `field.id`。
 
+错误码速查：
+
+| 码 | 含义 |
+|----|------|
+| DM001–DM002 | 稳定 ID 格式非法 / 引用数组重复 |
+| DM003–DM005 | schemaVersion、必填数组或集合元素类型错误 |
+| DM006 / DM007–DM010 | 稳定 ID 重复 / 各类引用字段不是数组或引用断链 |
+| DM011–DM013 | 追踪端点、追踪类型或 API profile 协议问题 |
+| DM014–DM018 | 缺少必填字段、含未定义字段、`nameEn`/`operationId` 命名非法、`source.path` 缺失 |
+| DM101–DM104 | 警告：协议版本漂移、页面/表/API 集合为空 |
+
 ## 使用原则
 
 1. 为字段、功能、流程、页面、表和 API 分配稳定 ID。

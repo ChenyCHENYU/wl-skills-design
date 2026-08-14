@@ -161,9 +161,9 @@ SET_IF_FUNC   = { 接口覆盖的功能编码 }
 
 | spec 功能编码 | 功能名称 | 对应接口 | 落库表 | 状态 |
 |--------------|---------|---------|--------|------|
-| PP-OM-001 | 创建订单 | order_create | ordr_order_main | ✅ 闭环 |
-| PP-OM-002 | 订单查询 | order_query | ordr_order_main | ✅ 闭环 |
-| PP-OM-003 | 订单作废 | —（缺接口） | ordr_order_main | ❌ 断点(V05/P0) |
+| DEMO-OM-001 | 创建订单 | order_create | ordr_order_main | ✅ 闭环 |
+| DEMO-OM-002 | 订单查询 | order_query | ordr_order_main | ✅ 闭环 |
+| DEMO-OM-003 | 订单作废 | —（缺接口） | ordr_order_main | ❌ 断点(V05/P0) |
 
 > 状态取值：`✅ 闭环` / `❌ 断点(项号/等级)` / `⚠️ 暂挂(缺对端)`。
 
@@ -269,7 +269,7 @@ Step 7  结论：给出「可进入开发 / 修复后复评 / 重新设计」与
 | ID | 维度 | 位置 | 问题 | 影响 | 修复建议 |
 |----|------|------|------|------|---------|
 | P0-1 | D2 | ordr_order_main | 缺主键 | 数据无法唯一定位 | 增加雪花 id 主键 |
-| P0-2 | D4/V05 | spec PP-OM-003 | 「订单作废」功能无接口 | 功能无法实现 | 补 order_cancel 接口 |
+| P0-2 | D4/V05 | spec DEMO-OM-003 | 「订单作废」功能无接口 | 功能无法实现 | 补 order_cancel 接口 |
 | … | | | | | |
 
 ## 三、各维度详细分析
@@ -290,8 +290,8 @@ Step 7  结论：给出「可进入开发 / 修复后复评 / 重新设计」与
 
 | spec 功能 | 功能名 | 接口 | 落库表 | 状态 |
 |----------|-------|------|--------|------|
-| PP-OM-001 | 创建订单 | order_create | ordr_order_main | ✅ 闭环 |
-| PP-OM-003 | 订单作废 | — | ordr_order_main | ❌ 断点(V05/P0) |
+| DEMO-OM-001 | 创建订单 | order_create | ordr_order_main | ✅ 闭环 |
+| DEMO-OM-003 | 订单作废 | — | ordr_order_main | ❌ 断点(V05/P0) |
 
 ## 五、修复任务清单（按优先级）
 

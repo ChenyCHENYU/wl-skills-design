@@ -54,8 +54,8 @@ SET_IF_FUNC   = 接口覆盖的功能编码
 
 | spec 功能编码 | 功能名称 | 对应接口 | 落库表 | 状态 |
 |--------------|---------|---------|--------|------|
-| PP-OM-001 | 创建订单 | order_create | ordr_order_main | ✅ 闭环 |
-| PP-OM-003 | 订单作废 | —(缺) | ordr_order_main | ❌ 断点(V05/P0) |
+| DEMO-OM-001 | 创建订单 | order_create | ordr_order_main | ✅ 闭环 |
+| DEMO-OM-003 | 订单作废 | —(缺) | ordr_order_main | ❌ 断点(V05/P0) |
 
 状态：`✅ 闭环` / `❌ 断点(项号/等级)` / `⚠️ 暂挂(缺对端)`。
 

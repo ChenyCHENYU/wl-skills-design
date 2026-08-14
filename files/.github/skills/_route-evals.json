@@ -23,6 +23,14 @@
     { "prompt": "排查数据库连接报错", "skill": null, "intent": "create" },
     { "prompt": "设计前后端模块划分和依赖方向", "skill": "code.architecture", "intent": "create" },
     { "prompt": "评审这份代码结构设计", "skill": "code.architecture", "intent": "review" },
-    { "prompt": "分析依赖包升级影响", "skill": null, "intent": "impact" }
+    { "prompt": "分析依赖包升级影响", "skill": null, "intent": "impact" },
+    { "prompt": "帮我 review DB 设计", "skill": null, "intent": "review" },
+    { "prompt": "排查接口调用报错", "skill": null, "intent": "create" },
+    { "prompt": "时序图设计", "skill": null, "intent": "create" },
+    { "prompt": "导出 PDF 报表", "skill": null, "intent": "create" },
+    { "prompt": "整改数据库设计", "skill": "data.database", "intent": "repair" },
+    { "prompt": "走查需求说明书", "skill": "requirements.spec", "intent": "review" },
+    { "prompt": "审查一下泳道图", "skill": "requirements.flowchart", "intent": "review" },
+    { "prompt": "统一字段命名并出接口设计", "skill": "api.restful", "intent": "maintain" }
   ]
 }

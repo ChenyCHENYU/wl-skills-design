@@ -27,7 +27,7 @@ npx @agile-team/wl-skills-design update
 |-------|------|------|
 | `requirements-flowchart` | draw.io 泳道流程图 | 20 项 |
 | `requirements-prototype` | D1–D3 原型标注 | 23 项 |
-| `requirements-spec-doc` | 需求说明书、IPO | 43 项 |
+| `requirements-spec-doc` | 需求说明书、IPO（含 GB 颗粒度基线） | 43 项 |
 | `data-database-design` | ER、数据字典、DDL | 34 项 |
 | `api-interface-design` | 集成报文、RESTful、可选 OpenAPI 3.1 | 38 项 |
 | `cross-glossary` | 术语、字段、枚举、编码注册 | 18 项 |
@@ -37,13 +37,18 @@ npx @agile-team/wl-skills-design update
 
 Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全一致，只保留最小元数据，并通过相对链接按需加载标准、模板和匿名合成样例。
 
+## IPO 颗粒度基线
+
+需求说明书标准内置 GB 颗粒度基线（§5.1 按钮级覆盖、§5.2 GB1–GB8）：命令按钮处理逻辑按编号步骤书写，一步一事，写明数据对象与字段、字典稳定值、前置校验、审计与履历写入、联动与外部同步、异常文案原文和展示规则；执行类活动与命令按钮一一对应，作为后端命令端点的需求侧投影。匿名对照样例见 `requirements-spec-doc/examples/05-ipo-granularity.md`。
+
 ## 安全行为
 
 - `validate`、`review`、`impact` 默认只读，不自动修改既有设计文件。
 - `repair` 需要用户明确授权；创建流程只可自动修复本轮新产物。
 - `init` 和 `update` 先全量预检。发现冲突时退出码为 `2`，不会留下半套文件。
 - 受管文件记录在 `.wl-skills-design/state.json`，本地改动默认受保护。
-- 变更前生成事务备份，保留最近 5 份，可用 `restore` 恢复。
+- 变更前生成事务备份，保留最近 5 份；`restore` 覆盖现存文件前再生成一份安全快照，可再次 `restore` 撤销恢复。
+- 写入操作持有锁文件，防止并发安装互相破坏。
 - 默认只安装一个编辑器 profile，避免规则重复注入。
 
 ## CLI
@@ -54,8 +59,8 @@ wl-skills-design update     安全升级
 wl-skills-design status     查看受管文件状态
 wl-skills-design doctor     检查安装和 Skill 清单
 wl-skills-design validate-model  只读校验设计模型和引用完整性
-wl-skills-design restore    恢复最近一次变更
-wl-skills-design uninstall  安全卸载
+wl-skills-design restore    恢复最近一次变更（--list 查看，--id 指定）
+wl-skills-design uninstall  安全卸载（--purge 同时清除备份与状态）
 ```
 
 通用选项：
@@ -65,6 +70,9 @@ wl-skills-design uninstall  安全卸载
 --target <dir>      指定目标项目
 --dry-run           只预检
 --force             明确覆盖本地改动，覆盖前备份
+--list              restore：列出可用备份
+--id <backupId>     restore：恢复指定备份
+--purge             uninstall：同时删除备份与状态目录
 --json              机器可读输出
 ```
 

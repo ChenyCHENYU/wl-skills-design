@@ -55,7 +55,7 @@ ER 图 + DB 清单 + 数据字典    + 可配置系统字段 profile
 | 模块码 | 2 位小写，标识子模块 | `om`（订单）、`pm`（计划）|
 | 业务含义 | 蛇形小写，名词，可多段 | `order_main`、`plan_detail` |
 
-> 示例：`ordr_order_main`（生产-订单-订单主表）、`plan_plan_detail`（生产-计划-计划明细表）。
+> 示例：`ordr_order_main`（订单域-订单-订单主表）、`plan_plan_detail`（计划域-计划-计划明细表）。
 
 ### 1.2 表后缀语义（固定词表）
 

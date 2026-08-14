@@ -163,3 +163,39 @@ test("干净安装可以卸载并恢复", () => withTemp((dir) => {
   assert.strictEqual(runCli(["restore"], dir).code, 0);
   assert.ok(fs.existsSync(path.join(dir, "AGENTS.md")));
 }));
+
+test("restore --list 与 --id 可用", () => withTemp((dir) => {
+  assert.strictEqual(runCli(["init"], dir).code, 0);
+  const modified = runCli(["update", "--force"], dir);
+  assert.strictEqual(modified.code, 0, modified.stderr);
+  const list = runCli(["restore", "--list", "--json"], dir);
+  assert.strictEqual(list.code, 0, list.stderr);
+  const ids = JSON.parse(list.stdout).backups;
+  assert.ok(Array.isArray(ids) && ids.length >= 1);
+  const restore = runCli(["restore", "--id", ids[0], "--json"], dir);
+  assert.strictEqual(restore.code, 0, restore.stderr);
+  assert.ok(JSON.parse(restore.stdout).ok);
+  const missing = runCli(["restore", "--id", "99990101000000000"], dir);
+  assert.strictEqual(missing.code, 1);
+}));
+
+test("restore 前生成安全快照，可再次 restore 撤销", () => withTemp((dir) => {
+  assert.strictEqual(runCli(["init"], dir).code, 0);
+  const target = path.join(dir, "AGENTS.md");
+  fs.writeFileSync(target, "本地规则", "utf8");
+  assert.strictEqual(runCli(["update", "--force"], dir).code, 0);
+  const restored = runCli(["restore", "--json"], dir);
+  assert.strictEqual(restored.code, 0, restored.stderr);
+  assert.ok(JSON.parse(restored.stdout).safetyBackupId, "覆盖现存文件前应生成快照");
+  assert.strictEqual(fs.readFileSync(target, "utf8"), "本地规则");
+  const undone = runCli(["restore", "--json"], dir);
+  assert.strictEqual(undone.code, 0, undone.stderr);
+  assert.notStrictEqual(fs.readFileSync(target, "utf8"), "本地规则");
+}));
+
+test("uninstall --purge 清除状态与备份目录", () => withTemp((dir) => {
+  assert.strictEqual(runCli(["init"], dir).code, 0);
+  const purged = runCli(["uninstall", "--purge", "--json"], dir);
+  assert.strictEqual(purged.code, 0, purged.stderr);
+  assert.ok(!fs.existsSync(path.join(dir, ".wl-skills-design")));
+}));

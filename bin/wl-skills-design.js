@@ -21,6 +21,7 @@ const STATE_DIR = ".wl-skills-design";
 const STATE_FILE = "state.json";
 const EXIT_CONFLICT = 2;
 const MAX_BACKUPS = 5;
+const LOCK_STALE_MS = 5 * 60 * 1000;
 
 function normalizeRel(value) {
   return value.split(path.sep).join("/");
@@ -53,6 +54,9 @@ function parseArgs(argv) {
     editor: null,
     target: null,
     model: null,
+    list: false,
+    id: null,
+    purge: false,
     help: false,
     version: false,
   };
@@ -68,15 +72,18 @@ function parseArgs(argv) {
     } else if (arg === "--dry-run") result.dryRun = true;
     else if (arg === "--force") result.force = true;
     else if (arg === "--json") result.json = true;
+    else if (arg === "--list") result.list = true;
+    else if (arg === "--purge") result.purge = true;
     else if (arg === "--help" || arg === "-h") result.help = true;
     else if (arg === "--version" || arg === "-v") result.version = true;
-    else if (arg === "--editor" || arg === "--target" || arg === "--model") {
+    else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id") {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result[arg.slice(2)] = value;
     } else if (arg.startsWith("--editor=")) result.editor = arg.slice(9);
     else if (arg.startsWith("--target=")) result.target = arg.slice(9);
     else if (arg.startsWith("--model=")) result.model = arg.slice(8);
+    else if (arg.startsWith("--id=")) result.id = arg.slice(5);
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
     else throw new Error(`未知命令：${arg}`);
   }
@@ -104,6 +111,9 @@ wl-skills-design v${PACKAGE.version}
   --editor <id[,id]>  选择适配器：${ids} | all
   --target <dir>      目标项目目录，默认当前目录
   --model <file>      design-model 路径，默认 docs/design-model.json
+  --list              restore：列出可用备份
+  --id <backupId>     restore：恢复指定备份，默认最近一次
+  --purge             uninstall：同时删除备份与状态目录
   --dry-run           只输出计划，不写文件
   --force             明确覆盖或删除本地改动，并先备份
   --json              输出机器可读 JSON
@@ -145,11 +155,45 @@ function statePath(target) {
 function readState(target) {
   const file = statePath(target);
   if (!fs.existsSync(file)) return null;
+  let parsed;
   try {
-    return JSON.parse(fs.readFileSync(file, "utf8"));
+    parsed = JSON.parse(fs.readFileSync(file, "utf8"));
   } catch (error) {
     throw new Error(`状态文件损坏：${file}（${error.message}）`);
   }
+  if (parsed?.schemaVersion !== 1 || parsed?.package !== PACKAGE.name) {
+    throw new Error(
+      `状态文件不兼容（package=${parsed?.package}，schemaVersion=${parsed?.schemaVersion}）；请先卸载或手工清理 ${STATE_DIR}`
+    );
+  }
+  return parsed;
+}
+
+function acquireLock(target) {
+  const lockDir = path.join(target, STATE_DIR);
+  fs.mkdirSync(lockDir, { recursive: true });
+  const lockFile = path.join(lockDir, "lock");
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const handle = fs.openSync(lockFile, "wx");
+      fs.writeSync(handle, `${process.pid}\n${new Date().toISOString()}\n`);
+      fs.closeSync(handle);
+      return lockFile;
+    } catch (error) {
+      if (error.code !== "EEXIST") throw error;
+      const stat = fs.statSync(lockFile);
+      if (Date.now() - stat.mtimeMs > LOCK_STALE_MS) {
+        fs.rmSync(lockFile, { force: true });
+        continue;
+      }
+      throw new Error(`另一个 wl-skills-design 进程正在运行（锁文件：${normalizeRel(path.relative(target, lockFile))}）`);
+    }
+  }
+  throw new Error("无法获取锁文件");
+}
+
+function releaseLock(lockFile) {
+  if (lockFile) fs.rmSync(lockFile, { force: true });
 }
 
 function ensureInside(target, rel) {
@@ -162,11 +206,17 @@ function ensureInside(target, rel) {
 }
 
 function selectEditors(requested, editors, state, command) {
-  const fallback = command === "update" && state?.editors?.length ? state.editors : ["agents"];
+  const known = new Set(editors.map((item) => item.id));
+  let fallback = command === "update" && state?.editors?.length ? state.editors : ["agents"];
+  const retired = fallback.filter((item) => !known.has(item));
+  if (retired.length) {
+    console.warn(`  ! 以下 profile 已在本版本停用并自动移除：${retired.join(", ")}`);
+    fallback = fallback.filter((item) => known.has(item));
+    if (!fallback.length) fallback = ["agents"];
+  }
   const raw = requested ? requested.split(",").map((item) => item.trim()).filter(Boolean) : fallback;
   const selected = raw.includes("all") ? editors.map((item) => item.id) : [...new Set(raw)];
-  const valid = new Set(editors.map((item) => item.id));
-  const unknown = selected.filter((item) => !valid.has(item));
+  const unknown = selected.filter((item) => !known.has(item));
   if (unknown.length) throw new Error(`未知编辑器 profile：${unknown.join(", ")}`);
   return selected.sort();
 }
@@ -249,7 +299,6 @@ function writeJsonAtomic(file, value) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const temp = `${file}.tmp-${process.pid}`;
   fs.writeFileSync(temp, `${JSON.stringify(value, null, 2)}\n`, "utf8");
-  if (fs.existsSync(file)) fs.rmSync(file, { force: true });
   fs.renameSync(temp, file);
 }
 
@@ -318,7 +367,6 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
       fs.mkdirSync(path.dirname(operation.dest), { recursive: true });
       const temp = `${operation.dest}.tmp-${process.pid}`;
       fs.copyFileSync(operation.src, temp);
-      if (fs.existsSync(operation.dest)) fs.rmSync(operation.dest, { force: true });
       fs.renameSync(temp, operation.dest);
     }
 
@@ -389,7 +437,13 @@ function runInstall(options, target, editors) {
     return EXIT_CONFLICT;
   }
   const nextState = buildState(selected, sources);
-  const applied = applyOperations(target, plan.operations, state, nextState, options.dryRun);
+  const lock = options.dryRun ? null : acquireLock(target);
+  let applied;
+  try {
+    applied = applyOperations(target, plan.operations, state, nextState, options.dryRun);
+  } finally {
+    releaseLock(lock);
+  }
   const result = {
     ok: true,
     command: options.command,
@@ -449,33 +503,94 @@ function runStatus(options, target, doctor = false) {
   return result.ok ? 0 : 1;
 }
 
+function listBackups(target) {
+  const backupRoot = path.join(target, STATE_DIR, "backups");
+  if (!fs.existsSync(backupRoot)) return [];
+  return fs
+    .readdirSync(backupRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort()
+    .reverse();
+}
+
 function runRestore(options, target) {
   const backupRoot = path.join(target, STATE_DIR, "backups");
-  const backups = fs.existsSync(backupRoot)
-    ? fs.readdirSync(backupRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort().reverse()
-    : [];
+  const backups = listBackups(target);
+  if (options.list) {
+    const text = backups.length
+      ? `\n  可用备份（新 → 旧）：\n${backups.map((item) => `   - ${item}`).join("\n")}\n`
+      : "\n  没有可用备份\n";
+    printResult(options.json ? { ok: true, backups } : text, options.json);
+    return 0;
+  }
   if (!backups.length) throw new Error("没有可恢复的备份");
-  const backupId = backups[0];
+  let backupId;
+  if (options.id) {
+    if (!backups.includes(options.id)) throw new Error(`备份不存在：${options.id}（可用 --list 查看）`);
+    backupId = options.id;
+  } else {
+    backupId = backups[0];
+  }
   const root = path.join(backupRoot, backupId);
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
   if (options.dryRun) {
     printResult({ ok: true, dryRun: true, backupId, files: manifest.entries.map((entry) => entry.path) }, options.json);
     return 0;
   }
-  for (const entry of [...manifest.entries].reverse()) {
-    const dest = ensureInside(target, entry.path);
-    if (entry.existed) {
-      fs.mkdirSync(path.dirname(dest), { recursive: true });
-      fs.copyFileSync(path.join(root, entry.backup), dest);
-    } else if (fs.existsSync(dest)) {
-      fs.rmSync(dest, { force: true });
-      removeEmptyParents(dest, target);
+  const lock = acquireLock(target);
+  let safetyId = null;
+  try {
+    const currentState = readState(target);
+    do {
+      safetyId = timestamp();
+    } while (safetyId === backupId || fs.existsSync(path.join(backupRoot, safetyId)));
+    const safetyDir = path.join(backupRoot, safetyId);
+    const safetyEntries = [];
+    for (const entry of manifest.entries) {
+      const dest = ensureInside(target, entry.path);
+      if (!fs.existsSync(dest) || !fs.lstatSync(dest).isFile()) continue;
+      const backup = path.join(safetyDir, "files", entry.path);
+      fs.mkdirSync(path.dirname(backup), { recursive: true });
+      fs.copyFileSync(dest, backup);
+      safetyEntries.push({ path: entry.path, existed: true, backup: normalizeRel(path.relative(safetyDir, backup)) });
     }
+    if (safetyEntries.length) {
+      writeJsonAtomic(path.join(safetyDir, "manifest.json"), {
+        schemaVersion: 1,
+        packageVersion: PACKAGE.version,
+        createdAt: new Date().toISOString(),
+        previousState: currentState,
+        entries: safetyEntries,
+      });
+    } else {
+      fs.rmSync(safetyDir, { recursive: true, force: true });
+      safetyId = null;
+    }
+
+    for (const entry of [...manifest.entries].reverse()) {
+      const dest = ensureInside(target, entry.path);
+      if (entry.existed) {
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+        fs.copyFileSync(path.join(root, entry.backup), dest);
+      } else if (fs.existsSync(dest)) {
+        fs.rmSync(dest, { force: true });
+        removeEmptyParents(dest, target);
+      }
+    }
+    if (manifest.previousState) writeJsonAtomic(statePath(target), manifest.previousState);
+    else if (fs.existsSync(statePath(target))) fs.rmSync(statePath(target), { force: true });
+    fs.rmSync(root, { recursive: true, force: true });
+    trimBackups(target);
+  } finally {
+    releaseLock(lock);
   }
-  if (manifest.previousState) writeJsonAtomic(statePath(target), manifest.previousState);
-  else if (fs.existsSync(statePath(target))) fs.rmSync(statePath(target), { force: true });
-  fs.rmSync(root, { recursive: true, force: true });
-  printResult(options.json ? { ok: true, backupId } : `\n  ✔ 已恢复备份 ${backupId}\n`, options.json);
+  printResult(
+    options.json
+      ? { ok: true, backupId, safetyBackupId: safetyId }
+      : `\n  ✔ 已恢复备份 ${backupId}${safetyId ? `（恢复前快照：${safetyId}，可再次 restore 撤销）` : ""}\n`,
+    options.json
+  );
   return 0;
 }
 
@@ -501,11 +616,20 @@ function runUninstall(options, target) {
     }
     return EXIT_CONFLICT;
   }
-  const applied = applyOperations(target, operations, state, null, options.dryRun);
+  const lock = options.dryRun ? null : acquireLock(target);
+  let applied;
+  try {
+    applied = applyOperations(target, operations, state, null, options.dryRun);
+    if (options.purge && !options.dryRun) {
+      fs.rmSync(path.join(target, STATE_DIR), { recursive: true, force: true });
+    }
+  } finally {
+    releaseLock(lock);
+  }
   printResult(
     options.json
-      ? { ok: true, dryRun: options.dryRun, removed: applied.changed, backupId: applied.backupId }
-      : `\n  ✔ ${options.dryRun ? "卸载预检通过" : `已卸载 ${applied.changed} 个受管文件`}\n`,
+      ? { ok: true, dryRun: options.dryRun, removed: applied.changed, backupId: applied.backupId, purged: options.purge }
+      : `\n  ✔ ${options.dryRun ? "卸载预检通过" : `已卸载 ${applied.changed} 个受管文件`}${options.purge && !options.dryRun ? "，并已清除备份与状态目录" : "（备份保留，可用 restore 恢复；加 --purge 一并清除）"}\n`,
     options.json
   );
   return 0;

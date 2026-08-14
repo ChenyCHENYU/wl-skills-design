@@ -22,10 +22,11 @@ description: 生成或检查需求设计说明书章节，覆盖总体设计、�
    - [模块流程与内部接口](./sub/02-module-flow.md)
    - [功能 IPO](./sub/03-function-ipo.md)
    - [数据需求与报表](./sub/04-data-report.md)
-3. 仅在需要结构对照时读取 `examples/` 下的匿名合成样例。
-4. 保持流程编码、活动编码、功能编码、页面、权限岗位和字段集合可追溯。
-5. 记录 `deliveryFormat`：Markdown 阶段为 `markdown-source`，装配并渲染后的 Word 为 `final-word`。
-6. 执行标准第十一章 43 项验证。`markdown-source` 的 P01–P05 标记 Pending，不得判失败；缺业务事实使用 `【待补充：说明】` 并标记 Pending。
+3. 仅在需要结构对照时读取 `examples/` 下的匿名合成样例；命令按钮处理逻辑达不到步骤级要素时，对照 [IPO 颗粒度样例](./examples/05-ipo-granularity.md) 补齐。
+4. 命令按钮的 Process 必须满足标准 §5.1 按钮级覆盖和 §5.2 GB 颗粒度基线；执行类活动与命令按钮一一对应。
+5. 保持流程编码、活动编码、功能编码、页面、权限岗位和字段集合可追溯。
+6. 记录 `deliveryFormat`：Markdown 阶段为 `markdown-source`，装配并渲染后的 Word 为 `final-word`。
+7. 执行标准第十一章 43 项验证。`markdown-source` 的 P01–P05 标记 Pending，不得判失败；缺业务事实使用 `【待补充：说明】` 并标记 Pending。
 
 ## 交付约束
 

@@ -185,7 +185,7 @@ function checkRegistry(manifest) {
   }
 }
 
-function checkPrompts() {
+function checkPrompts(manifest) {
   const promptFiles = walk(PROMPTS, (file) => file.endsWith(".prompt.md"));
   for (const file of promptFiles) {
     const fm = parseFrontmatter(file);
@@ -204,8 +204,26 @@ function checkPrompts() {
       errors.push(`[prompt] ${rel(file)} 验证入口不得默认自动修复`);
     }
   }
-  if (promptFiles.length !== 15) errors.push(`[prompt] 预期 15 个 Prompt，实际 ${promptFiles.length}`);
+  const expected = new Set((manifest?.skills || []).flatMap((skill) => skill.promptPaths || [])).size;
+  if (expected && promptFiles.length !== expected) {
+    errors.push(`[prompt] manifest 登记 ${expected} 个 Prompt，实际 ${promptFiles.length}`);
+  }
   stats.prompts = promptFiles.length;
+}
+
+function checkIntentChain(manifest) {
+  if (!manifest?.routingPolicy?.intentPriority) return;
+  const source = read(path.join(GH, "copilot-instructions.md"));
+  const line = source.split(/\r?\n/).find((item) => item.includes("动作意图"));
+  if (!line) {
+    errors.push("[intent] 调度正文缺少动作意图链");
+    return;
+  }
+  const chain = [...line.matchAll(/`([a-z]+)`/g)].map((match) => match[1]);
+  const expected = manifest.routingPolicy.intentPriority;
+  if (chain.join(",") !== expected.join(",")) {
+    errors.push(`[intent] 调度正文意图链与 manifest 不一致：${chain.join(" → ")} ≠ ${expected.join(" → ")}`);
+  }
 }
 
 function checkLocalLinks() {
@@ -232,6 +250,10 @@ function normalize(text) {
   return text.normalize("NFKC").toLowerCase().trim().replace(/\s+/g, " ");
 }
 
+function squash(text) {
+  return normalize(text).replace(/[\s\-_/.]+/g, "");
+}
+
 function containsPhrase(text, phrase) {
   const value = normalize(phrase);
   if (/^[a-z0-9_.+-]+$/i.test(value)) {
@@ -240,11 +262,17 @@ function containsPhrase(text, phrase) {
   return text.includes(value);
 }
 
+function containsTerm(normalizedContent, term) {
+  const squashed = squash(term);
+  if (!squashed) return false;
+  return normalizedContent.includes(squashed);
+}
+
 function detectIntent(prompt) {
   const text = normalize(prompt);
   const rules = [
     ["impact", /变更|影响|change impact/],
-    ["review", /评审|评分|review|追溯矩阵/],
+    ["review", /评审|评分|审查|走查|review|追溯矩阵/],
     ["validate", /验证|校验|检查|validate|audit/],
     ["repair", /修复|整改|repair|fix/],
     ["maintain", /维护|登记|统一|对齐|maintain/],
@@ -265,9 +293,9 @@ function route(prompt, manifest) {
     if (skill.intents.includes(intent)) score += weights.intent;
     if (context) score += weights.context;
     if (negative) score += weights.negative;
-    candidates.push({ id: skill.id, score, exact, context, negative });
+    candidates.push({ id: skill.id, score, priority: skill.priority ?? 0, exact, context, negative });
   }
-  candidates.sort((a, b) => b.score - a.score);
+  candidates.sort((a, b) => b.score - a.score || b.priority - a.priority || a.id.localeCompare(b.id, "en"));
   const first = candidates[0];
   const second = candidates[1];
   const winner = first.score >= manifest.routingPolicy.minimumScore && first.score - second.score >= manifest.routingPolicy.minimumMargin ? first.id : null;
@@ -305,9 +333,9 @@ function checkContentContracts() {
   for (const file of allText) {
     const base = path.basename(file);
     if (file.includes(`${path.sep}kit-internal${path.sep}test-flowcharts${path.sep}`) && /^(?:~\$)?AI还原-/u.test(base)) continue;
-    const content = read(file);
+    const squashedContent = squash(read(file));
     for (const term of sensitive) {
-      if (content.toLowerCase().includes(term.toLowerCase())) errors.push(`[privacy] ${rel(file)} 含禁用词：${term}`);
+      if (containsTerm(squashedContent, term)) errors.push(`[privacy] ${rel(file)} 含禁用词：${term}`);
     }
   }
 
@@ -321,9 +349,9 @@ function checkContentContracts() {
     "\u534e\u65b0",
   ];
   for (const file of templates) {
-    const content = read(file);
+    const squashedContent = squash(read(file));
     for (const term of templateBusinessTerms) {
-      if (content.includes(term)) errors.push(`[template] ${rel(file)} 含业务样例值：${term}`);
+      if (containsTerm(squashedContent, term)) errors.push(`[template] ${rel(file)} 含业务样例值：${term}`);
     }
   }
 
@@ -354,9 +382,9 @@ function checkContentContracts() {
   ];
   const publishedFiles = walk(FILES, (file) => /\.(md|mdc|json|yaml|yml|txt|drawio)$/.test(file));
   for (const file of publishedFiles) {
-    const content = read(file);
+    const squashedContent = squash(read(file));
     for (const term of publishedPrivacyTerms) {
-      if (content.includes(term)) errors.push(`[privacy] ${rel(file)} 含非匿名样例词：${term}`);
+      if (containsTerm(squashedContent, term)) errors.push(`[privacy] ${rel(file)} 含非匿名样例词：${term}`);
     }
   }
 
@@ -444,9 +472,9 @@ function checkDocxPrivacy() {
 
       for (const [name, data] of entries) {
         if (!/\.(xml|rels)$/.test(name)) continue;
-        const content = data.toString("utf8");
+        const squashedContent = squash(data.toString("utf8"));
         for (const term of terms) {
-          if (content.toLowerCase().includes(term.toLowerCase())) errors.push(`[docx] ${rel(file)} 的 ${name} 含禁用词：${term}`);
+          if (containsTerm(squashedContent, term)) errors.push(`[docx] ${rel(file)} 的 ${name} 含禁用词：${term}`);
         }
         if (/w:rsid/.test(content)) errors.push(`[docx] ${rel(file)} 的 ${name} 含修订会话标识`);
         if (/<(?:dc:creator|cp:lastModifiedBy)>[^<]+/.test(content)) errors.push(`[docx] ${rel(file)} 的 ${name} 含作者元数据`);
@@ -492,7 +520,8 @@ function main() {
   console.log("\n  wl-skills-design doctor\n");
   const manifest = checkManifestAndSkills();
   checkRegistry(manifest);
-  checkPrompts();
+  checkPrompts(manifest);
+  checkIntentChain(manifest);
   checkLocalLinks();
   checkRoutes(manifest);
   checkContentContracts();

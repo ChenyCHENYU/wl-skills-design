@@ -39,6 +39,10 @@ docs/spec/{project-code}/
 
 `deliveryFormat=markdown-source` 时，P01–P05 固定页面项标记 Pending；完成 Word 装配并渲染检查后切换为 `final-word`，再验证封面、目录、页眉页脚和分页。Markdown 无法表达的分页能力不能被误判为失败。
 
+## 颗粒度基线
+
+命令按钮（状态变更操作）的处理逻辑必须达到步骤级颗粒度：一行一按钮、编号步骤、一步一事，写明表/字段、字典稳定值、前置校验、审计与履历、联动与外部同步、异常文案原文和展示规则。基线定义见标准 §5.1/§5.2（GB 系列），结构对照见 `examples/05-ipo-granularity.md`。执行类活动（`E`）与命令按钮一一对应，是后端命令端点的需求侧投影。
+
 ## 资源
 
 | 路径 | 用途 |
@@ -49,6 +53,7 @@ docs/spec/{project-code}/
 | `sub/02-module-flow.md` | 流程、活动、画面对照和需求级接口 |
 | `sub/03-function-ipo.md` | 画面逻辑、状态、联动和 IPO |
 | `sub/04-data-report.md` | 外部输入、数据输出和报表 |
-| `examples/` | `DEMO/REQ` 匿名合成质量对照 |
+| `examples/05-ipo-granularity.md` | 命令按钮步骤级 IPO 颗粒度对照 |
+| `examples/`（其余） | `DEMO/REQ` 匿名合成质量对照 |
 
 样例只展示结构。组织、地点、人员、联系方式、域名、账号、令牌和线上数据不得进入样例或模板。
