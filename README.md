@@ -8,20 +8,56 @@
 
 需要 Node.js 20 或更高版本。
 
+### 第一步 · 安装到你的项目
+
 ```bash
-# 推荐：安装通用 AGENTS.md profile
-npx @agile-team/wl-skills-design init
-
-# 选择一个目标工具，避免同一工具重复加载多套规则
-npx @agile-team/wl-skills-design init --editor copilot
+npx @agile-team/wl-skills-design init                              # 推荐：AGENTS.md 通用 profile
 npx @agile-team/wl-skills-design init --editor cursor --target ./my-project
-
-# 预检升级；有本地改动时不会写入任何文件
-npx @agile-team/wl-skills-design update --dry-run
-npx @agile-team/wl-skills-design update
 ```
 
-默认 profile 是 `agents`。只有明确理解重复上下文风险时才使用 `--editor all`。
+安装后项目获得 `.github/skills | standards | prompts` 和一份编辑器规则文件。AI Agent 按 manifest 自动路由——之后直接用自然语言下指令，不需要记命令。
+
+### 第二步 · 选场景开工
+
+**场景 A · 从零到一生成设计文档**（不需要任何既有文档）
+
+对 Agent 说：
+
+> 为 DEMO 设备点检模块生成需求说明书骨架。模块范围：点检单从录入到归档；不含维修派工。业务目标：点检记录数字化、异常自动触发报修。
+
+然后按 [输入准备清单](./files/.github/guides/inputs-checklist.md) 分层补事实：
+
+1. 最小启动集（项目代号 / 模块范围 / 业务目标）→ 先出骨架、流程清单和关键问题清单；
+2. 业务事实（岗位 / 业务对象 / 状态流 / **操作规则** / 报表需求）→ 展开 IPO 到按钮级、步骤级颗粒度；
+3. 技术画像（数据库方言、接口协议等）→ 生成数据库与接口设计。
+
+不必一次备齐：缺失项自动标 `【待补充】`+Pending，Agent 每次只追问一个最关键的问题，绝不编造。操作规则讲得越细（“只有未生产且未下达才允许下达，失败提示『…』”），IPO 颗粒度越深。
+
+**场景 B · 接入别人给的半拉子文档**
+
+> 评估 docs/legacy 下这批设计文档，输出差距报告和补全任务清单。
+
+`doc-intake` 自动采集归位 → 机械+语义差距分析（含字典值漂移、名称近似漂移检测）→ 补全任务清单（P0/P1/P2）；授权后补结构缺口，业务事实只登记关键问题。会议记录、截图、参照系统说明等零散素材也可以直接丢给它归档分析。
+
+**场景 C · 机械验证已有产物**（纯只读，CI 可用）
+
+```bash
+wl-skills-design verify spec --target ./my-project
+wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-示例.drawio
+wl-skills-design verify db --target ./my-project
+wl-skills-design verify api --target ./my-project
+```
+
+### 第三步 · 日常管理
+
+```bash
+npx @agile-team/wl-skills-design status        # 查看受管文件与本地改动
+npx @agile-team/wl-skills-design update --dry-run   # 预检升级（有本地改动时不写入）
+npx @agile-team/wl-skills-design restore --list     # 列出备份
+npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 连备份一起清）
+```
+
+`demo/` 目录是一套四域 verify 全绿的完整交付样例（需求说明书 + 数据库 + 接口 + 评审报告），可作质量对照；VS Code Chat 中输入 `/` 可选用 16 个快捷 Prompt。
 
 ## 能力
 
@@ -46,7 +82,7 @@ Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全�
 
 ## 从零到一生成
 
-无需既有文档。分层提供输入即可启动：最小启动集（项目代号、模块范围、业务目标）→ 业务事实（岗位、业务对象、状态流、操作规则、报表需求）→ 技术画像（数据库方言/租户/删除策略，接口协议/认证/响应包装/幂等等）。不必一次备齐——缺失项自动标记 `【待补充】`+Pending 并生成关键问题清单，每次只追问一个最关键问题；操作规则讲得越细，IPO 颗粒度越深。完整清单见 `files/.github/guides/inputs-checklist.md`（安装后位于 `.github/guides/`）。
+无需既有文档。分层提供输入即可启动：最小启动集（项目代号、模块范围、业务目标）→ 业务事实（岗位、业务对象、状态流、操作规则、报表需求）→ 技术画像（数据库方言/租户/删除策略，接口协议/认证/响应包装/幂等等）。不必一次备齐——缺失项自动标记 `【待补充】`+Pending 并生成关键问题清单，每次只追问一个最关键问题；操作规则讲得越细，IPO 颗粒度越深。完整清单见 [输入准备清单](./files/.github/guides/inputs-checklist.md)（安装后位于 `.github/guides/inputs-checklist.md`）。
 
 ## 机械验证（[M]/[J] 双轨）
 
