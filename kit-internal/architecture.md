@@ -84,17 +84,20 @@
 
 ```text
 package.json
-├── bin/wl-skills-design.js         安全安装与更新 CLI
+├── bin/wl-skills-design.js         安全安装与更新 CLI（含 verify 命令）
+├── lib/
+│   ├── design-model.js             design-model 校验器
+│   └── verify.js                   spec/flowchart 机械验证器
 ├── files/
-│   ├── .github/skills/             原生 Skills、manifest、路由回归、设计模型
-│   ├── .github/standards/          工具无关规范
+│   ├── .github/skills/             原生 Skills（含 doc-intake）、manifest、路由回归、设计模型
+│   ├── .github/standards/          工具无关规范（[M]/[J] 双轨标记）
 │   ├── .github/prompts/            显式操作入口
 │   └── editor adapters             九个可选 profile
 ├── scripts/
 │   ├── check.js                    doctor
 │   ├── sync-editors.js             适配器生成与漂移检查
 │   └── package-smoke.js            npm 载荷安装烟测
-└── tests/                          CLI、路由、结构与发布回归
+└── tests/                          CLI、路由、结构、机械验证与发布回归
 ```
 
 路由链路：

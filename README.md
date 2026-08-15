@@ -146,9 +146,9 @@ guides/        人读说明，不参与 Skill 发现
 ```text
 files/
 ├── .github/
-│   ├── standards/             9 份标准
-│   ├── skills/                9 个已发布 Skill + manifest/schema
-│   ├── prompts/               15 个 Prompt
+│   ├── standards/             9 份标准（验证清单带 [M]/[J] 标记）
+│   ├── skills/                10 个已发布 Skill + manifest/schema
+│   ├── prompts/               16 个 Prompt
 │   └── guides/                使用、架构和各 Skill 指南
 ├── AGENTS.md / CLAUDE.md      适配器产物
 ├── .cursor/ .windsurf/ ...    各 profile 产物
@@ -166,9 +166,9 @@ npm run verify
 npm pack --dry-run
 ```
 
-`npm run verify` 会检查：Skill frontmatter/目录、Prompt 元数据、相对链接、路由语料、检查项一致性、模板敏感信息、编辑器漂移、CLI 事务行为和最终包安装冒烟。
+`npm run verify` 会检查：Skill frontmatter/目录、Prompt 元数据、调度正文意图链与能力索引覆盖、相对链接、路由语料、检查项一致性、[M]/[J] 标记、隐私敏感词（归一化匹配）、draw.io 结构、编辑器漂移、CLI 事务行为、机械验证金样本回归和真实 npm 载荷安装冒烟。
 
-版本发布前必须保证工作区除明确提交内容外干净，并使用精简中文 Conventional Commit。
+版本发布前必须保证工作区除明确提交内容外干净，并使用精简中文 Conventional Commit；发布由 CI（Publish 工作流 + OIDC provenance）完成。
 
 ## 许可
 

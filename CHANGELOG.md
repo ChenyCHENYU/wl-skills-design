@@ -6,6 +6,38 @@
 
 ---
 
+## [未发布]
+
+### 修复与变更
+
+- 修正 CHANGELOG 0.10.0/0.9.0 版本顺序错乱。
+- README 包结构树计数更新（10 个 Skill、16 个 Prompt）；调度正文能力索引补 `doc-intake` 并重新派生 9 个编辑器文件；doctor 新增“能力索引必须覆盖全部已发布 Skill”门禁，杜绝同类漂移。
+- `kit-internal/skills/README.md` 维护清单同步至 10 个已发布 Skill（原清单停留在 8 个且误将 `code-architecture` 标为规划中）；ADR-014 组件关系图补 `lib/verify.js` 与 `doc-intake`。
+- demo README 措辞更新（“七大能力”→按 10 Skill 口径），并补充 `verify spec --target demo` 活样例入口；规范索引页补 [M]/[J] 双轨说明。
+- `.gitignore` 的 `docs/` 收窄为根目录 `/docs/`，避免误忽略 `demo/docs/` 新文件；移除已废弃的 spec-gen 相关条目。
+- 移除废弃的 `spec-gen/` Python 绘图脚本目录：其能力已由 `requirements-flowchart` Skill 与机械验证器取代，且长期无门禁维护。
+
+---
+
+## [0.10.0] — 2026-08-15（双轨机械验证、文档接入与开源治理）
+
+### 新增
+
+- `[M]`/`[J]` 双轨验证标记：四份标准验证清单逐项标注机械/语义执行方式；Agent 验证流程改为“机械先行、语义补充、同一编号合并”。
+- `wl-skills-design verify` 命令：`verify spec`（20 项机械检查：结构、编码连续性、表格形状、IPO 空单元格、追溯闭合）与 `verify flowchart`（泳道色标、三层 GROUP、起止节点、连线样式、几何重叠、活动编码与占位符）；未覆盖项显式 skip。
+- `doc-intake` Skill：半成品文档接入（采集归位/未归类区）、差距分析（机械+语义+字典值漂移/名称近似漂移检测）、补全计划（复用变更影响补丁格式）、draft design-model 铸造；配套 prompt、指南、模板与匿名样例。
+- 开源治理：Apache-2.0 许可证与 NOTICE；根目录 CONTRIBUTING/SECURITY/CODE_OF_CONDUCT；CODEOWNERS、issue/PR 模板；GitHub Actions Publish 工作流（OIDC provenance）；README 双语。
+
+### 修复与变更
+
+- 流程图匿名样例修正为标准编码体系（CAIG-A-01-E-01）、补齐判定分支「是/否」标签；样例 index 的双格式编码说明按标准收敛。
+- demo 升级为 verify 全绿活样例：补 4.1.6 权限矩阵、4.2-data-report、七列活动说明表、五列 IPO（GB 风格步骤）、三句系统目标与标准角色/术语表。
+- 意图识别新增 评估/审查/走查（review）与 整理（maintain）；接口域负向新增 翻译；路由语料扩至 37 条，含新歧义并列用例。
+- 删除 kit-internal 未匿名流程图并移除 doctor 隐私豁免；.gitignore 移除误导性 package-lock 条目。
+- 机械验证测试与金样本回归（包内样例与 demo 必须全绿，破损文件必须被检出）。
+
+---
+
 ## [0.9.0] — 2026-08-15（炼钢级颗粒度基线与全链路加固）
 
 ### 新增
@@ -29,25 +61,6 @@
 ### 验证
 
 - 以一套已交付复杂模块（需求/数据库/接口三分册）与对应前后端代码完成逆向闭环验证：活动↔命令端点、画面编码↔前端 pageId、字典↔词典、表↔DDL 均可 1:1 追溯；源文档中的字典值漂移与表名拼写漂移由 D4 联动检查（V13/V15）覆盖。结论记入 ADR-015。
-
----
-
-## [0.10.0] — 2026-08-15（双轨机械验证、文档接入与开源治理）
-
-### 新增
-
-- `[M]`/`[J]` 双轨验证标记：四份标准验证清单逐项标注机械/语义执行方式；Agent 验证流程改为“机械先行、语义补充、同一编号合并”。
-- `wl-skills-design verify` 命令：`verify spec`（20 项机械检查：结构、编码连续性、表格形状、IPO 空单元格、追溯闭合）与 `verify flowchart`（泳道色标、三层 GROUP、起止节点、连线样式、几何重叠、活动编码与占位符）；未覆盖项显式 skip。
-- `doc-intake` Skill：半成品文档接入（采集归位/未归类区）、差距分析（机械+语义+字典值漂移/名称近似漂移检测）、补全计划（复用变更影响补丁格式）、draft design-model 铸造；配套 prompt、指南、模板与匿名样例。
-- 开源治理：Apache-2.0 许可证与 NOTICE；根目录 CONTRIBUTING/SECURITY/CODE_OF_CONDUCT；CODEOWNERS、issue/PR 模板；GitHub Actions Publish 工作流（OIDC provenance）；README 双语。
-
-### 修复与变更
-
-- 流程图匿名样例修正为标准编码体系（CAIG-A-01-E-01）、补齐判定分支「是/否」标签；样例 index 的双格式编码说明按标准收敛。
-- demo 升级为 verify 全绿活样例：补 4.1.6 权限矩阵、4.2-data-report、七列活动说明表、五列 IPO（GB 风格步骤）、三句系统目标与标准角色/术语表。
-- 意图识别新增 评估/审查/走查（review）与 整理（maintain）；接口域负向新增 翻译；路由语料扩至 37 条，含新歧义并列用例。
-- 删除 kit-internal 未匿名流程图并移除 doctor 隐私豁免；.gitignore 移除误导性 package-lock 条目。
-- 机械验证测试与金样本回归（包内样例与 demo 必须全绿，破损文件必须被检出）。
 
 ---
 

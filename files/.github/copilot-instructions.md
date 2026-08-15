@@ -31,6 +31,7 @@
 - `cross-glossary`：术语、字段、枚举与编码注册
 - `cross-design-review`：跨文档评审和追溯矩阵
 - `cross-change-impact`：增量变更影响矩阵和补丁计划
+- `doc-intake`：半成品文档接入、差距分析和补全任务
 - `code-architecture`：模块边界、分层依赖、契约和质量门设计
 
 人读索引见 `.github/skills/_registry.md`，使用说明见 `.github/guides/usage.md`。

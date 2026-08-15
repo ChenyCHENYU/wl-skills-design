@@ -29,5 +29,7 @@
 4. 按规范执行设计任务
 ```
 
+> **双轨验证**：01/03/04/06 的验证清单带 `[M]`（机械可判）/`[J]`（语义判断）标记。spec 与 flowchart 的 [M] 项由 `wl-skills-design verify` 确定性执行，Agent 只判 [J] 项并合并同一编号报告；db/api 的 [M] 项当前由 Agent 代执行。
+
 > **规范设计原则**：所有规范文件均工具无关（draw.io / Axure / SQL / YAML 均适用），  
 > 工具相关的操作细节在 `skills/` 目录中的 `SKILL.md` 内处理。

@@ -224,6 +224,17 @@ function checkIntentChain(manifest) {
   if (chain.join(",") !== expected.join(",")) {
     errors.push(`[intent] 调度正文意图链与 manifest 不一致：${chain.join(" → ")} ≠ ${expected.join(" → ")}`);
   }
+  const indexSection = source.split(/\r?\n/).findIndex((item) => item.includes("能力索引"));
+  if (indexSection < 0) {
+    errors.push("[intent] 调度正文缺少能力索引");
+    return;
+  }
+  const indexBody = source.split(/\r?\n/).slice(indexSection).join("\n");
+  for (const skill of (manifest.skills || []).filter((item) => item.status === "released")) {
+    const dir = (skill.skillPath || "").split("/")[0];
+    if (!dir || indexBody.includes(`\`${dir}\``)) continue;
+    errors.push(`[intent] 调度正文能力索引缺少已发布 Skill：${dir}`);
+  }
 }
 
 function checkLocalLinks() {

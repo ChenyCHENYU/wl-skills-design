@@ -4,7 +4,7 @@
 
 ## 当前约定
 
-- 发布内容只来自 `files/`、`bin/`、`README.md` 和 `CHANGELOG.md`。
+- 发布内容来自 `files/`、`bin/`、`lib/`、`README.md`、`README.en.md` 和 `CHANGELOG.md`；`LICENSE`/`NOTICE` 由 npm 自动随包。
 - 每个 Skill 位于 `files/.github/skills/<skill-name>/SKILL.md`，目录名必须与 frontmatter 的 `name` 完全一致。
 - 人读指南集中在 `files/.github/guides/skills/`，Skill 目录内不放 `README.md` 或 `USAGE.md`。
 - `_manifest.json` 是路由执行源，`_route-evals.json` 是确定性回归集，`_registry.md` 是人读索引。

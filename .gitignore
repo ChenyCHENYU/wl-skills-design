@@ -22,19 +22,10 @@ Thumbs.db
 *.bak.*
 
 # ────────────────────────────────────────────────
-# spec-gen 输出物（生成物，不入 git）
-# templates/ 不在列表内，必须追踪
+# docs/ 目录（仓库根的业务项目内容，不属于工具包）
+# 注意：仅忽略根目录，demo/docs/ 等随包样例正常跟踪
 # ────────────────────────────────────────────────
-spec-gen/output/*.docx
-spec-gen/output/*.pdf
-spec-gen/output/assets/*.png
-spec-gen/output/assets/*.drawio
-spec-gen/scripts/__pycache__/
-
-# docs/ 目录（业务项目特定内容，不属于工具包）
-docs/
-spec-gen/__pycache__/
-spec-gen/scripts/__pycache__/
+/docs/
 
 # drawio/office 临时锁文件
 ~$*.dtmp
