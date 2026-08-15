@@ -10,7 +10,7 @@ const ROOT = path.resolve(__dirname, "..");
 const FILES_DIR = path.join(ROOT, "files");
 const PACKAGE = require(path.join(ROOT, "package.json"));
 const { validateDesignModelFile } = require(path.join(ROOT, "lib", "design-model.js"));
-const { verifySpecDir, verifyFlowchartFile } = require(path.join(ROOT, "lib", "verify.js"));
+const { verifySpecDir, verifyFlowchartFile, verifyDbDir, verifyApiDir } = require(path.join(ROOT, "lib", "verify.js"));
 const EDITORS_FILE = path.join(
   FILES_DIR,
   ".github",
@@ -93,7 +93,7 @@ function parseArgs(argv) {
     else if (arg.startsWith("--id=")) result.id = arg.slice(5);
     else if (arg.startsWith("--file=")) result.files.push(arg.slice(7));
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
-    else if (result.command === "verify" && !result.domain && /^(spec|flowchart)$/.test(arg)) result.domain = arg;
+    else if (result.command === "verify" && !result.domain && /^(spec|flowchart|db|api)$/.test(arg)) result.domain = arg;
     else throw new Error(`未知命令：${arg}`);
   }
   return result;
@@ -113,7 +113,7 @@ wl-skills-design v${PACKAGE.version}
   status     查看受管文件状态
   doctor     检查安装状态与 Skill 清单
   validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
-  verify     机械执行设计产物的验证清单子集：verify spec | verify flowchart
+  verify     机械执行设计产物的验证清单子集：verify spec | flowchart | db | api
   restore    恢复最近一次安装、升级或卸载前状态
   uninstall  卸载受管文件；不会静默删除本地改动
 
@@ -169,7 +169,7 @@ function walkFiles(dir, predicate, base = dir) {
 
 function runVerify(options, target) {
   const domain = options.domain;
-  if (!domain) throw new Error("verify 需要域参数：verify spec | verify flowchart");
+  if (!domain) throw new Error("verify 需要域参数：verify spec | flowchart | db | api");
   const reports = [];
 
   if (domain === "flowchart") {
@@ -188,8 +188,15 @@ function runVerify(options, target) {
     const valid = [...dirs].filter((dir) => fs.readdirSync(dir).some((name) => /^(ch1[-_]3|4\.\d+).*\.md$/.test(name)));
     if (!valid.length) throw new Error("未找到需求说明书目录（docs/spec/{project-code}/）；可用 --file 指定");
     for (const dir of valid) reports.push(verifySpecDir(dir));
+  } else if (domain === "db" || domain === "api") {
+    const explicit = options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)));
+    const dirs = new Set(explicit.map((item) => path.dirname(item)));
+    if (!dirs.size) dirs.add(path.join(target, "docs", domain));
+    const valid = [...dirs].filter((dir) => fs.existsSync(dir) && fs.readdirSync(dir).some((name) => /\.md$/.test(name)));
+    if (!valid.length) throw new Error(`未找到 ${domain} 设计文档目录（docs/${domain}/）；可用 --file 指定`);
+    for (const dir of valid) reports.push(domain === "db" ? verifyDbDir(dir) : verifyApiDir(dir));
   } else {
-    throw new Error(`不支持的域：${domain}（当前支持 spec、flowchart）`);
+    throw new Error(`不支持的域：${domain}（当前支持 spec、flowchart、db、api）`);
   }
 
   const summary = reports.reduce(

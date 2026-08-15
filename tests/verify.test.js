@@ -9,10 +9,12 @@ const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..");
 const CLI = path.join(ROOT, "bin", "wl-skills-design.js");
-const { verifySpecDir, verifyFlowchartFile } = require(path.join(ROOT, "lib", "verify.js"));
+const { verifySpecDir, verifyFlowchartFile, verifyDbDir, verifyApiDir } = require(path.join(ROOT, "lib", "verify.js"));
 
 const EXAMPLE = path.join(ROOT, "files", ".github", "skills", "requirements-flowchart", "examples", "01-purchase-approval.drawio");
 const DEMO_SPEC = path.join(ROOT, "demo", "docs", "spec", "equipment");
+const DEMO_DB = path.join(ROOT, "demo", "docs", "db");
+const DEMO_API = path.join(ROOT, "demo", "docs", "api");
 
 function withTemp(fn) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "wlsd-verify-"));
@@ -88,4 +90,56 @@ test("CLI verify flowchart --file 端到端", () => {
   const output = JSON.parse(result.stdout);
   assert.strictEqual(output.ok, true);
   assert.strictEqual(output.domain, "flowchart");
+});
+
+test("机械验证：demo 数据库设计全绿", () => {
+  const report = verifyDbDir(DEMO_DB);
+  assert.strictEqual(report.ok, true, JSON.stringify(report.checks.filter((item) => item.status === "fail")));
+  assert.ok(report.summary.pass >= 7);
+});
+
+test("机械验证：demo 接口设计全绿", () => {
+  const report = verifyApiDir(DEMO_API);
+  assert.strictEqual(report.ok, true, JSON.stringify(report.checks.filter((item) => item.status === "fail")));
+  assert.ok(report.summary.pass >= 7);
+});
+
+test("机械验证：数据库缺陷被检出", () => withTemp((dir) => {
+  const target = path.join(dir, "db");
+  fs.cpSync(DEMO_DB, target, { recursive: true });
+  const file = path.join(target, "01-inspection.md");
+  let text = fs.readFileSync(file, "utf8");
+  text = text.replace("NOT NULL COMMENT '点检单号',", "NOT NULL,");
+  text = text.replace("`inspection_no` | 点检单号", "`inspection_no_x` | 点检单号");
+  text = text.replace("`result` | 点检结论", "`order` | 点检结论");
+  fs.writeFileSync(file, text, "utf8");
+  const report = verifyDbDir(target);
+  assert.strictEqual(report.ok, false);
+  const fails = report.checks.filter((item) => item.status === "fail").map((item) => item.rule);
+  for (const rule of ["A04", "C03", "D04", "E01"]) assert.ok(fails.includes(rule), `应检出 ${rule}，实际：${fails.join(",")}`);
+}));
+
+test("机械验证：接口缺陷被检出", () => withTemp((dir) => {
+  const target = path.join(dir, "api");
+  fs.cpSync(DEMO_API, target, { recursive: true });
+  const file = path.join(target, "01-inspection.md");
+  let text = fs.readFileSync(file, "utf8");
+  text = text.replace('"total": 1,', '"total": 1,,');
+  text = text.replace("| string | 可空 | 精确匹配过滤 |", "| String | 可空 | 精确匹配过滤 |");
+  text = text.replace("submitInspection", "queryInspectionPage");
+  fs.writeFileSync(file, text, "utf8");
+  const report = verifyApiDir(target);
+  assert.strictEqual(report.ok, false);
+  const fails = report.checks.filter((item) => item.status === "fail").map((item) => item.rule);
+  for (const rule of ["A02", "B04", "B06"]) assert.ok(fails.includes(rule), `应检出 ${rule}，实际：${fails.join(",")}`);
+}));
+
+test("CLI verify db/api 端到端", () => {
+  for (const domain of ["db", "api"]) {
+    const result = spawnSync(process.execPath, [CLI, "verify", domain, "--target", path.join(ROOT, "demo"), "--json"], { encoding: "utf8" });
+    assert.strictEqual(result.status, 0, result.stdout + result.stderr);
+    const output = JSON.parse(result.stdout);
+    assert.strictEqual(output.domain, domain);
+    assert.strictEqual(output.ok, true);
+  }
 });

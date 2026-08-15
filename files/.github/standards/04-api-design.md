@@ -161,7 +161,7 @@ IPO 触发事件 → API/消息触发条件
 
 ## §十 验证清单（38 项）
 
-> 执行方式标记：[M] 机械可判、[J] 语义判断。spec 与 flowchart 域的 [M] 项由 `wl-skills-design verify` 直接执行（未覆盖时输出 skip）；db/api 域的 [M] 项具备机械判定条件，CLI 支持按路线图扩展。Agent 验证时先取机械结论，再判 [J] 项，合并为同一编号的报告。
+> 执行方式标记：[M] 机械可判、[J] 语义判断。四域 [M] 项均由 `wl-skills-design verify` 执行（未覆盖时输出 skip）；Agent 先取机械结论，再判 [J] 项，合并为同一编号的报告。
 
 ### IF-A 命名与语义（6 项）
 

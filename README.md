@@ -46,14 +46,16 @@ Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全�
 
 ## 机械验证（[M]/[J] 双轨）
 
-四份标准的验证清单均带执行方式标记：`[M]` 机械可判、`[J]` 语义判断。spec 与 flowchart 域的 [M] 项由 CLI 直接执行，Agent 只判 [J] 项，两类结论按同一规则编号合并成一份报告：
+四份标准的验证清单均带执行方式标记：`[M]` 机械可判、`[J]` 语义判断。四域 [M] 项均由 CLI 直接执行，Agent 只判 [J] 项，两类结论按同一规则编号合并成一份报告：
 
 ```bash
 wl-skills-design verify spec --target ./my-project        # 结构/编码/表格/追溯闭合等机械项
 wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-示例.drawio
+wl-skills-design verify db --target ./my-project          # 命名/字典10列/索引/DDL注释/字典↔DDL一致性/联动矩阵
+wl-skills-design verify api --target ./my-project         # 编码唯一/7列字段表/契约类型/示例JSON/错误码登记
 ```
 
-验证器覆盖活动编码格式与连续性、对照表双向闭合、IPO 空单元格、draw.io 三层 GROUP/泳道色标/连线样式/几何重叠、起止节点与占位符回填等。`demo/` 目录是保持 verify 全绿的活样例。db/api 域的 [M] 项由 Agent 代执行，CLI 支持按路线图扩展。
+验证器覆盖活动编码格式与连续性、对照表双向闭合、IPO 空单元格、draw.io 三层 GROUP/泳道色标/连线样式/几何重叠、表名后缀语义与保留字、索引前缀与 DDL 交叉核对、字典↔DDL 字段/类型/长度逐项一致、接口契约类型与示例可解析性等。`demo/` 目录是保持四域 verify 全绿的活样例。未覆盖的 [M] 项（如 OpenAPI 深度解析）显式输出 skip，不伪装通过。
 
 ## 半成品文档接入
 

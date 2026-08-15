@@ -238,7 +238,7 @@ IPO 表按“一行一按钮/一功能”组织，颗粒度基线：
 
 先记录 `deliveryFormat`。P01–P05 只能对 `final-word` 判定通过或失败；在 `markdown-source` 阶段一律标记 Pending 并注明“待 Word 装配验证”，不得判失败。
 
-> 执行方式标记：[M] 机械可判、[J] 语义判断。spec 与 flowchart 域的 [M] 项由 `wl-skills-design verify` 直接执行（未覆盖时输出 skip）；db/api 域的 [M] 项具备机械判定条件，CLI 支持按路线图扩展。Agent 验证时先取机械结论，再判 [J] 项，合并为同一编号的报告。
+> 执行方式标记：[M] 机械可判、[J] 语义判断。四域 [M] 项均由 `wl-skills-design verify` 执行（未覆盖时输出 skip）；Agent 先取机械结论，再判 [J] 项，合并为同一编号的报告。
 
 ### A. 固定页面完整性（5 项）
 

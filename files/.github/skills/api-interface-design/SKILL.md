@@ -23,7 +23,7 @@ description: 从需求和数据库设计生成或检查系统集成报文、REST
    - [RESTful 接口](./sub/03-restful.md)
    - [接口评审](./sub/04-if-review.md)
 3. 用户要求 OpenAPI/Swagger 时，以 [OpenAPI 3.1 模板](./templates/openapi-3.1.yaml) 生成机器可读契约，并与 Markdown 字段一致。
-4. 建立 `spec 功能 → 接口 → DB/词典字段` 追溯，执行 IF-A/B/C/D/X 共 38 项检查。
+4. 建立 `spec 功能 → 接口 → DB/词典字段` 追溯，执行 IF-A/B/C/D/X 共 38 项检查：先运行 `wl-skills-design verify api` 获取 [M] 项机械结论（CLI 不可用时由 Agent 代执行），再判 [J] 项，合并为同一编号的报告。
 
 ## 交付约束
 

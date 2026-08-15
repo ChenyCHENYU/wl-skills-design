@@ -24,7 +24,7 @@ description: 从需求和字段词典生成或检查 ER、表结构、数据字�
    - [数据库评审](./sub/04-db-review.md)
 3. 使用 `templates/` 的匿名空白模板；只有需要质量对照时才读取 `examples/`。
 4. 按目标方言校验 DDL，并建立 spec/词典字段到表字段的追溯。
-5. 执行 DB-A/B/C/D/E/X 共 34 项检查。
+5. 执行 DB-A/B/C/D/E/X 共 34 项检查：先运行 `wl-skills-design verify db` 获取 [M] 项机械结论（CLI 不可用时由 Agent 代执行），再判 [J] 项，合并为同一编号的报告。
 
 ## 交付约束
 

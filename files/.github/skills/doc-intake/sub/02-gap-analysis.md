@@ -6,9 +6,7 @@
 
 ### 1. 机械验证先行
 
-- spec 域：`wl-skills-design verify spec`（[M] 项结论直接采信）。
-- flowchart 域：`wl-skills-design verify flowchart --file {文件}`。
-- db / api 域：按标准 §验证清单的 [M] 项人工代执行（列结构、编码格式、示例可解析等），CLI 支持扩展后切换。
+- 四个域均由 CLI 执行 [M] 项：`wl-skills-design verify spec | flowchart | db | api`（结论直接采信，未覆盖项输出 skip）。
 - CLI 不可用时，由 Agent 按 [M] 定义代执行并在报告中声明。
 
 ### 2. 语义判断

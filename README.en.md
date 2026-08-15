@@ -14,6 +14,8 @@ npx @agile-team/wl-skills-design init --editor copilot
 npx @agile-team/wl-skills-design update --dry-run
 wl-skills-design verify spec --target ./my-project
 wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-demo.drawio
+wl-skills-design verify db --target ./my-project
+wl-skills-design verify api --target ./my-project
 ```
 
 ## Capabilities
@@ -33,7 +35,7 @@ wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-demo.drawio
 
 ## Dual-track verification
 
-Every checklist item is tagged `[M]` (mechanically decidable) or `[J]` (judgment). For spec and flowchart, `wl-skills-design verify` executes the `[M]` items deterministically (code formats and continuity, table shapes, traceability closure, draw.io group/lane/edge/geometry rules); the agent judges `[J]` items and merges both into a single rule-numbered report. The `demo/` folder is a living example that stays verify-green.
+Every checklist item is tagged `[M]` (mechanically decidable) or `[J]` (judgment). All four domains are covered by `wl-skills-design verify`, which executes the `[M]` items deterministically (code formats and uniqueness, table shapes and column standards, draw.io structure, dictionary↔DDL field/type/length consistency, contract types, parseable examples, traceability closure); the agent judges `[J]` items and merges both into a single rule-numbered report. The `demo/` folder is a living example that stays verify-green across all four domains.
 
 ## Doc intake
 

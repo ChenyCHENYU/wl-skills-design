@@ -10,11 +10,11 @@
 
 | spec 功能编码 | IPO 字段（中文）| DB 表 | DB 字段（英文）| 状态 |
 |--------------|----------------|-------|---------------|------|
-| EQIP001 | 点检单号 | eqm_inspection_order | `inspection_no` | ✅ |
-| EQIP001 | 设备编码 | eqm_inspection_order | `device_code` | ✅ |
-| EQIP001 | 点检日期 | eqm_inspection_order | `inspection_date` | ✅ |
-| EQIP001 | 点检状态 | eqm_inspection_order | `inspection_status` | ✅ |
-| EQIP001 | 点检结论 | eqm_inspection_order | `result` | ✅ |
-| EQIP001 | 点检项目 | eqm_inspection_item | `item_name` | ✅ |
-| EQIP001 | 标准值 | eqm_inspection_item | `standard_value` | ✅ |
-| EQIP001 | 实测值 | eqm_inspection_item | `actual_value` | ✅ |
+| EQIP001 | 点检单号 | eqm_inspection_main | `inspection_no` | ✅ |
+| EQIP001 | 设备编码 | eqm_inspection_main | `device_code` | ✅ |
+| EQIP001 | 点检日期 | eqm_inspection_main | `inspection_date` | ✅ |
+| EQIP001 | 点检状态 | eqm_inspection_main | `inspection_status` | ✅ |
+| EQIP001 | 点检结论 | eqm_inspection_main | `result` | ✅ |
+| EQIP001 | 点检项目 | eqm_inspection_dtl | `item_name` | ✅ |
+| EQIP001 | 标准值 | eqm_inspection_dtl | `standard_value` | ✅ |
+| EQIP001 | 实测值 | eqm_inspection_dtl | `actual_value` | ✅ |

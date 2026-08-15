@@ -12,7 +12,6 @@ const FILES = path.join(ROOT, "files");
 const GH = path.join(FILES, ".github");
 const SKILLS = path.join(GH, "skills");
 const PROMPTS = path.join(GH, "prompts");
-const STANDARDS = path.join(GH, "standards");
 const MANIFEST_FILE = path.join(SKILLS, "_manifest.json");
 const ROUTE_EVALS = path.join(SKILLS, "_route-evals.json");
 const errors = [];
@@ -481,12 +480,13 @@ function checkDocxPrivacy() {
 
       for (const [name, data] of entries) {
         if (!/\.(xml|rels)$/.test(name)) continue;
-        const squashedContent = squash(data.toString("utf8"));
+        const raw = data.toString("utf8");
+        const squashedContent = squash(raw);
         for (const term of terms) {
           if (containsTerm(squashedContent, term)) errors.push(`[docx] ${rel(file)} 的 ${name} 含禁用词：${term}`);
         }
-        if (/w:rsid/.test(content)) errors.push(`[docx] ${rel(file)} 的 ${name} 含修订会话标识`);
-        if (/<(?:dc:creator|cp:lastModifiedBy)>[^<]+/.test(content)) errors.push(`[docx] ${rel(file)} 的 ${name} 含作者元数据`);
+        if (/w:rsid/.test(raw)) errors.push(`[docx] ${rel(file)} 的 ${name} 含修订会话标识`);
+        if (/<(?:dc:creator|cp:lastModifiedBy)>[^<]+/.test(raw)) errors.push(`[docx] ${rel(file)} 的 ${name} 含作者元数据`);
       }
     } catch (error) {
       errors.push(`[docx] ${rel(file)} 无法检查：${error.message}`);

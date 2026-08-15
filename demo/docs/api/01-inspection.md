@@ -8,19 +8,20 @@
 |------|------|
 | URL | `GET /api/v1/eqm/inspection-orders` |
 | Method | GET |
+| operationId | `queryInspectionPage` |
 | 鉴权 | Token（JWT），Header `Authorization: Bearer <token>` |
 | 幂等键 | 无（只读）|
 | 超时（SLA）| 3s |
 
 #### (2) 请求报文
 
-| 序号 | 中文字段 | 英文字段 | 类型 | 描述 | 备注 |
-|------|---------|---------|------|------|------|
-| 1 | 设备编码 | `deviceCode` | String | 设备编码过滤 | 选填 |
-| 2 | 点检状态 | `inspectionStatus` | String | dict: inspection_status | 选填 |
-| 3 | 点检日期 | `inspectionDate` | String | yyyy-MM-dd | 选填 |
-| 4 | 页码 | `pageNum` | Integer | 默认 1 | 选填 |
-| 5 | 每页条数 | `pageSize` | Integer | 默认 10 | 选填 |
+| 序号 | 字段稳定 ID | 中文字段 | 英文字段 | 契约类型 | 必填/可空 | 描述与约束 |
+|------|------------|---------|---------|---------|----------|-----------|
+| 1 | EQM_F_DEVICE_CODE | 设备编码 | `deviceCode` | string | 可空 | 精确匹配过滤 |
+| 2 | EQM_F_INSPECTION_STATUS | 点检状态 | `inspectionStatus` | string | 可空 | dict: inspection_status |
+| 3 | EQM_F_INSPECTION_DATE | 点检日期 | `inspectionDate` | string(date) | 可空 | ISO 8601 full-date |
+| 4 | EQM_F_PAGE_NUM | 页码 | `pageNum` | integer(int32) | 可空 | 默认 1 |
+| 5 | EQM_F_PAGE_SIZE | 每页条数 | `pageSize` | integer(int32) | 可空 | 默认 10，上限 100 |
 
 #### (3) 应答报文（统一包装）
 
@@ -64,19 +65,20 @@
 |------|------|
 | URL | `POST /api/v1/eqm/inspection-orders/{id}/submit` |
 | Method | POST |
+| operationId | `submitInspection` |
 | 鉴权 | Token（JWT），Header `Authorization: Bearer <token>` |
 | 幂等键 | `inspectionNo`（重复提交返回首次结果）|
 | 超时（SLA）| 3s |
 
 #### (2) 请求报文
 
-| 序号 | 中文字段 | 英文字段 | 类型 | 描述 | 备注 |
-|------|---------|---------|------|------|------|
-| 1 | 点检单ID | `id` | String | 路径参数 | 必填 |
-| 2 | 点检项明细 | `items` | Array | 提交前最终明细 | 必填，≥1 条 |
-| 2.1 | 点检项目 | `items[].itemName` | String | - | 必填 |
-| 2.2 | 标准值 | `items[].standardValue` | String | - | 选填 |
-| 2.3 | 实测值 | `items[].actualValue` | String | - | 必填 |
+| 序号 | 字段稳定 ID | 中文字段 | 英文字段 | 契约类型 | 必填/可空 | 描述与约束 |
+|------|------------|---------|---------|---------|----------|-----------|
+| 1 | EQM_F_INSPECTION_ID | 点检单ID | `id` | string | 必填 | 路径参数 |
+| 2 | EQM_F_ITEMS | 点检项明细 | `items` | array&lt;object&gt; | 必填 | ≥1 条 |
+| 2.1 | EQM_F_ITEM_NAME | 点检项目 | `items[].itemName` | string | 必填 | - |
+| 2.2 | EQM_F_STD_VALUE | 标准值 | `items[].standardValue` | string | 可空 | 文本或区间 |
+| 2.3 | EQM_F_ACT_VALUE | 实测值 | `items[].actualValue` | string | 必填 | - |
 
 #### (3) 应答报文（统一包装）
 

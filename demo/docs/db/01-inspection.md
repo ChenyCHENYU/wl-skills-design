@@ -6,19 +6,19 @@
 
 | 实体名 | 对应物理表 | 与其他实体的关系 |
 |--------|-----------|----------------|
-| 点检单主档 | eqm_inspection_order | 1 ── N 点检项明细（按 `inspection_id`）|
-| 点检项明细 | eqm_inspection_item | N ── 1 点检单主档 |
+| 点检单主档 | eqm_inspection_main | 1 ── N 点检项明细（按 `inspection_id`）|
+| 点检项明细 | eqm_inspection_dtl | N ── 1 点检单主档 |
 
 ## (2) DB 清单
 
 | 序号 | 表名 | 中文名称 | 表类型 | 说明 | 预估量级 |
 |------|------|---------|--------|------|---------|
-| 1 | eqm_inspection_order | 设备点检单主表 | 业务主表 | 一次点检活动一条 | 万级/年 |
-| 2 | eqm_inspection_item | 设备点检项明细表 | 业务明细表 | 点检单下的检查项 | 十万级/年 |
+| 1 | eqm_inspection_main | 设备点检单主表 | 业务主表 | 一次点检活动一条 | 万级/年 |
+| 2 | eqm_inspection_dtl | 设备点检项明细表 | 业务明细表 | 点检单下的检查项 | 十万级/年 |
 
 ## (3) 数据字典
 
-### eqm_inspection_order · 设备点检单主表
+### eqm_inspection_main · 设备点检单主表
 
 | 序号 | 字段英文名 | 字段中文名 | 主/外键 | 是否索引 | 类型 | 长度 | 空否 | 缺省 | 备注 |
 |------|-----------|-----------|---------|---------|------|------|------|------|------|
@@ -43,12 +43,12 @@
 
 | 索引名 | 类型 | 字段 | 用途 |
 |--------|------|------|------|
-| `pk_eqm_insp_order` | 主键 | `id` | 主键 |
-| `uk_eqm_insp_order_no` | 唯一 | `inspection_no` | 点检单号唯一 |
-| `uk_eqm_insp_order_dev_date` | 唯一 | `device_code, inspection_date` | 同设备同日唯一 |
-| `idx_eqm_insp_order_status` | 普通 | `inspection_status` | 状态过滤 |
+| `pk_eqm_insp_main` | 主键 | `id` | 主键 |
+| `uk_eqm_insp_no` | 唯一 | `inspection_no` | 点检单号唯一 |
+| `uk_eqm_insp_dev_date` | 唯一 | `device_code, inspection_date` | 同设备同日唯一 |
+| `idx_eqm_insp_status` | 普通 | `inspection_status` | 状态过滤 |
 
-### eqm_inspection_item · 设备点检项明细表
+### eqm_inspection_dtl · 设备点检项明细表
 
 | 序号 | 字段英文名 | 字段中文名 | 主/外键 | 是否索引 | 类型 | 长度 | 空否 | 缺省 | 备注 |
 |------|-----------|-----------|---------|---------|------|------|------|------|------|
@@ -69,13 +69,13 @@
 
 | 索引名 | 类型 | 字段 | 用途 |
 |--------|------|------|------|
-| `pk_eqm_insp_item` | 主键 | `id` | 主键 |
-| `idx_eqm_insp_item_oid` | 普通 | `inspection_id` | 按主表查明细 |
+| `pk_eqm_insp_dtl` | 主键 | `id` | 主键 |
+| `idx_eqm_insp_dtl_oid` | 普通 | `inspection_id` | 按主表查明细 |
 
 ## (4) DDL 脚本
 
 ```sql
-CREATE TABLE `eqm_inspection_order` (
+CREATE TABLE `eqm_inspection_main` (
   `id`                BIGINT       NOT NULL COMMENT '主键',
   `inspection_no`     VARCHAR(32)  NOT NULL COMMENT '点检单号',
   `device_code`       VARCHAR(32)  NOT NULL COMMENT '设备编码',
@@ -93,12 +93,12 @@ CREATE TABLE `eqm_inspection_order` (
   `tenant_id`         VARCHAR(32)  NULL COMMENT '租户号',
   `version`           INT          NOT NULL DEFAULT 0 COMMENT '乐观锁版本',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_eqm_insp_order_no` (`inspection_no`),
-  UNIQUE KEY `uk_eqm_insp_order_dev_date` (`device_code`, `inspection_date`),
-  KEY `idx_eqm_insp_order_status` (`inspection_status`)
+  UNIQUE KEY `uk_eqm_insp_no` (`inspection_no`),
+  UNIQUE KEY `uk_eqm_insp_dev_date` (`device_code`, `inspection_date`),
+  KEY `idx_eqm_insp_status` (`inspection_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备点检单主表';
 
-CREATE TABLE `eqm_inspection_item` (
+CREATE TABLE `eqm_inspection_dtl` (
   `id`             BIGINT      NOT NULL COMMENT '主键',
   `inspection_id`  BIGINT      NOT NULL COMMENT '点检单ID',
   `item_name`      VARCHAR(64) NOT NULL COMMENT '点检项目',
@@ -112,6 +112,6 @@ CREATE TABLE `eqm_inspection_item` (
   `deleted_flag`   TINYINT     NOT NULL DEFAULT 0 COMMENT '删除标志',
   `tenant_id`      VARCHAR(32) NULL COMMENT '租户号',
   PRIMARY KEY (`id`),
-  KEY `idx_eqm_insp_item_oid` (`inspection_id`)
+  KEY `idx_eqm_insp_dtl_oid` (`inspection_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='设备点检项明细表';
 ```

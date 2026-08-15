@@ -52,7 +52,7 @@
 - [暂挂] 无对外集成接口，集成报文类 4 项 N/A。
 
 ### 3.4 跨文档联动（D4）— 100% 🟢（16/16 已校验，2 暂挂）
-- V01 ✅ SPEC_OUT{点检单,点检项} ⊆ DB{eqm_inspection_order, eqm_inspection_item}
+- V01 ✅ SPEC_OUT{点检单,点检项} ⊆ DB{eqm_inspection_main, eqm_inspection_dtl}
 - V02 ✅ 持久化字段全部落库；V03/V04 ✅ 口径一致、无孤儿表
 - V05 ✅ SPEC_FUNC{EQIP001} 由 EQM-IF-01/02 承载；V07/V08 ✅ 接口数匹配、无孤儿接口
 - V09 ✅ 接口字段英文名 ⊆ DB 字段（`inspectionNo→inspection_no` 等 camelCase↔snake 映射一致）；V10/V11 ✅ 类型兼容、描述一致
@@ -64,7 +64,7 @@
 
 | spec 功能 | 功能名 | 接口 | 落库表 | 状态 |
 |----------|-------|------|--------|------|
-| EQIP001 | 设备点检单管理 | EQM-IF-01 / EQM-IF-02 | eqm_inspection_order / eqm_inspection_item | ✅ 闭环 |
+| EQIP001 | 设备点检单管理 | EQM-IF-01 / EQM-IF-02 | eqm_inspection_main / eqm_inspection_dtl | ✅ 闭环 |
 
 > 矩阵行数 = 功能编码数（1）= |SET_SPEC_FUNC|，满足 V18。
 

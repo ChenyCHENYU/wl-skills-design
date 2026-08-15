@@ -6,16 +6,21 @@
 
 ---
 
-## [未发布]
+## [0.11.0] — 2026-08-15（四域机械验证闭环与 lint 门禁）
+
+### 新增
+
+- `verify db`：机械执行数据库标准 [M] 项——命名/后缀语义/保留字/索引前缀（A01–A08）、主键唯一与系统字段口径（B02/B06）、索引清单与业务唯一覆盖（C02/C03）、四节/ER↔清单/10 列字典/DDL COMMENT（D01–D04）、清单↔字典↔DDL 三方表集合与逐字段类型长度一致（E01/E02）、联动矩阵覆盖（X05）。
+- `verify api`：机械执行接口标准 [M] 项——编码与 operationId 唯一、URI 风格与 URL↔Method 一致（A01–A03）、四节齐全、7 列字段表+字段稳定 ID、契约类型白名单、示例 JSON 可解析、必填枚举、RFC 3339 日期时间（B02–B10）、总览 10 列清单与接口↔清单↔错误码三方闭合（D01–D05）；B01/D08 显式 skip。
+- ESLint 9 门禁：`npm run lint` 并入 verify 链；首跑修复 docx 检查未定义变量 bug 与 2 处死代码。
+- doctor 新增“调度正文能力索引必须覆盖全部已发布 Skill”门禁，杜绝索引漂移。
 
 ### 修复与变更
 
-- 修正 CHANGELOG 0.10.0/0.9.0 版本顺序错乱。
-- README 包结构树计数更新（10 个 Skill、16 个 Prompt）；调度正文能力索引补 `doc-intake` 并重新派生 9 个编辑器文件；doctor 新增“能力索引必须覆盖全部已发布 Skill”门禁，杜绝同类漂移。
-- `kit-internal/skills/README.md` 维护清单同步至 10 个已发布 Skill（原清单停留在 8 个且误将 `code-architecture` 标为规划中）；ADR-014 组件关系图补 `lib/verify.js` 与 `doc-intake`。
-- demo README 措辞更新（“七大能力”→按 10 Skill 口径），并补充 `verify spec --target demo` 活样例入口；规范索引页补 [M]/[J] 双轨说明。
-- `.gitignore` 的 `docs/` 收窄为根目录 `/docs/`，避免误忽略 `demo/docs/` 新文件；移除已废弃的 spec-gen 相关条目。
-- 移除废弃的 `spec-gen/` Python 绘图脚本目录：其能力已由 `requirements-flowchart` Skill 与机械验证器取代，且长期无门禁维护。
+- demo 升级为四域金样本：表名补标准后缀（`eqm_inspection_main`/`eqm_inspection_dtl`，24 处引用 6 文件协同修改并经 verify 复核）、API 字段表升级 7 列契约类型并补 operationId、总览升级 10 列接口清单与带 HTTP 状态的错误码清单。
+- db/api SKILL 与指南切换为“CLI 机械先行 + [J] 语义补充”流程；四份标准图例统一；doc-intake 差距分析四域全部走 CLI。
+- 新增 5 组 verify db/api 金样本与负例回归测试；维护清单规划项收敛（OpenAPI 深度解析列为独立规划项）。
+- 历史债务清理：移除废弃 `spec-gen/` 目录；`.gitignore` 的 `docs/` 收窄为 `/docs/`；README/维护清单/ADR 计数与结构同步；修正 CHANGELOG 版本顺序。
 
 ---
 
