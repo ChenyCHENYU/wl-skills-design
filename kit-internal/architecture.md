@@ -1,5 +1,29 @@
 # 架构决策记录
 
+## ADR-016 · 双轨验证、文档接入与开源治理
+
+**日期**：2026-08
+**状态**：已采纳
+
+### 背景
+
+自证闭环缺口：验证清单此前全部由 LLM 判断，包无法机械证明自己生成的产物合格；接入缺口：他人提供的半成品文档没有标准入口；开源缺口：UNLICENSED + 无治理文件 + kit-internal 含未匿名材料，不具备开源条件。
+
+### 决策
+
+1. **[M]/[J] 双轨标记**：四份标准验证清单逐项标注执行方式；spec/flowchart 的 [M] 项由 `wl-skills-design verify` 确定性执行（20 项 spec 机械检查 + 23 项 flowchart 机械检查），Agent 只判 [J] 项，结果按同一规则编号合并。规则编号成为机器与 LLM 的分界契约。
+2. **verify 命令族**：`verify spec --target` / `verify flowchart --file`，输出 pass/fail/skip + 证据位置；未实现的 [M] 项显式 skip，不伪装通过。金样本回归进入测试（包内匿名样例与 demo 必须 verify 全绿）。
+3. **doc-intake Skill**：采集归位（编码锚点 + 未归类区）→ 差距分析（机械先行 + 漂移检测：字典值漂移 P0、名称近似待确认）→ 补全计划（复用 09 标准 P0/P1/P2 补丁格式）→ 授权补结构、事实只登记。路由 priority 85，语料 37 条。
+4. **demo 升级为活样例**：demo spec 补齐 4.1.6 权限矩阵、4.2-data-report、七列活动表、五列 IPO（GB 风格），保持 verify 全绿；流程图样例修正编码体系（CAIG-A-01-E-01）与判定分支标签，index.md 的双格式说明按标准收敛。
+5. **开源治理**：Apache-2.0 + NOTICE；根目录 CONTRIBUTING/SECURITY/CODE_OF_CONDUCT + CODEOWNERS + issue/PR 模板；publish workflow 使用 OIDC provenance；删除 kit-internal 未匿名流程图并移除 doctor 豁免；.gitignore 移除误导性 package-lock 条目；README 双语。
+6. **意图与路由**：review 规则新增 评估/审查/走查，maintain 新增 整理；api 负向新增 翻译；新增歧义并列用例（"评估一下这份设计文档" → ask-one-question）。
+
+### 权衡
+
+- 机械验证采用启发式解析（非完整 Markdown/XML AST），误报以证据位置呈现供人工裁决；金样本回归防止验证器自身漂移。
+- db/api 的 [M] 项暂由 Agent 代执行，图例如实声明；CLI 扩展时 [M] 集与实现逐步对齐。
+- 未匿名文件已从工作区删除，但 git 历史仍含该 blob；正式对外宣布开源前需评估历史重写或将仓库可见性策略一并处理。
+
 ## ADR-015 · 炼钢级颗粒度基线与发布载荷真实冒烟
 
 **日期**：2026-08

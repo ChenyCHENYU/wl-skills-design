@@ -123,7 +123,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["接口设计", "api 设计", "restful", "openapi", "接口文档", "接口报文", "集成接口", "swagger"],
-        "negative": ["api 调用报错", "sdk bug", "网络抓包"]
+        "negative": ["api 调用报错", "sdk bug", "网络抓包", "翻译"]
       },
       "context": {
         "blocking": ["接口目标或调用场景"],
@@ -194,6 +194,27 @@
         "signals": ["字段", "状态", "接口", "页面", "流程", "文档"]
       },
       "outputs": ["CHANGE_IMPACT 报告", "跨域影响矩阵", "补丁任务清单", "复验顺序"]
+    },
+    {
+      "id": "doc.intake",
+      "name": "文档接入与补全",
+      "status": "released",
+      "version": "1.0",
+      "priority": 85,
+      "skillPath": "doc-intake/SKILL.md",
+      "standardPaths": [],
+      "promptPaths": ["prompts/intake-docs.prompt.md"],
+      "intents": ["validate", "review", "create", "maintain"],
+      "triggers": {
+        "exact": ["文档接入", "接入文档", "文档整理", "整理文档", "文档补全", "补全文档", "文档体检", "差距分析", "半成品", "intake"],
+        "negative": ["代码补全", "自动补全", "翻译"]
+      },
+      "context": {
+        "blocking": ["既有文档路径或文档集合"],
+        "optional": ["目标规范域", "design-model 是否已存在", "允许补全的范围"],
+        "signals": ["文档", "既有", "半成品", "补全", "完善", "差距"]
+      },
+      "outputs": ["INTAKE 差距报告", "漂移检测清单", "补全任务清单", "draft design-model"]
     },
     {
       "id": "code.architecture",

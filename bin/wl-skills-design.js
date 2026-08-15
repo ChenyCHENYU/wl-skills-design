@@ -10,6 +10,7 @@ const ROOT = path.resolve(__dirname, "..");
 const FILES_DIR = path.join(ROOT, "files");
 const PACKAGE = require(path.join(ROOT, "package.json"));
 const { validateDesignModelFile } = require(path.join(ROOT, "lib", "design-model.js"));
+const { verifySpecDir, verifyFlowchartFile } = require(path.join(ROOT, "lib", "verify.js"));
 const EDITORS_FILE = path.join(
   FILES_DIR,
   ".github",
@@ -54,13 +55,15 @@ function parseArgs(argv) {
     editor: null,
     target: null,
     model: null,
+    domain: null,
+    files: [],
     list: false,
     id: null,
     purge: false,
     help: false,
     version: false,
   };
-  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "restore", "uninstall"]);
+  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "restore", "uninstall"]);
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -76,7 +79,11 @@ function parseArgs(argv) {
     else if (arg === "--purge") result.purge = true;
     else if (arg === "--help" || arg === "-h") result.help = true;
     else if (arg === "--version" || arg === "-v") result.version = true;
-    else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id") {
+    else if (arg === "--file") {
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
+      result.files.push(value);
+    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id") {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result[arg.slice(2)] = value;
@@ -84,7 +91,9 @@ function parseArgs(argv) {
     else if (arg.startsWith("--target=")) result.target = arg.slice(9);
     else if (arg.startsWith("--model=")) result.model = arg.slice(8);
     else if (arg.startsWith("--id=")) result.id = arg.slice(5);
+    else if (arg.startsWith("--file=")) result.files.push(arg.slice(7));
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
+    else if (result.command === "verify" && !result.domain && /^(spec|flowchart)$/.test(arg)) result.domain = arg;
     else throw new Error(`未知命令：${arg}`);
   }
   return result;
@@ -104,6 +113,7 @@ wl-skills-design v${PACKAGE.version}
   status     查看受管文件状态
   doctor     检查安装状态与 Skill 清单
   validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
+  verify     机械执行设计产物的验证清单子集：verify spec | verify flowchart
   restore    恢复最近一次安装、升级或卸载前状态
   uninstall  卸载受管文件；不会静默删除本地改动
 
@@ -111,6 +121,7 @@ wl-skills-design v${PACKAGE.version}
   --editor <id[,id]>  选择适配器：${ids} | all
   --target <dir>      目标项目目录，默认当前目录
   --model <file>      design-model 路径，默认 docs/design-model.json
+  --file <path>       verify：指定待验证文件，可重复；默认扫描 docs/
   --list              restore：列出可用备份
   --id <backupId>     restore：恢复指定备份，默认最近一次
   --purge             uninstall：同时删除备份与状态目录
@@ -125,6 +136,8 @@ wl-skills-design v${PACKAGE.version}
   npx @agile-team/wl-skills-design init --editor cursor --target ./my-project
   npx @agile-team/wl-skills-design update --dry-run
   npx @agile-team/wl-skills-design validate-model --model docs/design-model.json --json
+  npx @agile-team/wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-示例.drawio
+  npx @agile-team/wl-skills-design verify spec --target ./my-project
 `;
 }
 
@@ -141,6 +154,63 @@ function runValidateModel(options, target) {
     console.log(`\n  ${result.ok ? "✔" : "✖"} errors=${result.summary.errors}, warnings=${result.summary.warnings}\n`);
   }
   return result.ok ? 0 : 1;
+}
+
+function walkFiles(dir, predicate, base = dir) {
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name, "en"))
+    .flatMap((entry) => {
+      const full = path.join(dir, entry.name);
+      return entry.isDirectory() ? walkFiles(full, predicate, base) : predicate(full) ? [full] : [];
+    });
+}
+
+function runVerify(options, target) {
+  const domain = options.domain;
+  if (!domain) throw new Error("verify 需要域参数：verify spec | verify flowchart");
+  const reports = [];
+
+  if (domain === "flowchart") {
+    const files = options.files.length
+      ? options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)))
+      : walkFiles(path.join(target, "docs"), (file) => file.endsWith(".drawio"));
+    if (!files.length) throw new Error("未找到 .drawio 文件；可用 --file 指定");
+    for (const file of files) reports.push(verifyFlowchartFile(file));
+  } else if (domain === "spec") {
+    const explicit = options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)));
+    const dirs = new Set(explicit.map((item) => path.dirname(item)));
+    if (!dirs.size) {
+      const specRoot = path.join(target, "docs", "spec");
+      for (const file of walkFiles(specRoot, (item) => item.endsWith(".md"))) dirs.add(path.dirname(file));
+    }
+    const valid = [...dirs].filter((dir) => fs.readdirSync(dir).some((name) => /^(ch1[-_]3|4\.\d+).*\.md$/.test(name)));
+    if (!valid.length) throw new Error("未找到需求说明书目录（docs/spec/{project-code}/）；可用 --file 指定");
+    for (const dir of valid) reports.push(verifySpecDir(dir));
+  } else {
+    throw new Error(`不支持的域：${domain}（当前支持 spec、flowchart）`);
+  }
+
+  const summary = reports.reduce(
+    (acc, report) => ({ pass: acc.pass + report.summary.pass, fail: acc.fail + report.summary.fail, skip: acc.skip + report.summary.skip }),
+    { pass: 0, fail: 0, skip: 0 }
+  );
+  const ok = reports.every((report) => report.ok);
+  if (options.json) {
+    console.log(JSON.stringify({ ok, domain, reports, summary }, null, 2));
+  } else {
+    for (const report of reports) {
+      console.log(`\n  ${report.ok ? "✔" : "✖"} ${domain}：${normalizeRel(path.relative(target, report.subject))}`);
+      for (const item of report.checks) {
+        if (item.status === "pass") continue;
+        const tag = item.status === "fail" ? "✖" : "…";
+        console.log(`     ${tag} ${item.rule} ${item.evidence} ${item.message}`.trimEnd());
+      }
+    }
+    console.log(`\n  ${ok ? "✔" : "✖"} 机械检查：通过 ${summary.pass}，失败 ${summary.fail}，暂不支持 ${summary.skip}\n`);
+  }
+  return ok ? 0 : 1;
 }
 
 function readEditors() {
@@ -655,6 +725,7 @@ function main(argv = process.argv.slice(2)) {
     return runInstall(options, target, editors);
   }
   if (options.command === "validate-model") return runValidateModel(options, target);
+  if (options.command === "verify") return runVerify(options, target);
   if (options.command === "status") return runStatus(options, target, false);
   if (options.command === "doctor") return runStatus(options, target, true);
   if (options.command === "restore") return runRestore(options, target);

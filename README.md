@@ -1,6 +1,8 @@
 # wl-skills-design
 
-产品设计 Agent Skills 包：9 份设计标准、9 个可发现 Skill、15 个 VS Code Prompt、机器设计模型校验、匿名合成样例和安全安装 CLI。
+产品设计 Agent Skills 包：9 份设计标准、10 个可发现 Skill、16 个 VS Code Prompt、机器+语义双轨验证（`[M]`/`[J]`）、机械验证 CLI、匿名合成样例和安全安装器。
+
+[English README](./README.en.md)
 
 ## 快速开始
 
@@ -33,6 +35,7 @@ npx @agile-team/wl-skills-design update
 | `cross-glossary` | 术语、字段、枚举、编码注册 | 18 项 |
 | `cross-design-review` | 评分、问题、追溯矩阵 | D4 18 项 + RV 12 项 |
 | `cross-change-impact` | 影响矩阵、补丁任务、复验顺序 | 20 项 |
+| `doc-intake` | 半成品文档接入、差距报告、补全任务、draft design-model | 复用各域清单 |
 | `code-architecture` | 模块边界、分层、契约和质量门 | AC01–AC20 |
 
 Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全一致，只保留最小元数据，并通过相对链接按需加载标准、模板和匿名合成样例。
@@ -40,6 +43,21 @@ Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全�
 ## IPO 颗粒度基线
 
 需求说明书标准内置 GB 颗粒度基线（§5.1 按钮级覆盖、§5.2 GB1–GB8）：命令按钮处理逻辑按编号步骤书写，一步一事，写明数据对象与字段、字典稳定值、前置校验、审计与履历写入、联动与外部同步、异常文案原文和展示规则；执行类活动与命令按钮一一对应，作为后端命令端点的需求侧投影。匿名对照样例见 `requirements-spec-doc/examples/05-ipo-granularity.md`。
+
+## 机械验证（[M]/[J] 双轨）
+
+四份标准的验证清单均带执行方式标记：`[M]` 机械可判、`[J]` 语义判断。spec 与 flowchart 域的 [M] 项由 CLI 直接执行，Agent 只判 [J] 项，两类结论按同一规则编号合并成一份报告：
+
+```bash
+wl-skills-design verify spec --target ./my-project        # 结构/编码/表格/追溯闭合等机械项
+wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-示例.drawio
+```
+
+验证器覆盖活动编码格式与连续性、对照表双向闭合、IPO 空单元格、draw.io 三层 GROUP/泳道色标/连线样式/几何重叠、起止节点与占位符回填等。`demo/` 目录是保持 verify 全绿的活样例。db/api 域的 [M] 项由 Agent 代执行，CLI 支持按路线图扩展。
+
+## 半成品文档接入
+
+`doc-intake` Skill 把别人提供的半拉子文档接进规范体系：采集归位（按编码体系分类 + 未归类区）→ 差距分析（机械验证 + 语义判断 + 字典值漂移/名称近似漂移检测）→ 补全计划（复用变更影响分析的补丁任务格式）→ 授权范围内补结构、业务事实只登记关键问题清单，绝不编造；并从既有编码铸造 draft design-model。
 
 ## 安全行为
 
@@ -59,6 +77,7 @@ wl-skills-design update     安全升级
 wl-skills-design status     查看受管文件状态
 wl-skills-design doctor     检查安装和 Skill 清单
 wl-skills-design validate-model  只读校验设计模型和引用完整性
+wl-skills-design verify     机械执行 spec/flowchart 验证清单 [M] 项
 wl-skills-design restore    恢复最近一次变更（--list 查看，--id 指定）
 wl-skills-design uninstall  安全卸载（--purge 同时清除备份与状态）
 ```
@@ -153,4 +172,4 @@ npm pack --dry-run
 
 ## 许可
 
-`UNLICENSED`：当前包未授予开源再分发许可。公开可见不等于获得使用或再许可权；如计划开放复用，应由权利人另行选择许可证。
+[Apache-2.0](./LICENSE)。随包分发的所有模板与样例均为匿名合成内容；贡献即表示接受 Apache-2.0 与本仓库贡献指南。

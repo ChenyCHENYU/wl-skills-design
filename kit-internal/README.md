@@ -28,8 +28,8 @@ npm pack --dry-run --ignore-scripts
 
 1. 更新代码、README、维护文档和 CHANGELOG。
 2. 运行 `npm run verify`、`npm audit` 与 `npm pack --dry-run`。
-3. 使用 `npm version patch --no-git-tag-version` 更新版本。
+3. 使用 `npm version minor --no-git-tag-version` 更新版本并同步派生文件。
 4. 提交并推送后创建同名 `vX.Y.Z` 标签。
-5. 发布前通过 `npm whoami` 确认身份，再执行 `npm publish --access public`。
+5. 通过 GitHub Actions `Publish` 工作流（npm 环境 + OIDC provenance）发布；不在本机保存或使用 npm token。
 
-鉴权信息只能放在本机 npm 配置或受保护的 CI secret 中，不得写入仓库。
+鉴权信息只能放在受保护的 CI secret 中，不得写入仓库或本地文件。

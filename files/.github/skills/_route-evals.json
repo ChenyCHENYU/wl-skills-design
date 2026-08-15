@@ -31,6 +31,12 @@
     { "prompt": "整改数据库设计", "skill": "data.database", "intent": "repair" },
     { "prompt": "走查需求说明书", "skill": "requirements.spec", "intent": "review" },
     { "prompt": "审查一下泳道图", "skill": "requirements.flowchart", "intent": "review" },
-    { "prompt": "统一字段命名并出接口设计", "skill": "api.restful", "intent": "maintain" }
+    { "prompt": "统一字段命名并出接口设计", "skill": "api.restful", "intent": "maintain" },
+    { "prompt": "对这份半成品设计文档做差距分析", "skill": "doc.intake", "intent": "create" },
+    { "prompt": "把既有需求文档整理成规范结构", "skill": "doc.intake", "intent": "maintain" },
+    { "prompt": "帮我完善这份半成品文档", "skill": "doc.intake", "intent": "create" },
+    { "prompt": "代码自动补全怎么关闭", "skill": null, "intent": "create" },
+    { "prompt": "翻译这份接口文档", "skill": null, "intent": "create" },
+    { "prompt": "评估一下这份设计文档", "skill": null, "intent": "review" }
   ]
 }

@@ -12,6 +12,7 @@
 | 术语字段词典 | ✅ v1.1 | `cross-glossary/SKILL.md` | create / maintain / validate / review | 不做自然语言翻译 |
 | 设计集成评审 | ✅ v1.1 | `cross-design-review/SKILL.md` | review | 不处理 code/PR review |
 | 变更影响分析 | ✅ v1.1 | `cross-change-impact/SKILL.md` | impact / validate | 不分析代码依赖升级 |
+| 文档接入与补全 | ✅ v1.0 | `doc-intake/SKILL.md` | validate / review / create / maintain | 不做代码补全或翻译 |
 | 代码结构设计 | ✅ v1.0 | `code-architecture/SKILL.md` | create / validate / review / repair | 不处理普通 code/PR review |
 
 ## 路由规则

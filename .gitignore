@@ -4,9 +4,6 @@ node_modules/
 # 发布包
 *.tgz
 
-# 锁文件
-package-lock.json
-
 # 日志
 *.log
 npm-debug.log*

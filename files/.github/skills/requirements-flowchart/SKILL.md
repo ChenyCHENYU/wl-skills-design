@@ -20,7 +20,7 @@ description: 生成或检查 draw.io 业务泳道流程图，覆盖参与方、�
 2. 新建文件时读取 [draw.io 骨架](./templates/skeleton.drawio)；需要版式参考时读取 [匿名样例说明](./examples/index.md)。
 3. 使用标准活动编码 `[流程编码]-[操作类型]-[NN]`，例如 `ORD-A-01-E-01`。
 4. 生成可被 draw.io 打开的 XML，不得只输出 Mermaid、ASCII 或图片。
-5. 执行标准第十五章 20 项验证；缺少 spec 时将第 16–20 项标为 `Pending`，不得伪造通过。
+5. 执行标准第十五章 20 项验证：先运行 `wl-skills-design verify flowchart --file {产物路径}` 获取 [M] 项机械结论（CLI 不可用时由 Agent 代执行），再判 [J] 项；缺少 spec 时将 FC-01～FC-05 标为 `Pending`，不得伪造通过。
 6. 检查 XML 可解析、ID 唯一、引用存在、连接线落在节点上，并尽可能完成渲染检查。
 
 ## 交付约束

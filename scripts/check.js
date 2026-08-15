@@ -272,10 +272,10 @@ function detectIntent(prompt) {
   const text = normalize(prompt);
   const rules = [
     ["impact", /变更|影响|change impact/],
-    ["review", /评审|评分|审查|走查|review|追溯矩阵/],
+    ["review", /评审|评分|审查|走查|评估|review|追溯矩阵/],
     ["validate", /验证|校验|检查|validate|audit/],
     ["repair", /修复|整改|repair|fix/],
-    ["maintain", /维护|登记|统一|对齐|maintain/],
+    ["maintain", /维护|登记|统一|对齐|整理|maintain/],
   ];
   return rules.find(([, regex]) => regex.test(text))?.[0] || "create";
 }
@@ -331,8 +331,6 @@ function checkContentContracts() {
     "\u6e90\u81ea\u771f\u5b9e\u9879\u76ee",
   ];
   for (const file of allText) {
-    const base = path.basename(file);
-    if (file.includes(`${path.sep}kit-internal${path.sep}test-flowcharts${path.sep}`) && /^(?:~\$)?AI还原-/u.test(base)) continue;
     const squashedContent = squash(read(file));
     for (const term of sensitive) {
       if (containsTerm(squashedContent, term)) errors.push(`[privacy] ${rel(file)} 含禁用词：${term}`);

@@ -75,8 +75,10 @@ test("路由实际计入上下文信号且保留判定证据", () => {
 
 test("Prompt 使用当前 agent 元数据且验证默认只读", () => {
   const dir = path.join(ROOT, "files", ".github", "prompts");
+  const manifest = JSON.parse(fs.readFileSync(MANIFEST, "utf8"));
+  const expected = new Set(manifest.skills.flatMap((skill) => skill.promptPaths || [])).size;
   const prompts = fs.readdirSync(dir).filter((name) => name.endsWith(".prompt.md"));
-  assert.strictEqual(prompts.length, 15);
+  assert.strictEqual(prompts.length, expected);
   for (const name of prompts) {
     const content = fs.readFileSync(path.join(dir, name), "utf8");
     assert.match(content, /^---\r?\nagent: agent/m);
