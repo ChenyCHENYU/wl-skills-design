@@ -4,6 +4,10 @@
 
 [English README](./README.en.md)
 
+独立与组合边界见 [机器能力声明](lib/capabilities.json)。设计技能和 CLI 不依赖其他 WL 包，`design-model` 仍是可选追溯增强。共享 Markdown 使用 `wl-skills-design` 托管区块；更新、切换编辑器、卸载和恢复只处理本包贡献。预存相同内容只引用，不自动认领；`--force` 只可更新已有归属的本包内容，不能覆盖用户或其他包内容。清理保留用户修改和引用记录，目录型编辑器规则及路由回归文件均采用包命名，避免共享文件碰撞。
+
+当前版本 `v0.12.0`：目录型编辑器规则与路由回归数据采用包命名，预存空文件在卸载和恢复后仍保留；默认 Delivery Profile 与公共基线一致，项目定制值继续由项目管理。
+
 ## 快速开始
 
 需要 Node.js 20 或更高版本。
@@ -54,7 +58,7 @@ wl-skills-design verify api --target ./my-project
 npx @agile-team/wl-skills-design status        # 查看受管文件与本地改动
 npx @agile-team/wl-skills-design update --dry-run   # 预检升级（有本地改动时不写入）
 npx @agile-team/wl-skills-design restore --list     # 列出备份
-npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 连备份一起清）
+npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 清理本包快照）
 ```
 
 `demo/` 目录是一套四域 verify 全绿的完整交付样例（需求说明书 + 数据库 + 接口 + 评审报告），可作质量对照；VS Code Chat 中输入 `/` 可选用 16 个快捷 Prompt。
@@ -105,9 +109,9 @@ wl-skills-design verify api --target ./my-project         # 编码唯一/7列字
 
 - `validate`、`review`、`impact` 默认只读，不自动修改既有设计文件。
 - `repair` 需要用户明确授权；创建流程只可自动修复本轮新产物。
-- `init` 和 `update` 先全量预检。发现冲突时退出码为 `2`，不会留下半套文件。
+- `init` 和 `update` 先全量预检。共享文件保留外部内容并追加或更新本包区块；未知独占文件冲突时退出码为 `2`，路径类型或符号链接不安全时退出码为 `1`，均不会留下半套文件。
 - 受管文件记录在 `.wl-skills-design/state.json`，本地改动默认受保护。
-- 变更前生成事务备份，保留最近 5 份；`restore` 覆盖现存文件前再生成一份安全快照，可再次 `restore` 撤销恢复。
+- 变更前生成事务备份，通常保留最近 5 份；含用户修改或外来文件的快照不会被自动清除。`restore` 只恢复本包贡献，并生成安全快照，可再次 `restore` 撤销恢复。
 - 写入操作持有锁文件，防止并发安装互相破坏。
 - 默认只安装一个编辑器 profile，避免规则重复注入。
 
@@ -121,7 +125,7 @@ wl-skills-design doctor     检查安装和 Skill 清单
 wl-skills-design validate-model  只读校验设计模型和引用完整性
 wl-skills-design verify     机械执行 spec/flowchart 验证清单 [M] 项
 wl-skills-design restore    恢复最近一次变更（--list 查看，--id 指定）
-wl-skills-design uninstall  安全卸载（--purge 同时清除备份与状态）
+wl-skills-design uninstall  安全卸载（--purge 清理本包快照，保留外来内容）
 ```
 
 通用选项：
@@ -130,10 +134,10 @@ wl-skills-design uninstall  安全卸载（--purge 同时清除备份与状态�
 --editor <id[,id]>  选择 profile
 --target <dir>      指定目标项目
 --dry-run           只预检
---force             明确覆盖本地改动，覆盖前备份
+--force             仅更新已有归属的本包内容并备份；卸载仍保留用户修改
 --list              restore：列出可用备份
 --id <backupId>     restore：恢复指定备份
---purge             uninstall：同时删除备份与状态目录
+--purge             uninstall：清理本包快照；保留残留引用和外来文件
 --json              机器可读输出
 ```
 
@@ -144,12 +148,12 @@ wl-skills-design uninstall  安全卸载（--purge 同时清除备份与状态�
 | `agents` | `AGENTS.md` | 通用，默认 |
 | `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
 | `claude` | `CLAUDE.md` | Claude Code |
-| `cursor` | `.cursor/rules/conventions.mdc` | Agent Requested |
-| `windsurf` | `.windsurf/rules/conventions.md` | Workspace Rule |
-| `cline` | `.clinerules/conventions.md` | 精简持久规则 |
-| `kiro` | `.kiro/steering/conventions.md` | `inclusion: auto` |
-| `qoder` | `.qoder/rules/conventions.md` | 项目规则 |
-| `trae` | `.trae/rules/conventions.md` | 项目规则 |
+| `cursor` | `.cursor/rules/wl-skills-design.mdc` | Agent Requested |
+| `windsurf` | `.windsurf/rules/wl-skills-design.md` | Workspace Rule |
+| `cline` | `.clinerules/wl-skills-design.md` | 精简持久规则 |
+| `kiro` | `.kiro/steering/wl-skills-design.md` | `inclusion: auto` |
+| `qoder` | `.qoder/rules/wl-skills-design.md` | 项目规则 |
+| `trae` | `.trae/rules/wl-skills-design.md` | 项目规则 |
 
 兼容路径基于 2026-07-15 的官方实践：GitHub/VS Code Agent Skills、VS Code Prompt Files、Cursor Project Rules、Kiro Steering、Cline Rules 和 Qoder Rules。`.cursorrules`、`.windsurfrules` 等旧版单文件不再生成。
 
@@ -162,7 +166,7 @@ wl-skills-design uninstall  安全卸载（--purge 同时清除备份与状态�
 3. 候选达到 70 分且领先至少 15 分才运行；否则只问一个关键问题。
 4. 普通 code review、PR review、运行故障和依赖升级不会误入产品设计 Skill。
 
-路由语料保存在 `_route-evals.json` 并由 doctor 回归验证。
+路由语料保存在 `_route-evals.design.json` 并由 doctor 回归验证。
 
 ## 资料分层
 

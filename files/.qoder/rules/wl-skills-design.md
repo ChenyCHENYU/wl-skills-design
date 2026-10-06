@@ -1,15 +1,11 @@
----
-description: "按需调用产品设计 Agent Skills；适用于流程图、原型、需求、数据库、接口、词典、评审和变更影响任务"
-alwaysApply: false
----
-
-<!-- Cursor Project Rule。按需加载，避免占用所有对话上下文。 -->
-<!-- 源文件：.github/copilot-instructions.md -->
+﻿# Qoder 产品设计规范（.qoder/rules/conventions.md）。由 wl-skills-design 维护，请勿手动编辑正文内容。
+# 源文件：.github/copilot-instructions.md，更新方式：运行 npm run sync 自动派生
 
 ---
+
 # wl-skills-design 产品设计调度说明
 
-> 版本：v0.11.1。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v0.12.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 

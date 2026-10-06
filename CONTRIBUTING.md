@@ -29,7 +29,7 @@ kit-internal/              维护者文档与内部材料（不发布）
 
 - 规范是规则真源；Skill 只写工作流；模板只含占位符；样例必须匿名合成。
 - 修改检查项数量或触发词时，同步 manifest、Prompt、模板、指南、测试与 README（详见 `kit-internal/CONTRIBUTING.md`）。
-- 新增触发词必须同时补路由正例、负例或歧义例（`_route-evals.json`）。
+- 新增触发词必须同时补路由正例、负例或歧义例（`_route-evals.design.json`）。
 - `validate`、`review`、`impact` 默认只读；`repair` 必须明确授权。
 - 任何提交不得包含客户、组织、地点、账号、令牌或生产数据；隐私扫描在 doctor 中强制执行。
 - 验证清单改动需保持 [M]/[J] 标记与 `wl-skills-design verify` 实现一致；[M] 项必须有对应机械实现或明确列为 skip。

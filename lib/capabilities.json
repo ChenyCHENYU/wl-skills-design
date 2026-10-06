@@ -1,0 +1,38 @@
+{
+  "boundaryVersion": 1,
+  "package": "@agile-team/wl-skills-design",
+  "capabilities": [
+    {
+      "id": "design.documents",
+      "intents": [
+        "create",
+        "validate",
+        "review",
+        "repair",
+        "maintain",
+        "impact"
+      ],
+      "inputs": [
+        "requirements",
+        "design-model"
+      ],
+      "outputs": [
+        "requirements-documents",
+        "design-model"
+      ]
+    }
+  ],
+  "standalone": {
+    "requiresSiblingPackages": [],
+    "missingBusinessFacts": "report-unresolved",
+    "projectInputsOwnedBy": "project"
+  },
+  "composition": {
+    "contributionId": "wl-skills-design",
+    "protocolVersion": "1.0",
+    "optionalTraceInput": "design-model",
+    "unknownProtocol": "reject-or-explicit-migration",
+    "apiAuthority": "validated-effective-api-manifest",
+    "sharedWrites": "own-block-or-json-entry-only"
+  }
+}

@@ -95,18 +95,18 @@ test("init 默认只安装 agents profile 并写状态", () => withTemp((dir) =>
 test("--editor cursor 只安装当前路径，不安装 legacy 文件", () => withTemp((dir) => {
   const result = runCli(["init", "--editor", "cursor"], dir);
   assert.strictEqual(result.code, 0, result.stderr);
-  assert.ok(fs.existsSync(path.join(dir, ".cursor", "rules", "conventions.mdc")));
+  assert.ok(fs.existsSync(path.join(dir, ".cursor", "rules", "wl-skills-design.mdc")));
   assert.ok(!fs.existsSync(path.join(dir, ".cursorrules")));
   assert.ok(!fs.existsSync(path.join(dir, "AGENTS.md")));
 }));
 
-test("init 冲突时事务前退出，不产生半套文件", () => withTemp((dir) => {
+test("init 保留共享 AGENTS 用户内容并追加本包区块", () => withTemp((dir) => {
   fs.writeFileSync(path.join(dir, "AGENTS.md"), "用户规则", "utf8");
   const result = runCli(["init"], dir);
-  assert.strictEqual(result.code, 2);
+  assert.strictEqual(result.code, 0, result.stderr);
+  assert.match(fs.readFileSync(path.join(dir, "AGENTS.md"), "utf8"), /^用户规则\n<!-- wl-skills-design:begin -->/);
+  assert.strictEqual(runCli(["uninstall"], dir).code, 0);
   assert.strictEqual(fs.readFileSync(path.join(dir, "AGENTS.md"), "utf8"), "用户规则");
-  assert.ok(!fs.existsSync(path.join(dir, ".github")));
-  assert.ok(!fs.existsSync(path.join(dir, ".wl-skills-design")));
 }));
 
 test("--dry-run 不写盘", () => withTemp((dir) => {
@@ -139,20 +139,17 @@ test("update 切换 profile 时移除未修改旧适配器", () => withTemp((dir
   const result = runCli(["update", "--editor", "cursor"], dir);
   assert.strictEqual(result.code, 0, result.stderr);
   assert.ok(!fs.existsSync(path.join(dir, "AGENTS.md")));
-  assert.ok(fs.existsSync(path.join(dir, ".cursor", "rules", "conventions.mdc")));
+  assert.ok(fs.existsSync(path.join(dir, ".cursor", "rules", "wl-skills-design.mdc")));
 }));
 
-test("status 检出修改，uninstall 不静默删除修改", () => withTemp((dir) => {
+test("status 只检查本包区块，uninstall 保留区块外用户修改", () => withTemp((dir) => {
   assert.strictEqual(runCli(["init"], dir).code, 0);
-  const clean = runCli(["status", "--json"], dir);
-  assert.strictEqual(clean.code, 0);
+  assert.strictEqual(runCli(["status", "--json"], dir).code, 0);
   fs.appendFileSync(path.join(dir, "AGENTS.md"), "\n本地补充", "utf8");
-  const dirty = runCli(["status", "--json"], dir);
-  assert.strictEqual(dirty.code, 1);
-  assert.deepStrictEqual(JSON.parse(dirty.stdout).modified, ["AGENTS.md"]);
-  const blocked = runCli(["uninstall"], dir);
-  assert.strictEqual(blocked.code, 2);
-  assert.ok(fs.existsSync(path.join(dir, "AGENTS.md")));
+  assert.strictEqual(runCli(["status", "--json"], dir).code, 0);
+  const removed = runCli(["uninstall"], dir);
+  assert.strictEqual(removed.code, 0, removed.stderr);
+  assert.strictEqual(fs.readFileSync(path.join(dir, "AGENTS.md"), "utf8"), "\n本地补充");
 }));
 
 test("干净安装可以卸载并恢复", () => withTemp((dir) => {

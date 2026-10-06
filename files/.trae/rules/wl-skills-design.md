@@ -1,15 +1,21 @@
----
-inclusion: auto
-description: 按需调用产品设计 Skills，覆盖流程图、原型、需求、数据库、接口、词典、评审和变更影响
+﻿---
+description: "产品设计 AI 技能规范（8 条设计规范 + Skill 自动调度，由 wl-skills-design 维护）"
+globs:
+  - "**/*.drawio"
+  - "**/*.md"
+  - "**/*.sql"
+  - "**/*.yaml"
+alwaysApply: true
 ---
 
-<!-- Kiro Steering 规则。使用 auto inclusion，避免无关任务加载。 -->
+<!-- Trae 规则文件。由 wl-skills-design 维护，请勿手动编辑正文内容。 -->
 <!-- 源文件：.github/copilot-instructions.md -->
 
 ---
+
 # wl-skills-design 产品设计调度说明
 
-> 版本：v0.11.1。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v0.12.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 

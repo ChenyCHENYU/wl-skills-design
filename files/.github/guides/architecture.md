@@ -17,7 +17,7 @@ Skill 目录扁平化放在 `.github/skills/{skill-name}/`，目录名必须与 
 
 ## 路由
 
-动作优先级为 impact、review、validate、repair、maintain、create。精确领域词、负向词、最低分和领先分差共同决定是否运行；回归语料在 `_route-evals.json`。
+动作优先级为 impact、review、validate、repair、maintain、create。精确领域词、负向词、最低分和领先分差共同决定是否运行；回归语料在 `_route-evals.design.json`。
 
 ## 安全边界
 

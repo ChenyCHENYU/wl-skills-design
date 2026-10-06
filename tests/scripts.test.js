@@ -11,7 +11,7 @@ const CHECK = path.join(ROOT, "scripts", "check.js");
 const SYNC = path.join(ROOT, "scripts", "sync-editors.js");
 const SMOKE = path.join(ROOT, "scripts", "package-smoke.js");
 const MANIFEST = path.join(ROOT, "files", ".github", "skills", "_manifest.json");
-const EVALS = path.join(ROOT, "files", ".github", "skills", "_route-evals.json");
+const EVALS = path.join(ROOT, "files", ".github", "skills", "_route-evals.design.json");
 const { route } = require(CHECK);
 
 function run(script, args = []) {

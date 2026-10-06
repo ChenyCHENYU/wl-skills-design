@@ -22,35 +22,35 @@
       "id": "cursor",
       "name": "Cursor Project Rules",
       "enabled": true,
-      "outputPath": ".cursor/rules/conventions.mdc",
+      "outputPath": ".cursor/rules/wl-skills-design.mdc",
       "headerFile": "headers/cursor-mdc.txt"
     },
     {
       "id": "windsurf",
       "name": "Windsurf",
       "enabled": true,
-      "outputPath": ".windsurf/rules/conventions.md",
+      "outputPath": ".windsurf/rules/wl-skills-design.md",
       "headerFile": "headers/windsurf.txt"
     },
     {
       "id": "cline",
       "name": "Cline",
       "enabled": true,
-      "outputPath": ".clinerules/conventions.md",
+      "outputPath": ".clinerules/wl-skills-design.md",
       "headerFile": "headers/cline.txt"
     },
     {
       "id": "kiro",
       "name": "Kiro",
       "enabled": true,
-      "outputPath": ".kiro/steering/conventions.md",
+      "outputPath": ".kiro/steering/wl-skills-design.md",
       "headerFile": "headers/kiro.txt"
     },
     {
       "id": "trae",
       "name": "Trae",
       "enabled": true,
-      "outputPath": ".trae/rules/conventions.md",
+      "outputPath": ".trae/rules/wl-skills-design.md",
       "headerFile": "headers/trae.txt"
     },
     {
@@ -64,7 +64,7 @@
       "id": "qoder",
       "name": "Qoder",
       "enabled": true,
-      "outputPath": ".qoder/rules/conventions.md",
+      "outputPath": ".qoder/rules/wl-skills-design.md",
       "headerFile": "headers/qoder.txt"
     }
   ]

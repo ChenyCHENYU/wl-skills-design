@@ -14,11 +14,17 @@ const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "wlsd-pack-smoke-"));
 function npmCli() {
   const candidate = path.join(path.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
   if (fs.existsSync(candidate)) return candidate;
+  for (const directory of (process.env.PATH || "").split(path.delimiter)) {
+    const executable = path.join(directory, process.platform === "win32" ? "npm.cmd" : "npm");
+    if (!fs.existsSync(executable)) continue;
+    const resolved = fs.realpathSync(executable);
+    if (resolved.endsWith("npm-cli.js")) return resolved;
+  }
   return require.resolve("npm/bin/npm-cli.js");
 }
 
 function npm(args, cwd) {
-  return execFileSync(process.execPath, [npmCli(), ...args], { cwd, stdio: "pipe" }).toString();
+  return execFileSync(process.execPath, [npmCli(), ...args, "--offline", `--cache=${path.join(tempRoot, "npm-cache")}`], { cwd, stdio: "pipe" }).toString();
 }
 
 try {
@@ -72,7 +78,7 @@ try {
   const cursor = path.join(tempRoot, "cursor");
   fs.mkdirSync(cursor);
   runInstalled(["init", "--editor", "cursor"], cursor);
-  assert.ok(fs.existsSync(path.join(cursor, ".cursor", "rules", "conventions.mdc")));
+  assert.ok(fs.existsSync(path.join(cursor, ".cursor", "rules", "wl-skills-design.mdc")));
   assert.ok(!fs.existsSync(path.join(cursor, ".cursorrules")));
   assert.ok(!fs.existsSync(path.join(cursor, "AGENTS.md")));
 

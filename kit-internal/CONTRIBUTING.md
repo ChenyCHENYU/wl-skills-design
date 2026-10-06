@@ -28,7 +28,7 @@ files/.github/guides/skills/<skill-name>.md
 3. 所有资源使用相对 Markdown 链接。
 4. 模板只含占位符；样例在首段声明“匿名合成”。
 5. 在 `_manifest.json` 注册路径、intent、触发词、负向词、上下文和输出。
-6. 在 `_route-evals.json` 增加回归语料，并同步 `_registry.md`。
+6. 在 `_route-evals.design.json` 增加回归语料，并同步 `_registry.md`。
 7. 若提供 prompt，使用当前 `agent` frontmatter，不声明旧版 `mode` 或内置工具名。
 
 ## 修改规范或计数
@@ -50,13 +50,13 @@ files/.github/guides/skills/<skill-name>.md
 ```text
 .github/copilot-instructions.md
 CLAUDE.md
-.cursor/rules/conventions.mdc
-.windsurf/rules/conventions.md
-.clinerules/conventions.md
-.kiro/steering/conventions.md
-.trae/rules/conventions.md
+.cursor/rules/wl-skills-design.mdc
+.windsurf/rules/wl-skills-design.md
+.clinerules/wl-skills-design.md
+.kiro/steering/wl-skills-design.md
+.trae/rules/wl-skills-design.md
 AGENTS.md
-.qoder/rules/conventions.md
+.qoder/rules/wl-skills-design.md
 ```
 
 修改单一内容源或头部后运行：

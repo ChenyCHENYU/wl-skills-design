@@ -11,6 +11,8 @@ const FILES_DIR = path.join(ROOT, "files");
 const PACKAGE = require(path.join(ROOT, "package.json"));
 const { validateDesignModelFile } = require(path.join(ROOT, "lib", "design-model.js"));
 const { verifySpecDir, verifyFlowchartFile, verifyDbDir, verifyApiDir } = require(path.join(ROOT, "lib", "verify.js"));
+const shared = require(path.join(ROOT, "lib", "shared-assets.js"));
+const OWNER = "wl-skills-design";
 const EDITORS_FILE = path.join(
   FILES_DIR,
   ".github",
@@ -124,9 +126,9 @@ wl-skills-design v${PACKAGE.version}
   --file <path>       verify：指定待验证文件，可重复；默认扫描 docs/
   --list              restore：列出可用备份
   --id <backupId>     restore：恢复指定备份，默认最近一次
-  --purge             uninstall：同时删除备份与状态目录
+  --purge             uninstall：清理本包快照；保留残留引用和外来文件
   --dry-run           只输出计划，不写文件
-  --force             明确覆盖或删除本地改动，并先备份
+  --force             仅更新已有归属的本包内容并备份；卸载仍保留本地改动
   --json              输出机器可读 JSON
   --version, -v       显示版本
   --help, -h          显示帮助
@@ -274,12 +276,7 @@ function releaseLock(lockFile) {
 }
 
 function ensureInside(target, rel) {
-  const resolvedTarget = path.resolve(target);
-  const destination = path.resolve(target, rel);
-  if (destination !== resolvedTarget && !destination.startsWith(`${resolvedTarget}${path.sep}`)) {
-    throw new Error(`非法目标路径：${rel}`);
-  }
-  return destination;
+  return shared.preflight(target, rel);
 }
 
 function selectEditors(requested, editors, state, command) {
@@ -319,11 +316,29 @@ function buildInstallPlan(command, target, sources, state, force) {
   const wanted = new Map(sources.map((item) => [item.rel, item]));
   const operations = [];
   const conflicts = [];
+  const files = [];
+  const preserved = [];
+  ensureInside(target, `${STATE_DIR}/${STATE_FILE}`);
+  ensureInside(target, `${STATE_DIR}/backups/preflight/file`);
 
   for (const source of sources) {
     const dest = ensureInside(target, source.rel);
+    const old = previous.get(source.rel);
+    if (shared.SHARED_MARKDOWN.has(source.rel)) {
+      const current = fs.existsSync(dest) ? fs.readFileSync(dest, "utf8") : null;
+      try {
+        const planned = shared.planMarkdown(current, fs.readFileSync(source.src, "utf8"), old ? { ...old, installedHash: old.hash } : null, OWNER, force);
+        const record = { path: source.rel, ...planned.record, hash: planned.record.installedHash };
+        files.push(record);
+        if (current !== planned.content) operations.push({ type: "write", ...source, dest, existed: current !== null,
+          currentHash: current === null ? null : hashFile(dest), content: planned.content, recordBefore: old || null, recordAfter: record });
+      } catch (error) { conflicts.push({ path: source.rel, reason: error.message }); }
+      continue;
+    }
     if (!fs.existsSync(dest)) {
-      operations.push({ type: "write", ...source, dest, existed: false });
+      const record = { path: source.rel, hash: source.hash, kind: "file" };
+      files.push(record);
+      operations.push({ type: "write", ...source, dest, existed: false, currentHash: null, recordBefore: old || null, recordAfter: record });
       continue;
     }
     const stat = fs.lstatSync(dest);
@@ -332,19 +347,27 @@ function buildInstallPlan(command, target, sources, state, force) {
       continue;
     }
     const currentHash = hashFile(dest);
-    if (currentHash === source.hash) continue;
+    if (source.rel === ".github/contracts/wl-delivery-profile.v1.json" && currentHash !== source.hash) {
+      files.push({ path: source.rel, hash: currentHash, kind: "reference", projectOwned: true });
+      continue;
+    }
+    if (currentHash === source.hash) {
+      files.push({ path: source.rel, hash: source.hash, kind: old && old.kind !== "reference" ? "file" : "reference" });
+      continue;
+    }
 
-    const old = previous.get(source.rel);
     const locallyModified = old && old.hash !== currentHash;
-    const unmanagedConflict = !old && command === "update";
-    if (!force && (command === "init" || locallyModified || unmanagedConflict)) {
+    const unmanagedConflict = !old || old.kind === "reference";
+    if (unmanagedConflict || (!force && locallyModified)) {
       conflicts.push({
         path: source.rel,
         reason: locallyModified ? "受管文件有本地改动" : "已有不同内容",
       });
       continue;
     }
-    operations.push({ type: "write", ...source, dest, existed: true });
+    const record = { path: source.rel, hash: source.hash, kind: "file" };
+    files.push(record);
+    operations.push({ type: "write", ...source, dest, existed: true, currentHash, recordBefore: old, recordAfter: record });
   }
 
   if (command === "update") {
@@ -352,24 +375,32 @@ function buildInstallPlan(command, target, sources, state, force) {
       if (wanted.has(old.path)) continue;
       const dest = ensureInside(target, old.path);
       if (!fs.existsSync(dest)) continue;
+      if (old.kind === "reference") { preserved.push(old.path); continue; }
+      if (old.kind === "block") {
+        const removed = shared.removeMarkdown(fs.readFileSync(dest, "utf8"), { ...old, installedHash: old.hash }, OWNER);
+        if (removed.preserved) { preserved.push(old.path); continue; }
+        operations.push({ type: removed.content || removed.keepFile ? "write" : "remove", rel: old.path, dest, existed: true,
+          currentHash: hashFile(dest), content: removed.content, recordBefore: old, recordAfter: null });
+        continue;
+      }
       const stat = fs.lstatSync(dest);
       if (!stat.isFile()) {
         conflicts.push({ path: old.path, reason: "待移除目标不是普通文件" });
         continue;
       }
       const currentHash = hashFile(dest);
-      if (!force && currentHash !== old.hash) {
-        conflicts.push({ path: old.path, reason: "停用文件有本地改动" });
+      if (currentHash !== old.hash) {
+        preserved.push(old.path);
         continue;
       }
-      operations.push({ type: "remove", rel: old.path, dest, existed: true });
+      operations.push({ type: "remove", rel: old.path, dest, existed: true, currentHash, recordBefore: old, recordAfter: null });
     }
   }
-  return { operations, conflicts };
+  return { operations, conflicts, files, preserved };
 }
 
 function timestamp() {
-  return new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 17);
+  return `${new Date().toISOString().replace(/[-:TZ.]/g, "").slice(0, 17)}-${crypto.randomBytes(4).toString("hex")}`;
 }
 
 function writeJsonAtomic(file, value) {
@@ -402,6 +433,26 @@ function rollback(entries, target) {
   }
 }
 
+function removeBackupSnapshot(root) {
+  const manifestFile = ensureInside(root, "manifest.json");
+  if (!fs.existsSync(manifestFile)) return;
+  let manifest;
+  try { manifest = JSON.parse(fs.readFileSync(manifestFile, "utf8")); } catch { return; }
+  if (manifest.package !== PACKAGE.name || !Array.isArray(manifest.entries)) return;
+  for (const entry of manifest.entries) {
+    if (!entry.existed || !entry.backupHash) continue;
+    const backup = ensureInside(root, entry.backup);
+    if (fs.existsSync(backup) && hashFile(backup) === entry.backupHash) {
+      fs.unlinkSync(backup);
+      removeEmptyParents(backup, root);
+    }
+  }
+  if (fs.readdirSync(root).every((name) => name === "manifest.json")) {
+    fs.unlinkSync(manifestFile);
+    fs.rmdirSync(root);
+  }
+}
+
 function trimBackups(target) {
   const root = path.join(target, STATE_DIR, "backups");
   if (!fs.existsSync(root)) return;
@@ -412,7 +463,7 @@ function trimBackups(target) {
     .sort()
     .reverse();
   for (const name of dirs.slice(MAX_BACKUPS)) {
-    fs.rmSync(path.join(root, name), { recursive: true, force: true });
+    removeBackupSnapshot(path.join(root, name));
   }
 }
 
@@ -423,15 +474,25 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
   const applied = [];
 
   try {
+    // Revalidate the whole plan before making the first mutation.
+    for (const operation of operations) {
+      ensureInside(target, operation.rel);
+      const actual = fs.existsSync(operation.dest) ? hashFile(operation.dest) : null;
+      if (actual !== operation.currentHash) throw new Error(`目标文件在预检后发生变化：${operation.rel}`);
+      if (operation.src && hashFile(operation.src) !== operation.hash) throw new Error(`源文件在预检后发生变化：${operation.rel}`);
+    }
     for (const operation of operations) {
       const entry = {
         path: operation.rel,
         existed: operation.existed,
         backup: path.join(backupRoot, "files", operation.rel),
+        recordBefore: operation.recordBefore,
+        recordAfter: operation.recordAfter,
       };
       if (operation.existed) {
         fs.mkdirSync(path.dirname(entry.backup), { recursive: true });
         fs.copyFileSync(operation.dest, entry.backup);
+        entry.backupHash = hashFile(entry.backup);
       }
       applied.push(entry);
 
@@ -443,13 +504,15 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
 
       fs.mkdirSync(path.dirname(operation.dest), { recursive: true });
       const temp = `${operation.dest}.tmp-${process.pid}`;
-      fs.copyFileSync(operation.src, temp);
+      if (operation.content !== undefined) fs.writeFileSync(temp, operation.content, "utf8");
+      else fs.copyFileSync(operation.src, temp);
       fs.renameSync(temp, operation.dest);
     }
 
     if (operations.length) {
       writeJsonAtomic(path.join(backupRoot, "manifest.json"), {
         schemaVersion: 1,
+        package: PACKAGE.name,
         packageVersion: PACKAGE.version,
         createdAt: new Date().toISOString(),
         previousState,
@@ -457,6 +520,9 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
           path: entry.path,
           existed: entry.existed,
           backup: normalizeRel(path.relative(backupRoot, entry.backup)),
+          recordBefore: entry.recordBefore,
+          recordAfter: entry.recordAfter,
+          backupHash: entry.backupHash,
         })),
       });
     }
@@ -466,28 +532,32 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
     return { backupId: operations.length ? backupId : null, changed: operations.length };
   } catch (error) {
     rollback(applied, target);
+    if (previousState) writeJsonAtomic(statePath(target), previousState);
+    else if (fs.existsSync(statePath(target))) fs.rmSync(statePath(target), { force: true });
     throw new Error(`事务失败，已回滚：${error.message}`);
   }
 }
 
-function buildState(editors, sources) {
+function buildState(editors, files) {
   return {
     schemaVersion: 1,
     package: PACKAGE.name,
     version: PACKAGE.version,
     installedAt: new Date().toISOString(),
     editors,
-    files: sources.map((item) => ({ path: item.rel, hash: item.hash })),
+    files,
   };
 }
 
 function inspectState(target, state) {
   if (!state) return { managed: false, ok: 0, missing: [], modified: [] };
-  const result = { managed: true, version: state.version, editors: state.editors, ok: 0, missing: [], modified: [] };
+  const result = { managed: true, retained: state.retained === true, version: state.version, editors: state.editors, ok: 0, missing: [], modified: [] };
   for (const item of state.files || []) {
     const file = ensureInside(target, item.path);
     if (!fs.existsSync(file)) result.missing.push(item.path);
-    else if (!fs.lstatSync(file).isFile() || hashFile(file) !== item.hash) result.modified.push(item.path);
+    else if (!fs.lstatSync(file).isFile() || (item.kind === "block" || item.scope === "block"
+      ? shared.contributionHash(fs.readFileSync(file, "utf8"), { ...item, installedHash: item.hash }, OWNER)
+      : hashFile(file)) !== item.hash) result.modified.push(item.path);
     else result.ok += 1;
   }
   return result;
@@ -509,11 +579,11 @@ function runInstall(options, target, editors) {
     else {
       console.error(`\n  ✖ 发现 ${plan.conflicts.length} 个冲突，未写入任何文件：`);
       plan.conflicts.forEach((item) => console.error(`     - ${item.path}：${item.reason}`));
-      console.error("\n  请先合并本地内容，或明确使用 --force（覆盖前会备份）。\n");
+      console.error("\n  请先合并本地内容；--force 只可更新已有归属的本包贡献，不能覆盖外来文件。\n");
     }
     return EXIT_CONFLICT;
   }
-  const nextState = buildState(selected, sources);
+  const nextState = buildState(selected, plan.files);
   const lock = options.dryRun ? null : acquireLock(target);
   let applied;
   try {
@@ -530,6 +600,7 @@ function runInstall(options, target, editors) {
     managedFiles: sources.length,
     changedFiles: applied.changed,
     backupId: applied.backupId,
+    preserved: plan.preserved,
   };
   if (options.json) printResult(result, true);
   else {
@@ -611,63 +682,85 @@ function runRestore(options, target) {
   }
   const root = path.join(backupRoot, backupId);
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
+  const currentState = readState(target);
+  const operations = [];
+  const conflicts = [];
+  const currentRecords = new Map((currentState?.files || []).map((item) => [item.path, item]));
+  const nextState = manifest.previousState ? JSON.parse(JSON.stringify(manifest.previousState)) : null;
+  for (const entry of manifest.entries) {
+    const dest = ensureInside(target, entry.path);
+    const current = fs.existsSync(dest) ? fs.readFileSync(dest, "utf8") : null;
+    const originalBytes = entry.existed ? fs.readFileSync(ensureInside(root, entry.backup)) : null;
+    if (entry.backupHash && originalBytes && hashBuffer(originalBytes) !== entry.backupHash) throw new Error(`备份内容已被修改：${entry.path}`);
+    const original = originalBytes === null ? null : originalBytes.toString("utf8");
+    const before = entry.recordBefore || manifest.previousState?.files?.find((item) => item.path === entry.path) || null;
+    const after = entry.recordAfter === undefined ? currentRecords.get(entry.path) : entry.recordAfter;
+    try {
+      if (shared.SHARED_MARKDOWN.has(entry.path)) {
+        const part = shared.block(current || "", OWNER);
+        const saved = shared.block(original || "", OWNER);
+        if (after?.kind === "block" && (!part || shared.hash(part.text) !== after.hash)) throw new Error("恢复前本包区块已被修改或移除");
+        if (part && !after && currentRecords.get(entry.path)?.kind !== "block") throw new Error("恢复不能覆盖无归属区块");
+        let content = current || "";
+        let keepFile = entry.existed;
+        if (part) {
+          const owned = after || currentRecords.get(entry.path);
+          const removed = shared.removeMarkdown(content, { ...owned, installedHash: owned.hash }, OWNER);
+          if (removed.preserved) throw new Error("恢复前本包区块已被修改");
+          content = removed.content;
+          keepFile ||= removed.keepFile;
+        }
+        if (saved && before?.kind === "block") {
+          // Reinsert only the backed-up contribution; later user/package text stays.
+          const prefix = content && !content.endsWith("\n") ? (content.includes("\r\n") ? "\r\n" : "\n") : "";
+          content += prefix + saved.text;
+          if (nextState) {
+            const record = nextState.files.find((item) => item.path === entry.path);
+            if (record) record.prefix = prefix;
+          }
+        } else if (before?.kind === "block" && nextState) {
+          // The backup captured a user-removed block. Its remaining text is a
+          // reference, not a package contribution to reclaim on the next clean.
+          const index = nextState.files.findIndex((item) => item.path === entry.path);
+          nextState.files[index] = { path: entry.path, kind: "reference", hash: hashBuffer(Buffer.from(content)) };
+        } else if (before && before.kind !== "reference" && before.kind !== "block" && original !== null && hashBuffer(Buffer.from(original)) === before.hash) {
+          const planned = shared.planMarkdown(content, original, null, OWNER);
+          content = planned.content;
+          if (nextState) {
+            const index = nextState.files.findIndex((item) => item.path === entry.path);
+            nextState.files[index] = { path: entry.path, ...planned.record, hash: planned.record.installedHash };
+          }
+        }
+        const shouldKeep = content.length > 0 || keepFile;
+        if (shouldKeep ? current !== content : current !== null) operations.push({ type: shouldKeep ? "write" : "remove", rel: entry.path, dest,
+          existed: current !== null, currentHash: current === null ? null : hashFile(dest), content,
+          recordBefore: currentRecords.get(entry.path) || null, recordAfter: nextState?.files?.find((item) => item.path === entry.path) || null });
+        continue;
+      }
+      // Legacy whole-file backups cannot overwrite content changed by another owner.
+      if (current !== null && (!after || hashFile(dest) !== after.hash)) throw new Error("恢复前文件已改变，保留当前内容");
+      operations.push({ type: entry.existed ? "write" : "remove", rel: entry.path, dest, existed: current !== null,
+        currentHash: current === null ? null : hashFile(dest), content: originalBytes || "",
+        recordBefore: currentRecords.get(entry.path) || null, recordAfter: before });
+    } catch (error) { conflicts.push({ path: entry.path, reason: error.message }); }
+  }
+  if (conflicts.length) {
+    printResult({ ok: false, conflicts }, options.json);
+    if (!options.json) conflicts.forEach((item) => console.error(`  ✖ ${item.path}: ${item.reason}`));
+    return EXIT_CONFLICT;
+  }
   if (options.dryRun) {
-    printResult({ ok: true, dryRun: true, backupId, files: manifest.entries.map((entry) => entry.path) }, options.json);
+    printResult({ ok: true, dryRun: true, backupId, files: operations.map((item) => item.rel) }, options.json);
     return 0;
   }
   const lock = acquireLock(target);
-  let safetyId = null;
+  let applied;
   try {
-    const currentState = readState(target);
-    do {
-      safetyId = timestamp();
-    } while (safetyId === backupId || fs.existsSync(path.join(backupRoot, safetyId)));
-    const safetyDir = path.join(backupRoot, safetyId);
-    const safetyEntries = [];
-    for (const entry of manifest.entries) {
-      const dest = ensureInside(target, entry.path);
-      if (!fs.existsSync(dest) || !fs.lstatSync(dest).isFile()) continue;
-      const backup = path.join(safetyDir, "files", entry.path);
-      fs.mkdirSync(path.dirname(backup), { recursive: true });
-      fs.copyFileSync(dest, backup);
-      safetyEntries.push({ path: entry.path, existed: true, backup: normalizeRel(path.relative(safetyDir, backup)) });
-    }
-    if (safetyEntries.length) {
-      writeJsonAtomic(path.join(safetyDir, "manifest.json"), {
-        schemaVersion: 1,
-        packageVersion: PACKAGE.version,
-        createdAt: new Date().toISOString(),
-        previousState: currentState,
-        entries: safetyEntries,
-      });
-    } else {
-      fs.rmSync(safetyDir, { recursive: true, force: true });
-      safetyId = null;
-    }
-
-    for (const entry of [...manifest.entries].reverse()) {
-      const dest = ensureInside(target, entry.path);
-      if (entry.existed) {
-        fs.mkdirSync(path.dirname(dest), { recursive: true });
-        fs.copyFileSync(path.join(root, entry.backup), dest);
-      } else if (fs.existsSync(dest)) {
-        fs.rmSync(dest, { force: true });
-        removeEmptyParents(dest, target);
-      }
-    }
-    if (manifest.previousState) writeJsonAtomic(statePath(target), manifest.previousState);
-    else if (fs.existsSync(statePath(target))) fs.rmSync(statePath(target), { force: true });
-    fs.rmSync(root, { recursive: true, force: true });
-    trimBackups(target);
-  } finally {
-    releaseLock(lock);
-  }
-  printResult(
-    options.json
-      ? { ok: true, backupId, safetyBackupId: safetyId }
-      : `\n  ✔ 已恢复备份 ${backupId}${safetyId ? `（恢复前快照：${safetyId}，可再次 restore 撤销）` : ""}\n`,
-    options.json
-  );
+    applied = applyOperations(target, operations, currentState, nextState, false);
+    removeBackupSnapshot(root);
+  } finally { releaseLock(lock); }
+  printResult(options.json ? { ok: true, backupId, safetyBackupId: applied.backupId }
+    : `\n  ✔ 已恢复本包贡献 ${backupId}（当前内容已备份：${applied.backupId || "无变更"}）\n`, options.json);
   return 0;
 }
 
@@ -676,13 +769,32 @@ function runUninstall(options, target) {
   if (!state) throw new Error("未发现安装状态，无法安全卸载");
   const operations = [];
   const conflicts = [];
+  const preserved = [];
+  const retained = [];
+  ensureInside(target, `${STATE_DIR}/${STATE_FILE}`);
+  ensureInside(target, `${STATE_DIR}/backups/preflight/file`);
   for (const item of state.files || []) {
     const dest = ensureInside(target, item.path);
     if (!fs.existsSync(dest)) continue;
+    if (item.kind === "reference") { preserved.push(item.path); retained.push({ ...item, retained: true }); continue; }
+    if (item.kind === "block") {
+      try {
+        const removed = shared.removeMarkdown(fs.readFileSync(dest, "utf8"), { ...item, installedHash: item.hash }, OWNER);
+        if (removed.preserved) {
+          preserved.push(item.path);
+          const part = shared.block(fs.readFileSync(dest, "utf8"), OWNER);
+          retained.push({ ...item, kind: "reference", scope: part ? "block" : "file", hash: part ? shared.hash(part.text) : hashFile(dest), retained: true, previousInstalledHash: item.hash });
+          continue;
+        }
+        operations.push({ type: removed.content || removed.keepFile ? "write" : "remove", rel: item.path, dest, existed: true,
+          currentHash: hashFile(dest), content: removed.content, recordBefore: item, recordAfter: null });
+      } catch (error) { conflicts.push({ path: item.path, reason: error.message }); }
+      continue;
+    }
     if (!fs.lstatSync(dest).isFile() || hashFile(dest) !== item.hash) {
-      if (!options.force) conflicts.push({ path: item.path, reason: "文件有本地改动" });
-      else operations.push({ type: "remove", rel: item.path, dest, existed: true });
-    } else operations.push({ type: "remove", rel: item.path, dest, existed: true });
+      preserved.push(item.path);
+      retained.push({ ...item, kind: "reference", hash: hashFile(dest), retained: true, previousInstalledHash: item.hash });
+    } else operations.push({ type: "remove", rel: item.path, dest, existed: true, currentHash: hashFile(dest), recordBefore: item, recordAfter: null });
   }
   if (conflicts.length) {
     printResult({ ok: false, conflicts }, options.json);
@@ -696,17 +808,22 @@ function runUninstall(options, target) {
   const lock = options.dryRun ? null : acquireLock(target);
   let applied;
   try {
-    applied = applyOperations(target, operations, state, null, options.dryRun);
-    if (options.purge && !options.dryRun) {
-      fs.rmSync(path.join(target, STATE_DIR), { recursive: true, force: true });
-    }
+    applied = applyOperations(target, operations, state, retained.length ? { ...state, files: retained, retained: true } : null, options.dryRun);
   } finally {
     releaseLock(lock);
   }
+  if (options.purge && !options.dryRun) {
+    const backups = path.join(target, STATE_DIR, "backups");
+    for (const id of listBackups(target)) removeBackupSnapshot(path.join(backups, id));
+    if (fs.existsSync(backups) && !fs.readdirSync(backups).length) fs.rmdirSync(backups);
+    const stateDir = path.join(target, STATE_DIR);
+    if (fs.existsSync(stateDir) && !fs.readdirSync(stateDir).length) fs.rmdirSync(stateDir);
+  }
+  const purged = options.purge && !options.dryRun && !fs.existsSync(path.join(target, STATE_DIR));
   printResult(
     options.json
-      ? { ok: true, dryRun: options.dryRun, removed: applied.changed, backupId: applied.backupId, purged: options.purge }
-      : `\n  ✔ ${options.dryRun ? "卸载预检通过" : `已卸载 ${applied.changed} 个受管文件`}${options.purge && !options.dryRun ? "，并已清除备份与状态目录" : "（备份保留，可用 restore 恢复；加 --purge 一并清除）"}\n`,
+      ? { ok: true, dryRun: options.dryRun, removed: applied.changed, backupId: applied.backupId, purged, preserved }
+      : `\n  ✔ ${options.dryRun ? "卸载预检通过" : `已卸载 ${applied.changed} 个本包贡献`}${purged ? "，并已清除本包备份与状态目录" : "（本地修改、引用和外来文件保留）"}${preserved.length ? `；保留 ${preserved.length} 项` : ""}\n`,
     options.json
   );
   return 0;

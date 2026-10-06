@@ -1,11 +1,15 @@
-﻿# Qoder 产品设计规范（.qoder/rules/conventions.md）。由 wl-skills-design 维护，请勿手动编辑正文内容。
-# 源文件：.github/copilot-instructions.md，更新方式：运行 npm run sync 自动派生
-
+---
+inclusion: auto
+description: 按需调用产品设计 Skills，覆盖流程图、原型、需求、数据库、接口、词典、评审和变更影响
 ---
 
+<!-- Kiro Steering 规则。使用 auto inclusion，避免无关任务加载。 -->
+<!-- 源文件：.github/copilot-instructions.md -->
+
+---
 # wl-skills-design 产品设计调度说明
 
-> 版本：v0.11.1。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v0.12.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 
