@@ -1,0 +1,14 @@
+[
+  { "task": "画采购审批泳道图", "skill": "requirements.flowchart" },
+  { "task": "创建需求设计说明书", "skill": "requirements.spec" },
+  { "task": "生成订单列表原型标注", "skill": "requirements.prototype" },
+  { "task": "设计订单表结构", "skill": "data.database" },
+  { "task": "输出 OpenAPI 接口设计", "skill": "api.restful" },
+  { "task": "四域集成评审", "skill": "cross.designReview" },
+  { "task": "统一字段词典", "skill": "cross.glossary" },
+  { "task": "数据库变更影响分析", "skill": "cross.changeImpact" },
+  { "task": "半成品文档差距分析", "skill": "doc.intake", "installedStatus": "baseline" },
+  { "task": "设计前后端模块划分", "skill": "code.architecture" },
+  { "task": "帮我处理一下", "skill": null, "status": "needs-context" },
+  { "task": "写诗", "skill": null, "status": "needs-context" }
+]
