@@ -68,7 +68,7 @@ function parseArgs(argv) {
     help: false,
     version: false,
   };
-  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "restore", "uninstall", "task", "route", "explain", "doctor-host"]);
+  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "restore", "uninstall", "task", "route", "explain", "doctor-host", "protocol"]);
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -88,10 +88,10 @@ function parseArgs(argv) {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result.files.push(value);
-    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id" || arg === "--input" || arg === "--run-id" || arg === "--host") {
+    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id" || arg === "--input" || arg === "--run-id" || arg === "--host" || arg === "--input-file") {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
-      result[arg === "--run-id" ? "runId" : arg.slice(2)] = value;
+      result[arg === "--run-id" ? "runId" : arg === "--input-file" ? "inputFile" : arg.slice(2)] = value;
     } else if (arg.startsWith("--editor=")) result.editor = arg.slice(9);
     else if (arg.startsWith("--target=")) result.target = arg.slice(9);
     else if (arg.startsWith("--model=")) result.model = arg.slice(8);
@@ -99,6 +99,7 @@ function parseArgs(argv) {
     else if (arg.startsWith("--file=")) result.files.push(arg.slice(7));
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
     else if (result.command === "verify" && !result.domain && /^(spec|flowchart|db|api)$/.test(arg)) result.domain = arg;
+    else if (result.command === "protocol" && (arg === "describe" || arg === "request")) result.protocolSub = arg;
     else if (["task", "route", "explain"].includes(result.command)) result.input = result.input ? `${result.input} ${arg}` : arg;
     else throw new Error(`未知命令：${arg}`);
   }
@@ -116,8 +117,10 @@ wl-skills-design v${PACKAGE.version}
 命令：
   init       安装技能包；默认使用 agents profile
   update     安全升级；本地改动默认视为冲突
-  task/route/explain  每次任务判定并记录 runId、候选、规则与缺口
+  task       判定并持久化任务计划、候选、规则与缺口（记录 runId，尚未执行）
+  route/explain  同判定但只读、不记录 run
   doctor-host  静态宿主入口诊断（或 doctor --host codex）
+  protocol   公开集成协议：describe 能力目录 / request 统一判定与状态（JSON 信封）
   status     查看受管文件状态；--run-id 读取本包执行回执与新鲜度
   doctor     检查安装状态与 Skill 清单
   validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
@@ -883,6 +886,9 @@ function main(argv = process.argv.slice(2)) {
   }
   const requestedTarget = path.resolve(process.cwd(), options.target || ".");
   const target = fs.existsSync(requestedTarget) ? fs.realpathSync(requestedTarget) : requestedTarget;
+  if (options.command === "protocol") {
+    return require("../lib/protocol-cli").runCli([options.protocolSub, ...(options.inputFile ? ["--input-file", options.inputFile] : []), "--target", target]);
+  }
   if (options.command === "init" || options.command === "update") {
     if (!options.dryRun) fs.mkdirSync(target, { recursive: true });
     return runInstall(options, target, editors);
