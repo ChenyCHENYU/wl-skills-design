@@ -88,7 +88,10 @@ test("CLI verify flowchart --file 端到端", () => {
   const result = spawnSync(process.execPath, [CLI, "verify", "flowchart", "--file", EXAMPLE, "--json"], { encoding: "utf8" });
   assert.strictEqual(result.status, 0, result.stdout + result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.strictEqual(output.ok, true);
+  assert.strictEqual(output.ok, false, "机械子集通过不代表完整规范验证通过");
+  assert.strictEqual(output.mechanicalOk, true);
+  assert.strictEqual(output.validationStatus, "partial");
+  assert.ok(output.receipt.checks.some((item) => item.status === "skipped"));
   assert.strictEqual(output.domain, "flowchart");
 });
 
@@ -140,6 +143,9 @@ test("CLI verify db/api 端到端", () => {
     assert.strictEqual(result.status, 0, result.stdout + result.stderr);
     const output = JSON.parse(result.stdout);
     assert.strictEqual(output.domain, domain);
-    assert.strictEqual(output.ok, true);
+    assert.strictEqual(output.ok, false, "机械子集通过不代表完整规范验证通过");
+  assert.strictEqual(output.mechanicalOk, true);
+  assert.strictEqual(output.validationStatus, "partial");
+  assert.ok(output.receipt.checks.some((item) => item.status === "skipped"));
   }
 });

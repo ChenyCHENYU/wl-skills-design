@@ -58,6 +58,9 @@ function parseArgs(argv) {
     target: null,
     model: null,
     domain: null,
+    input: null,
+    runId: null,
+    host: null,
     files: [],
     list: false,
     id: null,
@@ -65,7 +68,7 @@ function parseArgs(argv) {
     help: false,
     version: false,
   };
-  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "restore", "uninstall"]);
+  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "restore", "uninstall", "task", "route", "explain", "doctor-host"]);
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -85,10 +88,10 @@ function parseArgs(argv) {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result.files.push(value);
-    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id") {
+    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id" || arg === "--input" || arg === "--run-id" || arg === "--host") {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
-      result[arg.slice(2)] = value;
+      result[arg === "--run-id" ? "runId" : arg.slice(2)] = value;
     } else if (arg.startsWith("--editor=")) result.editor = arg.slice(9);
     else if (arg.startsWith("--target=")) result.target = arg.slice(9);
     else if (arg.startsWith("--model=")) result.model = arg.slice(8);
@@ -96,6 +99,7 @@ function parseArgs(argv) {
     else if (arg.startsWith("--file=")) result.files.push(arg.slice(7));
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
     else if (result.command === "verify" && !result.domain && /^(spec|flowchart|db|api)$/.test(arg)) result.domain = arg;
+    else if (["task", "route", "explain"].includes(result.command)) result.input = result.input ? `${result.input} ${arg}` : arg;
     else throw new Error(`未知命令：${arg}`);
   }
   return result;
@@ -112,7 +116,9 @@ wl-skills-design v${PACKAGE.version}
 命令：
   init       安装技能包；默认使用 agents profile
   update     安全升级；本地改动默认视为冲突
-  status     查看受管文件状态
+  task/route/explain  每次任务判定并记录 runId、候选、规则与缺口
+  doctor-host  静态宿主入口诊断（或 doctor --host codex）
+  status     查看受管文件状态；--run-id 读取本包执行回执与新鲜度
   doctor     检查安装状态与 Skill 清单
   validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
   verify     机械执行设计产物的验证清单子集：verify spec | flowchart | db | api
@@ -122,6 +128,9 @@ wl-skills-design v${PACKAGE.version}
 选项：
   --editor <id[,id]>  选择适配器：${ids} | all
   --target <dir>      目标项目目录，默认当前目录
+  --input <task>      task/route/explain 的完整任务描述
+  --run-id <id>       关联任务与真实验证回执
+  --host <name>       doctor 的宿主入口诊断（如 codex）
   --model <file>      design-model 路径，默认 docs/design-model.json
   --file <path>       verify：指定待验证文件，可重复；默认扫描 docs/
   --list              restore：列出可用备份
@@ -145,9 +154,13 @@ wl-skills-design v${PACKAGE.version}
 
 function runValidateModel(options, target) {
   const requested = options.model || path.join("docs", "design-model.json");
-  const modelFile = path.isAbsolute(requested) ? requested : path.resolve(target, requested);
+  const requestedFile = path.isAbsolute(requested) ? requested : path.resolve(target, requested);
+  const modelFile = fs.existsSync(requestedFile) ? fs.realpathSync(requestedFile) : requestedFile;
+  const runtime = require("../lib/task-runtime.js");
+  const handle = runtime.observation.beginExecution({ ...runtime.options(target, { runId: options.runId, targets: [normalizeRel(path.relative(target, modelFile))] }), tool: "design-model-schema-validator", readOnlyVerification: true });
   const result = validateDesignModelFile(modelFile);
-  const output = { ...result, model: normalizeRel(path.relative(target, modelFile)) };
+  const receipt = runtime.observation.finishExecution(handle, { exitCode: result.ok ? 0 : 1, validationStatus: result.ok ? "passed" : "failed", checks: [{ id: "design-model-schema", status: result.ok ? "pass" : "fail", reason: "仅结构、稳定ID与引用完整性；设计语义未验证" }], checkedFiles: fs.existsSync(modelFile) ? [modelFile] : [], summary: result.summary, artifacts: [] });
+  const output = { ...result, runId: handle.metadata.runId, receipt, model: normalizeRel(path.relative(target, modelFile)) };
   if (options.json) console.log(JSON.stringify(output, null, 2));
   else {
     console.log(`\n  design-model 校验：${output.model}`);
@@ -172,8 +185,11 @@ function walkFiles(dir, predicate, base = dir) {
 function runVerify(options, target) {
   const domain = options.domain;
   if (!domain) throw new Error("verify 需要域参数：verify spec | flowchart | db | api");
+  const runtime = require("../lib/task-runtime.js");
+  const handle = runtime.validationStart(target, { runId: options.runId, targets: options.files.length ? options.files.map((item) => { const file = path.resolve(target, item); return normalizeRel(path.relative(target, fs.existsSync(file) ? fs.realpathSync(file) : file)); }) : ["docs", ".github/contracts/wl-delivery-profile.v1.json"] });
   const reports = [];
 
+  try {
   if (domain === "flowchart") {
     const files = options.files.length
       ? options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)))
@@ -201,13 +217,20 @@ function runVerify(options, target) {
     throw new Error(`不支持的域：${domain}（当前支持 spec、flowchart、db、api）`);
   }
 
+  } catch (error) {
+    runtime.observation.finishExecution(handle, { exitCode: 1, validationStatus: "unverified", checks: [], errorCode: error.code || error.name, summary: { reason: "verification-input-error" }, artifacts: [] });
+    throw error;
+  }
+
   const summary = reports.reduce(
     (acc, report) => ({ pass: acc.pass + report.summary.pass, fail: acc.fail + report.summary.fail, skip: acc.skip + report.summary.skip }),
     { pass: 0, fail: 0, skip: 0 }
   );
-  const ok = reports.every((report) => report.ok);
+  const mechanicalOk = reports.every((report) => report.mechanicalOk);
+  const receipt = runtime.validationFinish(handle, reports, mechanicalOk ? 0 : 1);
+  const ok = receipt.validationStatus === "passed";
   if (options.json) {
-    console.log(JSON.stringify({ ok, domain, reports, summary }, null, 2));
+    console.log(JSON.stringify({ ok, mechanicalOk, validationStatus: receipt.validationStatus, runId: handle.metadata.runId, receipt, domain, reports, summary }, null, 2));
   } else {
     for (const report of reports) {
       console.log(`\n  ${report.ok ? "✔" : "✖"} ${domain}：${normalizeRel(path.relative(target, report.subject))}`);
@@ -217,9 +240,10 @@ function runVerify(options, target) {
         console.log(`     ${tag} ${item.rule} ${item.evidence} ${item.message}`.trimEnd());
       }
     }
-    console.log(`\n  ${ok ? "✔" : "✖"} 机械检查：通过 ${summary.pass}，失败 ${summary.fail}，暂不支持 ${summary.skip}\n`);
+    console.log(`\n  ${mechanicalOk ? "✔" : "✖"} 机械检查：通过 ${summary.pass}，失败 ${summary.fail}，跳过 ${summary.skip}`);
+    console.log(`  runId: ${handle.metadata.runId}；完整规范验证=${mechanicalOk ? "partial" : "failed"}，语义与未实现机械检查仍未验证\n`);
   }
-  return ok ? 0 : 1;
+  return mechanicalOk ? 0 : 1;
 }
 
 function readEditors() {
@@ -614,6 +638,17 @@ function runInstall(options, target, editors) {
 }
 
 function runStatus(options, target, doctor = false) {
+  const runtime = require("../lib/task-runtime.js");
+  if (options.host) {
+    const result = runtime.doctorHost(target, options.host);
+    printResult(options.json ? result : JSON.stringify(result, null, 2), options.json);
+    return result.ok === false ? 1 : 0;
+  }
+  if (options.runId) {
+    const result = runtime.status(target, { runId: options.runId });
+    printResult(options.json ? result : runtime.observation.formatStatus(result), options.json);
+    return result.ok === false ? 1 : 0;
+  }
   const state = readState(target);
   const status = inspectState(target, state);
   const manifest = path.join(target, ".github", "skills", "_manifest.json");
@@ -637,6 +672,9 @@ function runStatus(options, target, doctor = false) {
     ...status,
     ok: status.managed && !status.missing.length && !status.modified.length && !skillIssues.length,
     skillIssues,
+    taskStatus: runtime.status(target),
+    modelRead: "unverified",
+    hostDiscovery: "unverified",
   };
   if (options.json) printResult(result, true);
   else if (!status.managed) console.log("\n  未发现 wl-skills-design 安装状态。\n");
@@ -843,11 +881,20 @@ function main(argv = process.argv.slice(2)) {
     console.log(helpText(editors));
     return 0;
   }
-  const target = path.resolve(process.cwd(), options.target || ".");
+  const requestedTarget = path.resolve(process.cwd(), options.target || ".");
+  const target = fs.existsSync(requestedTarget) ? fs.realpathSync(requestedTarget) : requestedTarget;
   if (options.command === "init" || options.command === "update") {
     if (!options.dryRun) fs.mkdirSync(target, { recursive: true });
     return runInstall(options, target, editors);
   }
+  if (["task", "route", "explain"].includes(options.command)) {
+    if (!options.input) throw new Error("task 需要 --input <完整任务> 或自然语言参数");
+    const runtime = require("../lib/task-runtime.js");
+    const result = runtime.task(target, options.input, { runId: options.runId, targets: options.files, persist: options.command === "task" });
+    printResult(options.json ? result : `${runtime.observation.formatDecision(result.decision)}\n${result.runId ? `runId: ${result.runId}；` : "静态判定；"}计划尚未执行，模型读取尚未验证`, options.json);
+    return result.decision.status === "gap" ? 1 : result.decision.status === "ambiguous" ? 2 : 0;
+  }
+  if (options.command === "doctor-host") return runStatus({ ...options, host: options.host || "codex" }, target, true);
   if (options.command === "validate-model") return runValidateModel(options, target);
   if (options.command === "verify") return runVerify(options, target);
   if (options.command === "status") return runStatus(options, target, false);

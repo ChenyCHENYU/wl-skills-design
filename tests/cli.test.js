@@ -49,7 +49,7 @@ test("require CLI 不执行安装", () => withTemp((dir) => {
   assert.deepStrictEqual(fs.readdirSync(dir), []);
 }));
 
-test("validate-model 只读校验实际项目模型", () => withTemp((dir) => {
+test("validate-model 不改模型，独立记录实际校验回执", () => withTemp((dir) => {
   fs.mkdirSync(path.join(dir, "docs"));
   fs.writeFileSync(path.join(dir, "docs", "design-model.json"), JSON.stringify({
     schemaVersion: 1,
@@ -62,8 +62,11 @@ test("validate-model 只读校验实际项目模型", () => withTemp((dir) => {
   const result = runCli(["validate-model", "--json"], dir);
   assert.strictEqual(result.code, 0, result.stderr);
   assert.strictEqual(JSON.parse(result.stdout).ok, true);
-  assert.deepStrictEqual(fs.readdirSync(dir).sort(), before);
-  assert.ok(!fs.existsSync(path.join(dir, ".wl-skills-design")));
+  assert.deepStrictEqual(fs.readdirSync(dir).filter((name) => name !== ".wl-skills-design").sort(), before);
+  const output = JSON.parse(result.stdout);
+  assert.strictEqual(output.receipt.validationStatus, "passed");
+  assert.ok(output.runId);
+  assert.strictEqual(fs.readFileSync(path.join(dir, "docs", "design-model.json"), "utf8"), JSON.stringify({ schemaVersion: 1, projectCode: "TASK_APP", fields: [], functions: [], traceLinks: [] }));
 }));
 
 test("validate-model 对断链引用返回失败", () => withTemp((dir) => {

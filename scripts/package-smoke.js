@@ -37,7 +37,7 @@ try {
   assert.ok(fs.existsSync(tarball), "tarball 必须存在");
 
   const fileList = packed[0].files.map((item) => item.path);
-  for (const required of ["bin/wl-skills-design.js", "lib/design-model.js", "files/.github/skills/_manifest.json", "README.md", "CHANGELOG.md"]) {
+  for (const required of ["bin/wl-skills-design.js", "lib/design-model.js", "lib/router.js", "lib/task-runtime.js", "lib/task-observability.cjs", "files/.agents/skills/wl-skills-design/SKILL.md", "files/.github/skills/_manifest.json", "README.md", "CHANGELOG.md"]) {
     assert.ok(fileList.includes(required), `发布载荷缺少 ${required}`);
   }
   for (const forbidden of ["kit-internal", "spec-gen/", "scripts/", "tests/", "demo/"]) {
@@ -61,6 +61,15 @@ try {
   assert.ok(!fs.existsSync(path.join(agents, "CLAUDE.md")));
   assert.ok(!fs.existsSync(path.join(agents, ".github", "copilot-instructions.md")));
   runInstalled(["doctor", "--json"], agents);
+  const routed = JSON.parse(runInstalled(["task", "--input", "创建库存数据库设计", "--json"], agents));
+  assert.strictEqual(routed.decision.status, "matched");
+  assert.strictEqual(routed.executionStatus, "not-executed");
+  assert.ok(routed.runId);
+  const observed = JSON.parse(runInstalled(["status", "--run-id", routed.runId, "--json"], agents));
+  assert.strictEqual(observed.validationStatus, "unverified");
+  const host = JSON.parse(runInstalled(["doctor", "--host", "codex", "--json"], agents));
+  assert.strictEqual(host.hostDiscovery, "unverified");
+  assert.strictEqual(host.gateway.status, "present");
   const modelDir = path.join(agents, "docs");
   fs.mkdirSync(modelDir);
   fs.writeFileSync(

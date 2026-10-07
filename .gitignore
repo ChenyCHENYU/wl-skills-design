@@ -30,3 +30,6 @@ Thumbs.db
 # drawio/office 临时锁文件
 ~$*.dtmp
 ~$*.docx#
+
+.wl-skills-design/runs/
+demo/.wl-skills-design/runs/

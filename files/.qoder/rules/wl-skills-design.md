@@ -5,11 +5,11 @@
 
 # wl-skills-design 产品设计调度说明
 
-> 版本：v0.12.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v0.13.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 
-1. 读取 `.github/skills/_manifest.json`，只选择 `status=released` 的能力。
+1. 每次任务先执行 `wl-skills-design task --input "<完整任务>" --json`，记录实际 runId、matched/baseline/ambiguous/gap/not-applicable、理由和候选；相关却缺能力/规则必须显示 gap 并持久化规则建议。读取 `.github/skills/_manifest.json`，只选择 `status=released` 的能力。
 2. 先判定动作意图：`impact` → `review` → `validate` → `repair` → `maintain` → `create`。
 3. 再判定领域；普通代码 review、PR review 和代码重构不得进入产品设计评审。
 4. 应用 manifest 中的精确词、负向词、优先级和最小领先分差。并列或信息不足时只追问一个关键问题。
@@ -40,3 +40,12 @@
 - `code-architecture`：模块边界、分层依赖、契约和质量门设计
 
 人读索引见 `.github/skills/_registry.md`，使用说明见 `.github/guides/usage.md`。
+
+## 可观测性与证据
+
+- `.agents/skills/wl-skills-design/SKILL.md` 是 Codex 发现入口，按需读取 canonical Skill；安装存在不能证明宿主已经发现或模型已选中。
+- task/route/explain 只产生判定和计划。文件 SHA 是快照，模型自述读取或执行必须标“模型声明”。
+- 实际 `verify <domain> --run-id <runId> --json` 回执区分机械、语义、跳过及不适用；机械子集通过不能宣称完整规范验证通过。
+- `status --run-id <runId> --json` 检查真实执行、验证覆盖和输入新鲜度；`doctor --host codex --json` 仅静态诊断入口可用性。
+
+同一用户任务跨已安装且适用的包复用同一 `--run-id <id>` 或 `WL_TASK_RUN_ID`；本包仍可独立使用，无需安装其他 WL 包。

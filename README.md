@@ -6,7 +6,7 @@
 
 独立与组合边界见 [机器能力声明](lib/capabilities.json)。设计技能和 CLI 不依赖其他 WL 包，`design-model` 仍是可选追溯增强。共享 Markdown 使用 `wl-skills-design` 托管区块；更新、切换编辑器、卸载和恢复只处理本包贡献。预存相同内容只引用，不自动认领；`--force` 只可更新已有归属的本包内容，不能覆盖用户或其他包内容。清理保留用户修改和引用记录，目录型编辑器规则及路由回归文件均采用包命名，避免共享文件碰撞。
 
-当前版本 `v0.12.0`：目录型编辑器规则与路由回归数据采用包命名，预存空文件在卸载和恢复后仍保留；默认 Delivery Profile 与公共基线一致，项目定制值继续由项目管理。
+当前版本 `v0.13.0`：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
 
 ## 快速开始
 
@@ -19,7 +19,7 @@ npx @agile-team/wl-skills-design init                              # 推荐：AG
 npx @agile-team/wl-skills-design init --editor cursor --target ./my-project
 ```
 
-安装后项目获得 `.github/skills | standards | prompts` 和一份编辑器规则文件。AI Agent 按 manifest 自动路由——之后直接用自然语言下指令，不需要记命令。
+安装后项目获得 `.github/skills | standards | prompts`、一份编辑器规则文件和独有 `.agents/skills/wl-skills-design/SKILL.md` gateway。自然语言任务由 task 入口给出可查的路由判定；宿主是否发现入口、模型是否读取正文由独立证据确认，doctor-host 静态检查不会宣称已加载。
 
 ### 第二步 · 选场景开工
 
@@ -61,7 +61,7 @@ npx @agile-team/wl-skills-design restore --list     # 列出备份
 npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 清理本包快照）
 ```
 
-`demo/` 目录是一套四域 verify 全绿的完整交付样例（需求说明书 + 数据库 + 接口 + 评审报告），可作质量对照；VS Code Chat 中输入 `/` 可选用 16 个快捷 Prompt。
+`demo/` 目录是一套四域机械子集通过的交付样例（需求说明书 + 数据库 + 接口 + 评审报告），可作结构质量对照；完整验证中的语义和未覆盖项仍需补证据。VS Code Chat 中输入 `/` 可选用 16 个快捷 Prompt。
 
 ## 能力
 
@@ -219,3 +219,10 @@ npm pack --dry-run
 ## 许可
 
 [Apache-2.0](./LICENSE)。随包分发的所有模板与样例均为匿名合成内容；贡献即表示接受 Apache-2.0 与本仓库贡献指南。
+
+
+每次任务用 `wl-skills-design task --input "<完整任务>" --json`取得 runId、判定、候选、适用规则和未验证项。`route`/`explain` 只读解释，不记录runId；相关任务使用 `task` 持久化判定与建议。发布内 `lib/router.js` 与路线 eval 共用实现；相关却缺能力/规则的任务记录 gap 建议，歧义保留候选。`.agents/skills/wl-skills-design/SKILL.md` 是本包独有 Codex gateway，只指向 canonical Skill，不复制业务规则；陌生入口安装时整批零写入，force 也不覆盖。
+
+`verify <domain> --run-id <runId> --json` 返回实际机械检查回执与完整 [M]/[J] 规则覆盖：语义、未实现机械项及跳过项保持未验证。`mechanicalOk` 只表示机械子集结果，`ok` 和 `receipt.validationStatus` 表示完整验证状态，子集通过仍为 partial。`status --run-id <runId> --json` 检查真实执行与输入新鲜度，`doctor --host codex --json` 仅诊断入口可用性；宿主发现、模型选中/读取不能由文件 SHA 推断，模型自述标“模型声明”。观测记录只写 `.wl-skills-design/runs/`，canonical Skill 的只读和修复授权边界继续生效。
+
+同一用户任务跨已安装且适用的包复用同一 `--run-id <id>` 或 `WL_TASK_RUN_ID`；本包仍可独立使用，无需安装其他 WL 包。
