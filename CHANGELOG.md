@@ -6,6 +6,12 @@
 
 ---
 
+## [0.14.0] — 2026-10-08（公开集成协议与输入校验收口）
+
+- 新增公开集成协议 describe/request 统一信封：能力清单、路由语料与判定结果按公开契约暴露，供外部宿主与适配器接入；仅依赖公开入口，移除适配器后本包独立可用。
+- 输入校验补齐：falsy `projectRoot` 一律拒绝并返回可解释错误；`skillPath` 回传真实安装路径。
+- 补 context null 与空 targets 的 CLI 回归。
+
 ## [0.13.0] — 2026-10-07（任务判定与完整验证覆盖）
 
 - 新增 task/route/explain/status/doctor-host、独有 Codex gateway 与实际工具回执；发布路由和路线 eval 使用同一 lib 实现。
