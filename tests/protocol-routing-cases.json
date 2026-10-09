@@ -10,5 +10,9 @@
   { "task": "半成品文档差距分析", "skill": "doc.intake", "installedStatus": "baseline" },
   { "task": "设计前后端模块划分", "skill": "code.architecture" },
   { "task": "帮我处理一下", "skill": null, "status": "needs-context" },
-  { "task": "写诗", "skill": null, "status": "needs-context" }
+  { "task": "写诗", "skill": null, "status": "not-applicable" },
+  { "task": "写一首诗", "skill": null, "status": "not-applicable" },
+  { "task": "write a poem", "skill": null, "status": "not-applicable" },
+  { "task": "帮我做饭", "skill": null, "status": "not-applicable" },
+  { "task": "设计诗词检索的 OpenAPI 接口设计", "skill": "api.restful" }
 ]

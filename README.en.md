@@ -4,6 +4,8 @@ Product-design Agent Skills package: 9 design standards, 10 discoverable Skills,
 
 [中文说明](./README.md)
 
+Version `0.14.1` corrects routing for explicit everyday requests such as writing a poem or cooking: these return `not-applicable`. Vague requests still ask for context; matched design tasks, including OpenAPI design for a poetry search service, retain their design skill. This does not add a dependency on another WL package or harness.
+
 ## Quick start
 
 Requires Node.js 20+.
