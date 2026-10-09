@@ -57,6 +57,7 @@ function parseArgs(argv) {
     editor: null,
     target: null,
     model: null,
+    output: null,
     domain: null,
     input: null,
     runId: null,
@@ -68,7 +69,7 @@ function parseArgs(argv) {
     help: false,
     version: false,
   };
-  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "restore", "uninstall", "task", "route", "explain", "doctor-host", "protocol"]);
+  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "layout-flowchart", "restore", "uninstall", "task", "route", "explain", "doctor-host", "protocol"]);
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -88,7 +89,7 @@ function parseArgs(argv) {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result.files.push(value);
-    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--id" || arg === "--input" || arg === "--run-id" || arg === "--host" || arg === "--input-file") {
+    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--output" || arg === "--id" || arg === "--input" || arg === "--run-id" || arg === "--host" || arg === "--input-file") {
       const value = argv[++i];
       if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
       result[arg === "--run-id" ? "runId" : arg === "--input-file" ? "inputFile" : arg.slice(2)] = value;
@@ -124,6 +125,7 @@ wl-skills-design v${PACKAGE.version}
   status     查看受管文件状态；--run-id 读取本包执行回执与新鲜度
   doctor     检查安装状态与 Skill 清单
   validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
+  layout-flowchart  按文字调整活动宽高、泳道与间距，输出新图（--file/--output；可 --dry-run）
   verify     机械执行设计产物的验证清单子集：verify spec | flowchart | db | api
   restore    恢复最近一次安装、升级或卸载前状态
   uninstall  卸载受管文件；不会静默删除本地改动
@@ -897,11 +899,31 @@ function main(argv = process.argv.slice(2)) {
     if (!options.input) throw new Error("task 需要 --input <完整任务> 或自然语言参数");
     const runtime = require("../lib/task-runtime.js");
     const result = runtime.task(target, options.input, { runId: options.runId, targets: options.files, persist: options.command === "task" });
-    printResult(options.json ? result : `${runtime.observation.formatDecision(result.decision)}\n${result.runId ? `runId: ${result.runId}；` : "静态判定；"}计划尚未执行，模型读取尚未验证`, options.json);
+    printResult(options.json ? result : `${runtime.observation.formatDecision(result)}\n计划尚未执行，模型读取尚未验证`, options.json);
     return result.decision.status === "gap" ? 1 : result.decision.status === "ambiguous" ? 2 : 0;
   }
   if (options.command === "doctor-host") return runStatus({ ...options, host: options.host || "codex" }, target, true);
   if (options.command === "validate-model") return runValidateModel(options, target);
+  if (options.command === "layout-flowchart") {
+    if (options.files.length !== 1) throw new Error("layout-flowchart 需要一个 --file <drawio>");
+    const { layoutFile } = require("../lib/flowchart-layout.js");
+    const preview = layoutFile(target, options.files[0], options.output, true);
+    if (options.dryRun) { printResult(preview, options.json); return 0; }
+    const runtime = require("../lib/task-runtime.js");
+    const handle = runtime.observation.beginExecution({ ...runtime.options(target, { runId: options.runId, targets: [preview.source] }), tool: "design-flowchart-layout" });
+    let result;
+    try {
+      result = layoutFile(target, options.files[0], options.output);
+      const verification = verifyFlowchartFile(path.resolve(target, result.output));
+      const receipt = runtime.observation.finishExecution(handle, { exitCode: 0, validationStatus: verification.ok ? "partial" : "failed", checks: verification.coverage.checks.map((item) => ({ id: `requirements.flowchart:${item.id}`, status: item.status, reason: item.reason })), checkedFiles: [result.output], artifacts: [result.output], summary: { render: "unverified", semantic: "unverified" } });
+      result = { ...result, runId: handle.metadata.runId, receipt, verification };
+    } catch (error) {
+      runtime.observation.finishExecution(handle, { exitCode: 1, validationStatus: "unverified", checks: [], errorCode: error.code || error.name });
+      throw error;
+    }
+    printResult(result, options.json);
+    return result.verification.ok ? 0 : 1;
+  }
   if (options.command === "verify") return runVerify(options, target);
   if (options.command === "status") return runStatus(options, target, false);
   if (options.command === "doctor") return runStatus(options, target, true);

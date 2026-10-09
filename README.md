@@ -6,7 +6,27 @@
 
 独立与组合边界见 [机器能力声明](lib/capabilities.json)。设计技能和 CLI 不依赖其他 WL 包，`design-model` 仍是可选追溯增强。共享 Markdown 使用 `wl-skills-design` 托管区块；更新、切换编辑器、卸载和恢复只处理本包贡献。预存相同内容只引用，不自动认领；`--force` 只可更新已有归属的本包内容，不能覆盖用户或其他包内容。清理保留用户修改和引用记录，目录型编辑器规则及路由回归文件均采用包命名，避免共享文件碰撞。
 
-当前版本 `v0.14.1`：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
+当前版本 `v0.15.0`：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
+
+## 流程图文字自适应
+
+活动继续使用编码/名称/岗位三层，宽度至少 132px、常用 140～260px；长名称换行后独立增高，不挤压岗位栏。所有高度按实际行数计算，不再固定 76.82×54。每段字号和 HTML 内联字号一致，泳道与画布随内容扩展。
+
+```bash
+wl-skills-design layout-flowchart --file docs/flowchart/input.drawio --output docs/flowchart/layout.drawio --dry-run
+wl-skills-design layout-flowchart --file docs/flowchart/input.drawio --output docs/flowchart/layout.drawio --run-id <id> --json
+wl-skills-design verify flowchart --file docs/flowchart/layout.drawio --run-id <id> --json
+```
+
+工具只接受未压缩 XML，拒绝坏 XML、DTD、重复 ID、外部路径/符号链接；输出必须是新文件。业务文字、ID、端点和分支标签保留，受影响连线移除旧折点以重新路由。F05 检查三段尺寸与文字空间，F12 在同父级坐标下检查重叠和容器边界。文字宽度是保守估算，实际字体/连线与业务语义仍需渲染和语义复核；命令成功不代表完整设计通过。
+
+## 如何确认本包正在起作用
+
+每次适用任务先运行项目本地 `wl-skills-design task --input "修改目标文件" --file docs/design.md --json`。编辑前展示真实 `notice`：包名与版本、判定、选中 Skill 或基础约束、具体规则、目标、runId 和尚未执行的检查。普通修改也需要基础约束提醒；相关但未覆盖的意图显示 gap 与建议；没有目标依据显示 needs-context，职责外显示 not-applicable，不强行匹配。
+
+执行实际检查时复用 `--run-id`，结束读取 `wl-skills-design status --run-id <id> --json`，分别报告执行和验证、实际检查文件、过期证据与未执行项。`notice.displayEvidence=unverified` 表示工具回执不能证明聊天界面展示；安装、路由或模型自报不能证明宿主加载/模型读取。
+
+`wl-skills-design doctor-host --json` 对比已分发规范、本地执行器和正在运行的版本，漂移会显式报告。规范更新不会替代依赖升级：同步本包依赖、锁文件和受管入口；未使用的兄弟包无需安装。重开/刷新宿主加载后仍需观察真实任务调用，不能宣称所有 AI 自动触发。
 
 ## 快速开始
 

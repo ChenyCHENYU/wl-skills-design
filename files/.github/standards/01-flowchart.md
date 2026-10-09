@@ -79,23 +79,27 @@
 
 ## 三、活动节点（三层 GROUP）
 
-每个操作节点是一个 **3 层垂直 GROUP**，宽度固定 **76.82px**，总高 **54px**。
+每个操作节点是一个 **3 层垂直 GROUP**，宽度按文字自适应（至少 **132px**，常用 **140～260px**），总高为三段实际高度之和。长标题先扩宽至常用上限，再换行增加名称层高度；不缩小字号，不占用岗位栏。活动编码及不可断开的英文标识符允许按其实际宽度超过常用上限。
 
 ```
-y=0  ┌──────────────────────────────┐ h=12  ← ① 活动编码（白底，10px）
-     ├──────────────────────────────┤
-y=12 │         活动名称             │ h=30  ← ② 活动内容（模块色，14px）
-     ├──────────────────────────────┤
-y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰底，10px）
-     └──────────────────────────────┘
+y=0       活动编码：10px，至少 20px
+下一行    活动名称：14px，至少 40px，每行约 21px，另留内边距
+最后一行  操作岗位：10px，至少 20px，长岗位允许单独增高
 ```
+
+- 三段 `x=0`，宽度等于 GROUP；后一段 `y` 等于前段 `y+height`，GROUP 高度等于三段高度之和。
+- 编码/名称/岗位的 `fontSize` 与 HTML 内联字号必须一致；每侧留至少 5px 内边距。
+- 以下 160×90 是短文本示例，不是固定尺寸要求；长文本必须重新计算。
+- 可运行 `wl-skills-design layout-flowchart --file docs/flowchart/原图.drawio --output docs/flowchart/布局候选.drawio`，原图不覆盖；先 `--dry-run` 查看变更。
+- 工具估算文字宽度并调整活动、节点间距、泳道列宽和画布；受影响连线移除旧折点，由直角路由重算。它不证明业务语义或实际渲染已通过。输出新文件后必须执行机械校验和渲染复核。
+
 
 ### 3.1 完整 XML 模板
 
 ```xml
 <!-- GROUP 容器 -->
 <mxCell id="[id]-g" value="" style="group" connectable="0" vertex="1" parent="[泳道id]">
-  <mxGeometry x="[x]" y="[y]" width="76.82" height="54" as="geometry" />
+  <mxGeometry x="[x]" y="[y]" width="160" height="90" as="geometry" />
 </mxCell>
 
 <!-- ① 活动编码 -->
@@ -103,7 +107,7 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
   value="&lt;font style=&quot;font-size: 10px;&quot;&gt;[活动编码]&lt;/font&gt;"
   style="rounded=0;whiteSpace=wrap;html=1;"
   vertex="1" parent="[id]-g">
-  <mxGeometry width="76.82" height="12" as="geometry" />
+  <mxGeometry width="160" height="20" as="geometry" />
 </mxCell>
 
 <!-- ② 活动内容（系统操作示例，色值按模块替换） -->
@@ -111,18 +115,18 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
   value="&lt;span style=&quot;font-size: 14px;&quot;&gt;[活动名称]&lt;/span&gt;"
   style="rounded=0;whiteSpace=wrap;html=1;
          fillColor=[模块填充色];strokeColor=[模块边框色];gradientColor=[模块渐变色];
-         align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;"
+         align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;spacing=5;"
   vertex="1" parent="[id]-g">
-  <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+  <mxGeometry y="20" width="160" height="50" as="geometry" />
 </mxCell>
 
 <!-- ③ 操作岗位 -->
 <mxCell id="[id]-dept"
   value="&lt;span style=&quot;font-size: 10px;&quot;&gt;[岗位]&lt;/span&gt;"
-  style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;
+  style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;spacing=5;
          fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;"
   vertex="1" parent="[id]-g">
-  <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+  <mxGeometry y="70" width="160" height="20" as="geometry" />
 </mxCell>
 ```
 
@@ -297,8 +301,8 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
 
 | 规则 | 数值 |
 |------|------|
-| 同列节点步距（Y 差值） | ≥ 80px（节点高 54 + 间隔 ≥ 26） |
-| 同行节点列距（X 差值） | ≥ 100px（节点宽 76.82 + 间隔 ≥ 23） |
+| 同列节点步距（Y 差值） | ≥ 实际节点高度 + 24px |
+| 同行节点列距（X 差值） | ≥ 实际节点宽度 + 24px |
 | GROUP 边界最小净空 | 10px |
 
 ### 8.2 对齐
@@ -376,7 +380,7 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
   style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;
          fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;"
   vertex="1" parent="[id]-g">
-  <mxGeometry y="12" width="76.82" height="38" as="geometry" />
+  <mxGeometry y="20" width="160" height="50" as="geometry" />
 </mxCell>
 ```
 
@@ -451,21 +455,21 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
 
         <!-- 节点1 -->
         <mxCell id="n1-g" value="" style="group" connectable="0" vertex="1" parent="lane">
-          <mxGeometry x="162" y="90" width="76.82" height="54" as="geometry" />
+          <mxGeometry x="162" y="90" width="160" height="90" as="geometry" />
         </mxCell>
         <mxCell id="n1-code" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;DEMO-E-01&lt;/font&gt;"
           style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="n1-g">
-          <mxGeometry width="76.82" height="12" as="geometry" />
+          <mxGeometry width="160" height="20" as="geometry" />
         </mxCell>
         <mxCell id="n1-name" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;第一步操作&lt;/span&gt;"
-          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=12;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=14;spacing=5;"
           vertex="1" parent="n1-g">
-          <mxGeometry y="12" width="76.82" height="30" as="geometry" />
+          <mxGeometry y="20" width="160" height="50" as="geometry" />
         </mxCell>
         <mxCell id="n1-dept" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;操作岗位&lt;/span&gt;"
-          style="rounded=0;whiteSpace=wrap;html=1;fontSize=15;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;"
+          style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;spacing=5;fillColor=#eeeeee;strokeColor=#36393d;verticalAlign=middle;"
           vertex="1" parent="n1-g">
-          <mxGeometry y="42" width="76.82" height="12" as="geometry" />
+          <mxGeometry y="70" width="160" height="20" as="geometry" />
         </mxCell>
 
         <!-- 结束 -->
@@ -508,7 +512,7 @@ y=42 │          操作岗位            │ h=12  ← ③ 岗位标签（灰�
 - [ ] **F02** [M]. 外层容器使用蓝色泳道（`fillColor=#dae8fc`，标题 22px）
 - [ ] **F03** [M]. 子泳道使用灰色（`fillColor=#f5f5f5`，标题 18px）
 - [ ] **F04** [M]. 每个操作节点都是 3 层 GROUP（编码 / 名称 / 岗位）
-- [ ] **F05** [M]. 节点 GROUP 宽度 76.82px，总高 54px
+- [ ] **F05** [M]. 活动宽高按文字自适应；三段宽度一致且顺序相接，无岗位挤压、文字空间不足
 - [ ] **F06** [M]. 编码层：10px 字体，白底（无 fillColor）
 - [ ] **F07** [M]. 名称层：14px 字体，颜色匹配对应模块色标
 - [ ] **F08** [M]. 岗位层：10px 字体，`fillColor=#eeeeee`

@@ -4,7 +4,7 @@ const js = require("@eslint/js");
 
 module.exports = [
   {
-    ignores: ["node_modules/", "files/", "demo/", "kit-internal/", "spec-gen/"],
+    ignores: ["node_modules/", "files/", "demo/", "kit-internal/", "spec-gen/", "lib/vendor/"],
   },
   js.configs.recommended,
   {

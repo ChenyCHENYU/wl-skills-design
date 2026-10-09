@@ -9,11 +9,13 @@ description: 按需调用产品设计 Skills，覆盖流程图、原型、需求
 ---
 # wl-skills-design 产品设计调度说明
 
-> 版本：v0.14.1。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v0.15.0。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 
 1. 每次任务先执行 `wl-skills-design task --input "<完整任务>" --json`，记录实际 runId、matched/baseline/ambiguous/gap/not-applicable、理由和候选；相关却缺能力/规则必须显示 gap 并持久化规则建议。读取 `.github/skills/_manifest.json`，只选择 `status=released` 的能力。
+
+编辑前必须展示实际 `notice`：包名/版本、判定、Skill 或基础约束、规则编号与名称、目标、runId 和尚未执行的检查；命令失败或版本不一致须明示，不能静默跳过。
 2. 先判定动作意图：`impact` → `review` → `validate` → `repair` → `maintain` → `create`。
 3. 再判定领域；普通代码 review、PR review 和代码重构不得进入产品设计评审。
 4. 应用 manifest 中的精确词、负向词、优先级和最小领先分差。并列或信息不足时只追问一个关键问题。
