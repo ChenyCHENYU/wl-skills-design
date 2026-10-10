@@ -12,7 +12,9 @@ const pkg = require("../package.json");
 const BIN = path.join(__dirname, "..", "bin", "wl-skills-design.js");
 
 function tempRoot() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "wl-design-protocol-"));
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "wl-design-protocol-"));
+  fs.writeFileSync(path.join(root, "package.json"), JSON.stringify({ devDependencies: { "@agile-team/wl-skills-design": "*" } }));
+  return root;
 }
 
 test("describe 返回协议版本、能力目录与五个统一操作", () => {
