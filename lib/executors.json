@@ -1,0 +1,154 @@
+[
+  {
+    "id": "verify-spec",
+    "command": [
+      "verify",
+      "spec"
+    ],
+    "when": {
+      "skills": [
+        "requirements.spec"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "required": [
+        "targets"
+      ],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "sideEffects": {
+      "business": "none",
+      "records": true,
+      "reports": "stdout"
+    },
+    "authorization": "read-only-business-check",
+    "receipt": "package-execution-record-v1"
+  },
+  {
+    "id": "verify-flowchart",
+    "command": [
+      "verify",
+      "flowchart"
+    ],
+    "when": {
+      "skills": [
+        "requirements.flowchart"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "required": [
+        "targets"
+      ],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "sideEffects": {
+      "business": "none",
+      "records": true,
+      "reports": "stdout"
+    },
+    "authorization": "read-only-business-check",
+    "receipt": "package-execution-record-v1"
+  },
+  {
+    "id": "verify-db",
+    "command": [
+      "verify",
+      "db"
+    ],
+    "when": {
+      "skills": [
+        "data.database"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "required": [
+        "targets"
+      ],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "sideEffects": {
+      "business": "none",
+      "records": true,
+      "reports": "stdout"
+    },
+    "authorization": "read-only-business-check",
+    "receipt": "package-execution-record-v1"
+  },
+  {
+    "id": "verify-api",
+    "command": [
+      "verify",
+      "api"
+    ],
+    "when": {
+      "skills": [
+        "api.restful"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "required": [
+        "targets"
+      ],
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "sideEffects": {
+      "business": "none",
+      "records": true,
+      "reports": "stdout"
+    },
+    "authorization": "read-only-business-check",
+    "receipt": "package-execution-record-v1"
+  }
+]

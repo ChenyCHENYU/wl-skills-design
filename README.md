@@ -8,7 +8,7 @@
 
 独立与组合边界见 [机器能力声明](lib/capabilities.json)。设计技能和 CLI 不依赖其他 WL 包，`design-model` 仍是可选追溯增强。共享 Markdown 使用 `wl-skills-design` 托管区块；更新、切换编辑器、卸载和恢复只处理本包贡献。预存相同内容只引用，不自动认领；`--force` 只可更新已有归属的本包内容，不能覆盖用户或其他包内容。清理保留用户修改和引用记录，目录型编辑器规则及路由回归文件均采用包命名，避免共享文件碰撞。
 
-当前版本 `v0.16.0`：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
+当前版本 `v0.17.0`：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
 
 ## 流程图文字自适应
 
@@ -265,3 +265,13 @@ npm pack --dry-run
 `verify <domain> --run-id <runId> --json` 返回实际机械检查回执与完整 [M]/[J] 规则覆盖：语义、未实现机械项及跳过项保持未验证。`mechanicalOk` 只表示机械子集结果，`ok` 和 `receipt.validationStatus` 表示完整验证状态，子集通过仍为 partial。`status --run-id <runId> --json` 检查真实执行与输入新鲜度，`doctor --host codex --json` 仅诊断入口可用性；宿主发现、模型选中/读取不能由文件 SHA 推断，模型自述标“模型声明”。观测记录只写 `.wl-skills-design/runs/`，canonical Skill 的只读和修复授权边界继续生效。
 
 同一用户任务跨已安装且适用的包复用同一 `--run-id <id>` 或 `WL_TASK_RUN_ID`；本包仍可独立使用，无需安装其他 WL 包。
+
+### 当前请求、动作边界与 Harness 集成
+
+任务判定保留原始文本，并将当前请求、历史引用和明确否定分开。自然语言判定覆盖已公开语料与规则，不能承诺任意表述都自动命中；遇到歧义或缺口应补充目标/领域或显式指定本包能力，不能静默选择。编辑前显示真实 `notice`，包括版本、技能、规则、目标、runId、动作与待检查项。
+
+`protocol describe --json` 声明 `task-intent-v1`、`result-core-v1`、`executor-catalog-v1`；`schemas.resultCore` 与五操作 `schemas.results` 可供宿主验证。原有结果字段保留，新增 `result.integration`：项目适用范围、动作模式、规则身份、目标、就绪状态、允许执行器和真实执行/验证状态。`ok` 只表示调用成功。未声明使用的输入字段进入 diagnostics，不会转成授权依据。
+
+`action.mode` 为 explain/plan/inspect/apply/unspecified；解释和规划不自动启动检查。`businessWritesAuthorized=false`，任务意图不能替代业务写入授权。`ruleRefs` 为包自有规则身份（包名、规则 ID、版本、来源、性质），自然语言约束有稳定 ID；原规则名称与列表保留。所有规则的机械/语义验证仍以实际回执为准。
+
+`inventory.executors` 声明本包业务只读检查器、目标与参数 Schema；其适用条件由本包判定。外部适配器须核对同项目、同包、同版本、同 runId 的真实计划、新鲜度与允许动作，指定一个目标，不能扩大范围；支持规则子集的执行器不得选择计划外规则。多目标需拆分调用。五包和 Harness 均为可选组合，不新增兄弟包或 Harness 运行时依赖；卸下适配器后原 CLI/MCP 继续独立使用。

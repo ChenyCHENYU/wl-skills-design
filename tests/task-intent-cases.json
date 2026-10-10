@@ -1,0 +1,32 @@
+[
+  {
+    "task": "不画流程图，只审查API说明",
+    "status": "needs-context",
+    "skills": [],
+    "mode": "inspect"
+  },
+  {
+    "task": "旧文档写过“绘制流程图”，本次只评审数据库设计",
+    "status": "matched",
+    "skills": [
+      "data.database"
+    ],
+    "mode": "inspect"
+  },
+  {
+    "task": "只解释设计流程图的流程，暂不生成文件",
+    "status": "matched",
+    "skills": [
+      "requirements.flowchart"
+    ],
+    "mode": "explain"
+  },
+  {
+    "task": "绘制流程图",
+    "status": "matched",
+    "skills": [
+      "requirements.flowchart"
+    ],
+    "mode": "apply"
+  }
+]
