@@ -4,7 +4,7 @@ Product-design Agent Skills package: 9 design standards, 10 discoverable Skills,
 
 [中文说明](./README.md)
 
-Version `0.14.1` corrects routing for explicit everyday requests such as writing a poem or cooking: these return `not-applicable`. Vague requests still ask for context; matched design tasks, including OpenAPI design for a poetry search service, retain their design skill. This does not add a dependency on another WL package or harness.
+Current version `1.0.0` commits to the documented [public API and compatibility boundaries](docs/public-api.md), complete model Schema validation, and package-owned structured execution. Validation coverage and host evidence remain explicit. Earlier routing updates correct routing for explicit everyday requests such as writing a poem or cooking: these return `not-applicable`. Vague requests still ask for context; matched design tasks, including OpenAPI design for a poetry search service, retain their design skill. This does not add a dependency on another WL package or harness.
 
 ## Quick start
 
@@ -37,7 +37,7 @@ wl-skills-design verify api --target ./my-project
 
 ## Dual-track verification
 
-Every checklist item is tagged `[M]` (mechanically decidable) or `[J]` (judgment). All four domains are covered by `wl-skills-design verify`, which executes the `[M]` items deterministically (code formats and uniqueness, table shapes and column standards, draw.io structure, dictionary↔DDL field/type/length consistency, contract types, parseable examples, traceability closure); the agent judges `[J]` items and merges both into a single rule-numbered report. The `demo/` folder is a living example that stays verify-green across all four domains.
+Every checklist item is tagged `[M]` (mechanically decidable) or `[J]` (judgment). `wl-skills-design verify` covers the four domains through its implemented mechanical subset, including code formats and uniqueness, table shapes, draw.io structure, dictionary/DDL consistency and contract checks. Unimplemented `[M]` checks and `[J]` judgments remain explicitly skipped or unverified; mechanical success alone reports `partial`. Semantic review requires separate evidence and cannot be replaced by an agent's claim. The source repository's synthetic `demo/` samples pass the implemented subset; this does not prove complete semantic or rendering validation, and `demo/` is not distributed in the npm package.
 
 ## Doc intake
 
@@ -69,7 +69,7 @@ npm ci --ignore-scripts
 npm run verify     # doctor + adapter drift + CLI tests + mechanical-verify tests + real npm payload smoke
 ```
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for conventions (route-eval coverage for trigger changes, [M]/[J] consistency, anonymization gates).
+See the source repository’s [contribution guide](https://github.com/ChenyCHENYU/wl-skills-design/blob/main/CONTRIBUTING.md) for conventions (route-eval coverage for trigger changes, [M]/[J] consistency, anonymization gates).
 
 ## License
 
