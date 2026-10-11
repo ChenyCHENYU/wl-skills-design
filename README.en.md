@@ -72,3 +72,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for conventions (route-eval coverage fo
 ## License
 
 [Apache-2.0](./LICENSE). All templates and examples are anonymized synthetic data.
+
+### Task and execution evidence
+
+Display the real notice before editing: package/version, decision, action, rules/skills, targets, runId, pending checks and runtime alignment. Explanations/plans and explicit check prohibitions do not run automatic checks. Version drift and stale plans require synchronization or replanning. Readonly inspection inputs must remain unchanged; apply tasks may recheck normal edits under the same runId. Empty checks cannot prove success, and host/model activity stays unverified without real evidence.

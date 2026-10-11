@@ -70,6 +70,7 @@ function parseArgs(argv) {
     version: false,
   };
   const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "layout-flowchart", "restore", "uninstall", "task", "route", "explain", "doctor-host", "protocol"]);
+  const valueFlags = new Map(["editor", "target", "model", "output", "id", "input", "run-id", "host", "input-file", "file"].map((name) => [`--${name}`, name === "run-id" ? "runId" : name === "input-file" ? "inputFile" : name === "file" ? "files" : name]));
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -85,19 +86,14 @@ function parseArgs(argv) {
     else if (arg === "--purge") result.purge = true;
     else if (arg === "--help" || arg === "-h") result.help = true;
     else if (arg === "--version" || arg === "-v") result.version = true;
-    else if (arg === "--file") {
-      const value = argv[++i];
-      if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
-      result.files.push(value);
-    } else if (arg === "--editor" || arg === "--target" || arg === "--model" || arg === "--output" || arg === "--id" || arg === "--input" || arg === "--run-id" || arg === "--host" || arg === "--input-file") {
-      const value = argv[++i];
-      if (!value || value.startsWith("--")) throw new Error(`${arg} 缺少参数`);
-      result[arg === "--run-id" ? "runId" : arg === "--input-file" ? "inputFile" : arg.slice(2)] = value;
-    } else if (arg.startsWith("--editor=")) result.editor = arg.slice(9);
-    else if (arg.startsWith("--target=")) result.target = arg.slice(9);
-    else if (arg.startsWith("--model=")) result.model = arg.slice(8);
-    else if (arg.startsWith("--id=")) result.id = arg.slice(5);
-    else if (arg.startsWith("--file=")) result.files.push(arg.slice(7));
+    else if (valueFlags.has(arg.split("=")[0])) {
+      const flag = arg.split("=")[0];
+      const value = arg.includes("=") ? arg.slice(arg.indexOf("=") + 1) : argv[++i];
+      if (typeof value !== "string" || !value.trim() || value.startsWith("--")) throw new Error(`${flag} 缺少参数`);
+      const key = valueFlags.get(flag);
+      if (key === "files") result.files.push(value);
+      else result[key] = value;
+    }
     else if (arg.startsWith("-")) throw new Error(`未知选项：${arg}`);
     else if (result.command === "verify" && !result.domain && /^(spec|flowchart|db|api)$/.test(arg)) result.domain = arg;
     else if (result.command === "protocol" && (arg === "describe" || arg === "request")) result.protocolSub = arg;
@@ -137,7 +133,7 @@ wl-skills-design v${PACKAGE.version}
   --run-id <id>       关联任务与真实验证回执
   --host <name>       doctor 的宿主入口诊断（如 codex）
   --model <file>      design-model 路径，默认 docs/design-model.json
-  --file <path>       verify：指定待验证文件，可重复；默认扫描 docs/
+  --file <path>       verify：指定文件或目录，可重复；文件不扫描兄弟，默认扫描 docs/
   --list              restore：列出可用备份
   --id <backupId>     restore：恢复指定备份，默认最近一次
   --purge             uninstall：清理本包快照；保留残留引用和外来文件
@@ -187,6 +183,37 @@ function walkFiles(dir, predicate, base = dir) {
     });
 }
 
+function markdownSubjects(target, requested, domain) {
+  const groups = new Map();
+  const addDirectory = (dir) => groups.set(dir, undefined);
+  for (const item of requested) {
+    const full = path.resolve(target, item);
+    if (!fs.existsSync(full)) throw new Error(`待验证目标不存在：${item}`);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) {
+      if (domain === "spec") {
+        for (const file of walkFiles(full, (file) => /\.md$/i.test(file))) addDirectory(path.dirname(file));
+      } else addDirectory(full);
+    } else if (stat.isFile() && /\.md$/i.test(full)) {
+      const dir = path.dirname(full);
+      if (!groups.has(dir)) groups.set(dir, []);
+      groups.get(dir)?.push(full);
+    } else throw new Error(`待验证目标必须是 Markdown 文件或目录：${item}`);
+  }
+  return groups;
+}
+
+function flowchartSubjects(target, requested) {
+  const files = requested.flatMap((item) => {
+    const full = path.resolve(target, item);
+    if (!fs.existsSync(full)) throw new Error(`待验证目标不存在：${item}`);
+    if (fs.statSync(full).isDirectory()) return walkFiles(full, (file) => /\.drawio$/i.test(file));
+    if (fs.statSync(full).isFile() && /\.drawio$/i.test(full)) return [full];
+    throw new Error(`待验证目标必须是 draw.io 文件或目录：${item}`);
+  });
+  return [...new Set(files)];
+}
+
 function runVerify(options, target) {
   const domain = options.domain;
   if (!domain) throw new Error("verify 需要域参数：verify spec | flowchart | db | api");
@@ -197,27 +224,25 @@ function runVerify(options, target) {
   try {
   if (domain === "flowchart") {
     const files = options.files.length
-      ? options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)))
+      ? flowchartSubjects(target, options.files)
       : walkFiles(path.join(target, "docs"), (file) => file.endsWith(".drawio"));
     if (!files.length) throw new Error("未找到 .drawio 文件；可用 --file 指定");
     for (const file of files) reports.push(verifyFlowchartFile(file));
   } else if (domain === "spec") {
-    const explicit = options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)));
-    const dirs = new Set(explicit.map((item) => path.dirname(item)));
-    if (!dirs.size) {
+    const groups = markdownSubjects(target, options.files, domain);
+    if (!options.files.length) {
       const specRoot = path.join(target, "docs", "spec");
-      for (const file of walkFiles(specRoot, (item) => item.endsWith(".md"))) dirs.add(path.dirname(file));
+      for (const file of walkFiles(specRoot, (item) => item.endsWith(".md"))) groups.set(path.dirname(file), undefined);
     }
-    const valid = [...dirs].filter((dir) => fs.readdirSync(dir).some((name) => /^(ch1[-_]3|4\.\d+).*\.md$/.test(name)));
+    const valid = [...groups.entries()].filter(([dir, files]) => files ? files.length : fs.readdirSync(dir).some((name) => /^(ch1[-_]3|4\.\d+).*\.md$/.test(name)));
     if (!valid.length) throw new Error("未找到需求说明书目录（docs/spec/{project-code}/）；可用 --file 指定");
-    for (const dir of valid) reports.push(verifySpecDir(dir));
+    for (const [dir, files] of valid) reports.push(verifySpecDir(dir, files));
   } else if (domain === "db" || domain === "api") {
-    const explicit = options.files.map((item) => (path.isAbsolute(item) ? item : path.resolve(target, item)));
-    const dirs = new Set(explicit.map((item) => path.dirname(item)));
-    if (!dirs.size) dirs.add(path.join(target, "docs", domain));
-    const valid = [...dirs].filter((dir) => fs.existsSync(dir) && fs.readdirSync(dir).some((name) => /\.md$/.test(name)));
+    const groups = markdownSubjects(target, options.files, domain);
+    if (!options.files.length) groups.set(path.join(target, "docs", domain), undefined);
+    const valid = [...groups.entries()].filter(([dir, files]) => files ? files.length : fs.existsSync(dir) && fs.readdirSync(dir).some((name) => /\.md$/.test(name)));
     if (!valid.length) throw new Error(`未找到 ${domain} 设计文档目录（docs/${domain}/）；可用 --file 指定`);
-    for (const dir of valid) reports.push(domain === "db" ? verifyDbDir(dir) : verifyApiDir(dir));
+    for (const [dir, files] of valid) reports.push(domain === "db" ? verifyDbDir(dir, files) : verifyApiDir(dir, files));
   } else {
     throw new Error(`不支持的域：${domain}（当前支持 spec、flowchart、db、api）`);
   }

@@ -33,6 +33,26 @@ test("真实 XML 输出可解析、幂等；文字/ID/连线端点/标签保持"
 test("错误 XML、DTD、压缩数据、重复 ID 均拒绝", () => {
   for (const xml of ['<mxfile><diagram></mxfile>', '<!DOCTYPE x><mxfile/>', '<mxfile><diagram>compressed-data</diagram></mxfile>', '<mxfile><diagram><mxGraphModel><root><mxCell id="1"/><mxCell id="1"/></root></mxGraphModel></diagram></mxfile>']) assert.throws(() => layout.layoutXml(xml));
 });
+test("普通三节点组合保持内部布局，不能仅凭三个子节点改为三行活动", () => {
+  const xml = `<mxfile><diagram><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="g" style="group;" vertex="1" parent="1"><mxGeometry width="400" height="60" as="geometry"/></mxCell>${["start", "decision", "end"].map((id, i) => `<mxCell id="${id}" value="${id}" style="${i === 1 ? "rhombus" : "ellipse"};" vertex="1" parent="g"><mxGeometry x="${i * 150}" y="0" width="80" height="60" as="geometry"/></mxCell>`).join("")}</root></mxGraphModel></diagram></mxfile>`;
+  const adjusted = layout.layoutXml(xml);
+  const cells = (document) => document.children[0].children[0].children[0].children[0].children.filter((node) => node.name === "mxCell");
+  const identity = (cell) => ({ id: cell.attrs.id, value: cell.attrs.value, style: cell.attrs.style, geometry: cell.children });
+  assert.deepEqual(cells(layout.parseXml(adjusted.xml)).map(identity), cells(layout.parseXml(xml)).map(identity));
+  assert.deepEqual(adjusted.changes, []);
+});
+test("流程图验证与布局复用活动身份，通用 GROUP 不计入活动三行规则", () => {
+  const root = fixture();
+  try {
+    const generic = `<mxCell id="general" style="group;" vertex="1" parent="lane-a"><mxGeometry x="20" y="900" width="240" height="80" as="geometry"/></mxCell>${["start", "decision", "end"].map((id, i) => `<mxCell id="general-${id}" value="${id}" style="${i === 1 ? "rhombus" : "ellipse"};" vertex="1" parent="general"><mxGeometry x="${i * 80}" y="0" width="70" height="60" as="geometry"/></mxCell>`).join("")}`;
+    const original = fs.readFileSync(path.join(root, "input.drawio"), "utf8");
+    const insertion = original.lastIndexOf("</root>");
+    fs.writeFileSync(path.join(root, "generic.drawio"), original.slice(0, insertion) + generic + original.slice(insertion));
+    const before = verifyFlowchartFile(path.join(root, "input.drawio"));
+    const after = verifyFlowchartFile(path.join(root, "generic.drawio"));
+    for (const rule of ["F04", "F05", "F06", "F07", "F08", "F14"]) assert.deepEqual(after.checks.filter((item) => item.rule === rule), before.checks.filter((item) => item.rule === rule));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
 test("原图与既有输出不覆盖，dry-run 零写入", () => {
   const root = fixture();
   try {
