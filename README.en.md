@@ -43,6 +43,8 @@ Every checklist item is tagged `[M]` (mechanically decidable) or `[J]` (judgment
 
 The `doc-intake` skill onboards half-finished documents: classify and place content by coding system, run mechanical + semantic gap analysis (including enum-value drift and near-name drift detection), produce a patch-task plan reusing the change-impact format, fill structural gaps within granted scope, and cast a draft design-model from existing codes — never inventing business facts.
 
+`validate-model` checks the complete distributed JSON Schema 2020-12 as well as stable IDs and references. Invalid types, enum values, constants, or unknown properties return `DM019`; schema loading or compilation failures return `DM020` and cannot fall back to a permissive pass. Empty collections retain existing warnings. Design semantics require separate review.
+
 ## Safety
 
 - `validate` / `review` / `impact` are read-only by default; `repair` requires explicit authorization.
@@ -53,7 +55,7 @@ The `doc-intake` skill onboards half-finished documents: classify and place cont
 ## CLI
 
 ```
-init | update | status | doctor | validate-model | verify <spec|flowchart> | restore | uninstall
+init | update | status | doctor | validate-model | verify <spec|flowchart|db|api> | restore | uninstall
 Options: --editor <id[,id]|all> --target <dir> --file <path> --model <file>
          --list --id <backupId> --purge --dry-run --force --json
 ```
@@ -76,3 +78,12 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for conventions (route-eval coverage fo
 ### Task and execution evidence
 
 Display the real notice before editing: package/version, decision, action, rules/skills, targets, runId, pending checks and runtime alignment. Explanations/plans and explicit check prohibitions do not run automatic checks. Version drift and stale plans require synchronization or replanning. Readonly inspection inputs must remain unchanged; apply tasks may recheck normal edits under the same runId. Empty checks cannot prove success, and host/model activity stays unverified without real evidence.
+
+### Standalone executor invocation
+
+`protocol describe --json` publishes six operations and the `executor-invoke-v1` feature. After planning a real task, call `protocol request --input-file /tmp/request.json --json` with `operation:"execute"`, an explicit absolute `projectRoot`, the same `runId`, a published `executorId`, and `parameters:{targets:["docs/api/01-inspection.md"]}`. The four executors are `verify-spec`, `verify-flowchart`, `verify-db`, and `verify-api`; each reuses this package's original verifier and exact file/directory scope. Neither DSH nor sibling WL packages are required.
+
+The package checks the full parameter Schema and the real task state before invocation. Missing roots, unknown executors, changed targets, stale plans, version drift, and tasks that prohibit checks are refused. A completed call can return `ok:true` with a native business `execution.exitCode` of 1. Mechanical success remains partial validation; host/model loading and semantic/render review need their own evidence. See [public API boundaries](docs/public-api.md).
+
+Maintenance, snapshot checks and standalone execution: [maintenance contract](docs/maintenance-contract.md).
+Version 1.0 readiness and supported public surfaces: [release maturity](docs/release-maturity.md).

@@ -91,20 +91,46 @@ npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 清
 
 ## 公开集成协议 v1
 
-供 harness、客户端或其他编排层以统一 JSON 入口调用本包判定与状态能力（业务执行仍走本包 CLI/MCP，不因协议新增兄弟包依赖）。
+供单包客户端、harness 或其他编排层以统一 JSON 入口调用本包判定、状态与受控执行能力；领域映射和验证器均由 Design 自己维护，不新增兄弟包依赖。
 
 ```bash
-wl-skills-design protocol describe --json                      # 能力目录、五操作映射、请求/响应 Schema、错误码
+wl-skills-design protocol describe --json                      # 能力目录、六操作映射、请求/响应 Schema、错误码
 wl-skills-design protocol request --input-file request.json --json
 ```
 
-- 操作：`route` / `explain`（只读判定）、`task`（判定并持久化计划，尚未执行）、`status`（回查本包执行回执）、`doctor-host`（宿主入口静态诊断）。
-- 请求字段：`protocolVersion`(1)、`operation`、`requestId`、`runId`、`projectRoot`、`task`、`targets`、`skill`、`host`。
+- 操作：`route` / `explain`（只读判定）、`task`（判定并持久化计划，尚未执行）、`status`（回查本包执行回执）、`doctor-host`（宿主入口静态诊断）、`execute`（按真实计划调用本包只读验证器）。旧五操作保持兼容；`features` 中的 `executor-invoke-v1` 表示支持稳定执行入口。
+- 判定请求字段：`protocolVersion`(1)、`operation`、`requestId`、`runId`、`projectRoot`、`task`、`targets`、`skill`、`host`；执行请求另用下方 `executorId` / `parameters` Schema。
 - 统一信封：`{ ok, result | error, diagnostics }`；机器结果与诊断分离；非法输入在触达执行器前判 `invalid-input`，不写入任何记录。
-- 错误码：`unsupported-protocol` / `unknown-operation` / `missing-input` / `invalid-input` / `internal-error`；请求失败（exit 2）时 stdout 仍为可解析 JSON 信封。
+- 完整输入 Schema、执行器参数与错误码以 `describe` 为准；请求失败（exit 2）时 stdout 仍为可解析 JSON 信封。
 - **`ok=true` 只表示协议调用成功，不代表业务验证通过**；业务状态以 `result` 内 `validationStatus` / `executionStatus` 为准（仅计划时为 `unverified` / `not-executed`）。
-- 副作用：仅 `task` 写入本包自己的 runs 目录（见 describe 中各操作 `sideEffects`）；其余操作只读。
+- 副作用：`task` 写计划，`execute` 调用验证器并写本包 runs 回执；二者不因协议调用获得修改业务文档权限。其余操作只读，各操作以 `sideEffects` 明确声明。
 - 协议实现为本包内置的同源快照 `integration-protocol.cjs`，五包一致；跨包一致性由 conformance `integration-protocol.check.cjs` 验收。
+
+### 单包稳定执行入口
+
+先对明确设计文档建立任务，再在项目外保存以下请求，使用同一个 runId：
+
+```bash
+wl-skills-design task --input "检查接口设计结构" --file docs/api/01-inspection.md --run-id api-review --json
+wl-skills-design protocol request --input-file /tmp/design-execute.json --json
+wl-skills-design status --run-id api-review --json
+```
+
+```json
+{
+  "operation": "execute",
+  "projectRoot": "/absolute/path/to/design-project",
+  "runId": "api-review",
+  "executorId": "verify-api",
+  "parameters": { "targets": ["docs/api/01-inspection.md"] }
+}
+```
+
+`projectRoot`、`runId`、`executorId`、`parameters` 必填；`execute` 不根据 cwd 或 `--target` 补猜缺失的项目根。目标需属于真实计划且位于项目内；缺计划、过期计划、规范/安装版本漂移、解释或禁止检查的任务、未知执行器与不合法参数都会拒绝。
+
+当前支持 `verify-spec` / `verify-flowchart` / `verify-db` / `verify-api`，每次检查一个文件或目录，准确范围与旧 `verify --file` 一致。新规则与 Skill 由本包维护；宿主不复制领域词、命令参数或校验规则。绘图生成、布局修改、安装/恢复不通过这个只读入口调用。
+
+结果保留原 `status`，附 `executorId` 与 `execution`（真实 `exitCode` / `signal` / stdout / stderr / 输出截断 / 取消）。`ok=true` 或 `mechanicalOk=true` 都不能替代语义与渲染验收；机械子集通过仍保留 `validationStatus=partial`。业务退出 1 作为真实失败结果返回；取消立即终止执行器进程树，本次已开始但未完成的检查记执行失败、验证未验证，不伪造问题或通过项。输出超过 4 MiB 明确失败。详细边界见 [公开 API 与兼容性](docs/public-api.md)。
 
 ## 能力
 
@@ -228,7 +254,7 @@ guides/        人读说明，不参与 Skill 发现
 
 新项目可选择维护 `docs/design-model.json`，schema 位于 `.github/skills/_design-model.schema.json`。它使用稳定 ID 表达字段、功能、流程、页面、表、API 和追踪关系，供跨文档集合验证使用；Markdown、DDL、OpenAPI 和 draw.io 仍是交付层。
 
-它是可选增强，不是 kit/bd 的硬依赖。运行 `wl-skills-design validate-model --model docs/design-model.json` 可机械检查稳定 ID 和引用；跨包默认约定见安装后的 `.github/guides/delivery-compatibility.md`。
+它是可选增强，不是 kit/bd 的硬依赖。运行 `wl-skills-design validate-model --model docs/design-model.json` 使用随包分发的 JSON Schema 2020-12 完整检查结构，并检查稳定 ID 和引用；类型、枚举、const、未知属性违规返回 `DM019`，Schema 加载/编译失败返回 `DM020`，不降级为通过。空集合保留原警告，设计语义仍需复核。跨包默认约定见安装后的 `.github/guides/delivery-compatibility.md`。
 
 ## 包结构
 
@@ -274,7 +300,7 @@ npm pack --dry-run
 
 任务判定保留原始文本，并将当前请求、历史引用和明确否定分开。自然语言判定覆盖已公开语料与规则，不能承诺任意表述都自动命中；遇到歧义或缺口应补充目标/领域或显式指定本包能力，不能静默选择。编辑前显示真实 `notice`，包括版本、技能、规则、目标、runId、动作与待检查项。
 
-`protocol describe --json` 声明 `task-intent-v1`、`result-core-v1`、`executor-catalog-v1`；`schemas.resultCore` 与五操作 `schemas.results` 可供宿主验证。原有结果字段保留，新增 `result.integration`：项目适用范围、动作模式、规则身份、目标、就绪状态、允许执行器和真实执行/验证状态。`ok` 只表示调用成功。未声明使用的输入字段进入 diagnostics，不会转成授权依据。
+`protocol describe --json` 声明 `task-intent-v1`、`result-core-v1`、`executor-catalog-v1` 与 `executor-invoke-v1`；`schemas.resultCore` 与各操作 `schemas.results` 可供宿主验证。原有结果字段保留，`result.integration` 提供项目适用范围、动作模式、规则身份、目标、就绪状态、允许执行器和真实执行/验证状态。`execute` 将领域与 CLI 参数映射收回本包，宿主只传公开结构化参数。`ok` 只表示调用成功。判定操作未声明使用的输入字段进入 diagnostics，不会转成授权依据；执行参数按完整 Schema 拒绝不合法字段。
 
 `action.mode` 为 explain/plan/inspect/apply/unspecified；解释和规划不自动启动检查。`businessWritesAuthorized=false`，任务意图不能替代业务写入授权。`ruleRefs` 为包自有规则身份（包名、规则 ID、版本、来源、性质），自然语言约束有稳定 ID；原规则名称与列表保留。所有规则的机械/语义验证仍以实际回执为准。
 
@@ -285,3 +311,7 @@ npm pack --dry-run
 编辑前展示实际 `notice` 的包版本、判定、动作、技能/规则、目标、runId、待检查项与版本对齐信息；解释/规划和明确禁止检查时不自动执行检查。`runtime=mismatch/invalid` 或 `planStale=true` 必须先同步本包或重新判定。只读 `inspect` 输入变化后重新 `task`；`apply` 完成正常业务修改后可用同 runId 做实际复扫，但规则、配置或版本变化仍需重新判定。
 
 单包只读取自身公开能力；多包复用同 runId 并各存各的证据。`matched/ready/ok=true` 仅说明判定或调用成功，是否完成以实际 `executionStatus/validationStatus/checkedFiles` 为准。未接入或不适用的项目不借父目录规则；宿主发现、模型读取、反馈展示没有真实证据时继续标记未验证。
+
+维护边界、结构化执行和防漂移验收：[维护契约](docs/maintenance-contract.md)。
+
+1.0 评估与稳定公开面准入：[版本成熟度](docs/release-maturity.md)。

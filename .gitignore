@@ -25,7 +25,11 @@ Thumbs.db
 # docs/ 目录（仓库根的业务项目内容，不属于工具包）
 # 注意：仅忽略根目录，demo/docs/ 等随包样例正常跟踪
 # ────────────────────────────────────────────────
-/docs/
+/docs/*
+!/docs/maintenance-contract.md
+!/docs/public-api.md
+!/docs/project-scope.md
+!/docs/release-maturity.md
 
 # drawio/office 临时锁文件
 ~$*.dtmp

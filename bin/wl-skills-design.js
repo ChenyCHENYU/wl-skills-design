@@ -117,7 +117,7 @@ wl-skills-design v${PACKAGE.version}
   task       判定并持久化任务计划、候选、规则与缺口（记录 runId，尚未执行）
   route/explain  同判定但只读、不记录 run
   doctor-host  静态宿主入口诊断（或 doctor --host codex）
-  protocol   公开集成协议：describe 能力目录 / request 统一判定与状态（JSON 信封）
+  protocol   公开集成协议：describe 能力目录 / request 判定、状态与受控 execute（JSON 信封）
   status     查看受管文件状态；--run-id 读取本包执行回执与新鲜度
   doctor     检查安装状态与 Skill 清单
   validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
@@ -958,12 +958,10 @@ function main(argv = process.argv.slice(2)) {
 }
 
 if (require.main === module) {
-  try {
-    process.exitCode = main();
-  } catch (error) {
+  Promise.resolve().then(() => main()).then((code) => { process.exitCode = code; }, (error) => {
     console.error(`\n  ✖ ${error.message}\n`);
     process.exitCode = 1;
-  }
+  });
 }
 
 module.exports = {

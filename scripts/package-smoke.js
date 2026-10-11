@@ -27,6 +27,29 @@ function npm(args, cwd) {
   return execFileSync(process.execPath, [npmCli(), ...args, "--offline", `--cache=${path.join(tempRoot, "npm-cache")}`], { cwd, stdio: "pipe" }).toString();
 }
 
+// Seed an isolated offline install with the exact installed runtime dependency graph.
+// This does not use a user's npm cache or replace the real tarball installation.
+function runtimeArtifacts(packageRoot, packDir) {
+  const pending = [packageRoot], seen = new Set(), artifacts = [];
+  while (pending.length) {
+    const parent = pending.shift();
+    const descriptor = JSON.parse(fs.readFileSync(path.join(parent, "package.json"), "utf8"));
+    for (const name of Object.keys(descriptor.dependencies || {})) {
+      let directory = path.dirname(require.resolve(name, { paths: [parent] }));
+      while (!fs.existsSync(path.join(directory, "package.json")) || JSON.parse(fs.readFileSync(path.join(directory, "package.json"))).name !== name) {
+        const next = path.dirname(directory); if (next === directory) throw new Error(`不能找到运行依赖 ${name}`); directory = next;
+      }
+      const dependency = JSON.parse(fs.readFileSync(path.join(directory, "package.json")));
+      const identity = `${dependency.name}@${dependency.version}`;
+      if (seen.has(identity)) continue;
+      seen.add(identity); pending.push(directory);
+      const result = JSON.parse(npm(["pack", directory, "--json", "--ignore-scripts", `--pack-destination=${packDir}`], packDir));
+      artifacts.push(path.join(packDir, result[0].filename));
+    }
+  }
+  return artifacts;
+}
+
 try {
   const packDir = path.join(tempRoot, "pack");
   fs.mkdirSync(packDir);
@@ -47,7 +70,7 @@ try {
   const installDir = path.join(tempRoot, "install");
   fs.mkdirSync(installDir);
   fs.writeFileSync(path.join(installDir, "package.json"), JSON.stringify({ name: "smoke-host", private: true }), "utf8");
-  npm(["install", tarball, "--no-save", "--ignore-scripts", "--no-audit", "--no-fund"], installDir);
+  npm(["install", tarball, ...runtimeArtifacts(ROOT, packDir), "--no-save", "--ignore-scripts", "--no-audit", "--no-fund"], installDir);
   const cli = path.join(installDir, "node_modules", "@agile-team", "wl-skills-design", "bin", "wl-skills-design.js");
   assert.ok(fs.existsSync(cli), "安装后必须存在 bin 入口");
   const runInstalled = (args, cwd) => execFileSync(process.execPath, [cli, ...args], { cwd, stdio: "pipe" }).toString();
