@@ -12,6 +12,7 @@ const PACKAGE = require(path.join(ROOT, "package.json"));
 const { validateDesignModelFile } = require(path.join(ROOT, "lib", "design-model.js"));
 const { verifySpecDir, verifyFlowchartFile, verifyDbDir, verifyApiDir } = require(path.join(ROOT, "lib", "verify.js"));
 const shared = require(path.join(ROOT, "lib", "shared-assets.js"));
+const { COMMAND_NAMES, getCommand, helpCommandLines } = require("../lib/cli-catalog.js");
 const OWNER = "wl-skills-design";
 const EDITORS_FILE = path.join(
   FILES_DIR,
@@ -69,7 +70,7 @@ function parseArgs(argv) {
     help: false,
     version: false,
   };
-  const commands = new Set(["init", "update", "status", "doctor", "validate-model", "verify", "layout-flowchart", "restore", "uninstall", "task", "route", "explain", "doctor-host", "protocol"]);
+  const commands = new Set(COMMAND_NAMES);
   const valueFlags = new Map(["editor", "target", "model", "output", "id", "input", "run-id", "host", "input-file", "file"].map((name) => [`--${name}`, name === "run-id" ? "runId" : name === "input-file" ? "inputFile" : name === "file" ? "files" : name]));
   let commandSeen = false;
 
@@ -109,22 +110,10 @@ function helpText(editors) {
 wl-skills-design v${PACKAGE.version}
 
 用法：
-  wl-skills-design [init|update|status|doctor|validate-model|restore|uninstall] [选项]
+  wl-skills-design <${COMMAND_NAMES.join("|")}> [选项]
 
 命令：
-  init       安装技能包；默认使用 agents profile
-  update     安全升级；本地改动默认视为冲突
-  task       判定并持久化任务计划、候选、规则与缺口（记录 runId，尚未执行）
-  route/explain  同判定但只读、不记录 run
-  doctor-host  静态宿主入口诊断（或 doctor --host codex）
-  protocol   公开集成协议：describe 能力目录 / request 判定、状态与受控 execute（JSON 信封）
-  status     查看受管文件状态；--run-id 读取本包执行回执与新鲜度
-  doctor     检查安装状态与 Skill 清单
-  validate-model  只读校验 docs/design-model.json 的结构、稳定 ID 与引用完整性
-  layout-flowchart  按文字调整活动宽高、泳道与间距，输出新图（--file/--output；可 --dry-run）
-  verify     机械执行设计产物的验证清单子集：verify spec | flowchart | db | api
-  restore    恢复最近一次安装、升级或卸载前状态
-  uninstall  卸载受管文件；不会静默删除本地改动
+${helpCommandLines()}
 
 选项：
   --editor <id[,id]>  选择适配器：${ids} | all
@@ -133,7 +122,9 @@ wl-skills-design v${PACKAGE.version}
   --run-id <id>       关联任务与真实验证回执
   --host <name>       doctor 的宿主入口诊断（如 codex）
   --model <file>      design-model 路径，默认 docs/design-model.json
-  --file <path>       verify：指定文件或目录，可重复；文件不扫描兄弟，默认扫描 docs/
+  --file <path>       task/route/explain/verify 指定范围，可重复；layout-flowchart 仅一个文件
+  --output <file>     layout-flowchart 的新图路径，默认同目录 *.layout.drawio
+  --input-file <file> protocol request 的 JSON 请求文件
   --list              restore：列出可用备份
   --id <backupId>     restore：恢复指定备份，默认最近一次
   --purge             uninstall：清理本包快照；保留残留引用和外来文件
@@ -897,6 +888,53 @@ function runUninstall(options, target) {
   return 0;
 }
 
+function runTaskDecision(options, target) {
+  if (!options.input) throw new Error("task 需要 --input <完整任务> 或自然语言参数");
+  const runtime = require("../lib/task-runtime.js");
+  const result = runtime.task(target, options.input, { runId: options.runId, targets: options.files, persist: options.command === "task" });
+  printResult(options.json ? result : `${runtime.observation.formatDecision(result)}\n计划尚未执行，模型读取尚未验证`, options.json);
+  return result.decision.status === "gap" ? 1 : result.decision.status === "ambiguous" ? 2 : 0;
+}
+
+function runLayoutFlowchart(options, target) {
+  if (options.files.length !== 1) throw new Error("layout-flowchart 需要一个 --file <drawio>");
+  const { layoutFile } = require("../lib/flowchart-layout.js");
+  const preview = layoutFile(target, options.files[0], options.output, true);
+  if (options.dryRun) { printResult(preview, options.json); return 0; }
+  const runtime = require("../lib/task-runtime.js");
+  const handle = runtime.observation.beginExecution({ ...runtime.options(target, { runId: options.runId, targets: [preview.source] }), tool: "design-flowchart-layout" });
+  let result;
+  try {
+    result = layoutFile(target, options.files[0], options.output);
+    const verification = verifyFlowchartFile(path.resolve(target, result.output));
+    const receipt = runtime.observation.finishExecution(handle, { exitCode: 0, validationStatus: verification.ok ? "partial" : "failed", checks: verification.coverage.checks.map((item) => ({ id: `requirements.flowchart:${item.id}`, status: item.status, reason: item.reason })), checkedFiles: [result.output], artifacts: [result.output], summary: { render: "unverified", semantic: "unverified" } });
+    result = { ...result, runId: handle.metadata.runId, receipt, verification };
+  } catch (error) {
+    runtime.observation.finishExecution(handle, { exitCode: 1, validationStatus: "unverified", checks: [], errorCode: error.code || error.name });
+    throw error;
+  }
+  printResult(result, options.json);
+  return result.verification.ok ? 0 : 1;
+}
+
+// Catalog dispatch IDs point to the original handlers; command names are owned by cli-catalog.
+const COMMAND_HANDLERS = Object.freeze({
+  install: (options, target, editors) => {
+    if (!options.dryRun) fs.mkdirSync(target, { recursive: true });
+    return runInstall(options, target, editors);
+  },
+  taskDecision: runTaskDecision,
+  doctorHost: (options, target) => runStatus({ ...options, host: options.host || "codex" }, target, true),
+  validateModel: runValidateModel,
+  layoutFlowchart: runLayoutFlowchart,
+  verify: runVerify,
+  status: (options, target) => runStatus(options, target, false),
+  doctor: (options, target) => runStatus(options, target, true),
+  restore: runRestore,
+  uninstall: runUninstall,
+  protocol: (options, target) => require("../lib/protocol-cli").runCli([options.protocolSub, ...(options.inputFile ? ["--input-file", options.inputFile] : []), "--target", target]),
+});
+
 function main(argv = process.argv.slice(2)) {
   if (!fs.existsSync(FILES_DIR) || !fs.existsSync(EDITORS_FILE)) {
     throw new Error("包内容不完整，请重新安装");
@@ -911,50 +949,12 @@ function main(argv = process.argv.slice(2)) {
     console.log(helpText(editors));
     return 0;
   }
+  const command = getCommand(options.command);
+  const handler = command && COMMAND_HANDLERS[command.dispatch];
+  if (typeof handler !== "function") throw new Error(`命令入口不完整：${options.command}`);
   const requestedTarget = path.resolve(process.cwd(), options.target || ".");
   const target = fs.existsSync(requestedTarget) ? fs.realpathSync(requestedTarget) : requestedTarget;
-  if (options.command === "protocol") {
-    return require("../lib/protocol-cli").runCli([options.protocolSub, ...(options.inputFile ? ["--input-file", options.inputFile] : []), "--target", target]);
-  }
-  if (options.command === "init" || options.command === "update") {
-    if (!options.dryRun) fs.mkdirSync(target, { recursive: true });
-    return runInstall(options, target, editors);
-  }
-  if (["task", "route", "explain"].includes(options.command)) {
-    if (!options.input) throw new Error("task 需要 --input <完整任务> 或自然语言参数");
-    const runtime = require("../lib/task-runtime.js");
-    const result = runtime.task(target, options.input, { runId: options.runId, targets: options.files, persist: options.command === "task" });
-    printResult(options.json ? result : `${runtime.observation.formatDecision(result)}\n计划尚未执行，模型读取尚未验证`, options.json);
-    return result.decision.status === "gap" ? 1 : result.decision.status === "ambiguous" ? 2 : 0;
-  }
-  if (options.command === "doctor-host") return runStatus({ ...options, host: options.host || "codex" }, target, true);
-  if (options.command === "validate-model") return runValidateModel(options, target);
-  if (options.command === "layout-flowchart") {
-    if (options.files.length !== 1) throw new Error("layout-flowchart 需要一个 --file <drawio>");
-    const { layoutFile } = require("../lib/flowchart-layout.js");
-    const preview = layoutFile(target, options.files[0], options.output, true);
-    if (options.dryRun) { printResult(preview, options.json); return 0; }
-    const runtime = require("../lib/task-runtime.js");
-    const handle = runtime.observation.beginExecution({ ...runtime.options(target, { runId: options.runId, targets: [preview.source] }), tool: "design-flowchart-layout" });
-    let result;
-    try {
-      result = layoutFile(target, options.files[0], options.output);
-      const verification = verifyFlowchartFile(path.resolve(target, result.output));
-      const receipt = runtime.observation.finishExecution(handle, { exitCode: 0, validationStatus: verification.ok ? "partial" : "failed", checks: verification.coverage.checks.map((item) => ({ id: `requirements.flowchart:${item.id}`, status: item.status, reason: item.reason })), checkedFiles: [result.output], artifacts: [result.output], summary: { render: "unverified", semantic: "unverified" } });
-      result = { ...result, runId: handle.metadata.runId, receipt, verification };
-    } catch (error) {
-      runtime.observation.finishExecution(handle, { exitCode: 1, validationStatus: "unverified", checks: [], errorCode: error.code || error.name });
-      throw error;
-    }
-    printResult(result, options.json);
-    return result.verification.ok ? 0 : 1;
-  }
-  if (options.command === "verify") return runVerify(options, target);
-  if (options.command === "status") return runStatus(options, target, false);
-  if (options.command === "doctor") return runStatus(options, target, true);
-  if (options.command === "restore") return runRestore(options, target);
-  if (options.command === "uninstall") return runUninstall(options, target);
-  throw new Error(`未知命令：${options.command}`);
+  return handler(options, target, editors);
 }
 
 if (require.main === module) {
@@ -970,4 +970,5 @@ module.exports = {
   inspectState,
   main,
   parseArgs,
+  COMMAND_HANDLERS,
 };

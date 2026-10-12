@@ -33,6 +33,80 @@ test("真实 XML 输出可解析、幂等；文字/ID/连线端点/标签保持"
 test("错误 XML、DTD、压缩数据、重复 ID 均拒绝", () => {
   for (const xml of ['<mxfile><diagram></mxfile>', '<!DOCTYPE x><mxfile/>', '<mxfile><diagram>compressed-data</diagram></mxfile>', '<mxfile><diagram><mxGraphModel><root><mxCell id="1"/><mxCell id="1"/></root></mxGraphModel></diagram></mxfile>']) assert.throws(() => layout.layoutXml(xml));
 });
+test("父关系自指和互相包含在布局写入前拒绝，机械验证不得通过", () => {
+  const root = fixture();
+  try {
+    const original = fs.readFileSync(path.join(root, "input.drawio"));
+    for (const [name, parents] of [["self", [["loop-a", "loop-a"]]], ["mutual", [["loop-a", "loop-b"], ["loop-b", "loop-a"]]]]) {
+      const nodes = parents.map(([id, parent]) => `<mxCell id="${id}" vertex="1" parent="${parent}"><mxGeometry width="10" height="10" as="geometry"/></mxCell>`).join("");
+      const text = original.toString();
+      const at = text.lastIndexOf("</root>");
+      const xml = text.slice(0, at) + nodes + text.slice(at);
+      const input = `${name}.drawio`;
+      const output = `absent/${name}.drawio`;
+      fs.writeFileSync(path.join(root, input), xml);
+      assert.throws(() => layout.layoutFile(root, input, output), /parent.*成环/);
+      assert.equal(fs.existsSync(path.join(root, "absent")), false, "拒绝时不能先创建输出目录");
+      assert.equal(fs.readFileSync(path.join(root, input), "utf8"), xml);
+      const result = verifyFlowchartFile(path.join(root, input));
+      assert.equal(result.mechanicalOk, false);
+      assert.equal(result.validationStatus, "failed");
+      assert.ok(result.checks.some((check) => check.rule === "引用" && check.status === "fail" && check.message.includes("parent 包含关系成环")));
+    }
+    assert.deepEqual(fs.readFileSync(path.join(root, "input.drawio")), original);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+test("父关系按页判定，业务连线回路与深层合法分组继续允许", () => {
+  const cell = (id, parent) => `<mxCell id="${id}"${parent ? ` parent="${parent}"` : ""}/>`;
+  const first = `${cell("0")}${cell("1", "0")}${cell("a", "1")}${cell("b", "a")}<mxCell id="ab" source="a" target="b" edge="1" parent="1"/><mxCell id="ba" source="b" target="a" edge="1" parent="1"/>`;
+  const second = `${cell("0")}${cell("1", "0")}${cell("b", "1")}${cell("a", "b")}`;
+  const xml = `<mxfile>${[first, second].map((nodes) => `<diagram><mxGraphModel><root>${nodes}</root></mxGraphModel></diagram>`).join("")}</mxfile>`;
+  assert.doesNotThrow(() => layout.layoutXml(xml));
+  assert.deepEqual(layout.parentCycleCells([{ page: 0, id: "a", parent: "b" }, { page: 1, id: "b", parent: "a" }]), []);
+  const chain = Array.from({ length: 20000 }, (_, index) => ({ id: String(index), parent: index ? String(index - 1) : undefined }));
+  assert.deepEqual(layout.parentCycleCells(chain.reverse()), [], "深层包含关系不使用递归检查");
+});
+test("非法几何不能绕过 F12，布局拒绝且保留输入字节", () => {
+  const root = fixture();
+  try {
+    const original = fs.readFileSync(path.join(root, "input.drawio"), "utf8");
+    const at = original.lastIndexOf("</root>");
+    for (const [name, dimensions] of [["negative", 'width="-10" height="20"'], ["nan", 'width="NaN" height="20"'], ["infinite", 'width="10" height="Infinity"'], ["zero", 'width="0" height="20"'], ["missing", 'height="20"']]) {
+      const xml = original.slice(0, at) + `<mxCell id="bad-${name}" vertex="1" parent="lane-a"><mxGeometry x="20" y="700" ${dimensions} as="geometry"/></mxCell>` + original.slice(at);
+      fs.writeFileSync(path.join(root, `${name}.drawio`), xml);
+      assert.throws(() => layout.layoutFile(root, `${name}.drawio`, `not-created/${name}.drawio`), /非法几何/);
+      assert.equal(fs.existsSync(path.join(root, "not-created")), false);
+      assert.equal(fs.readFileSync(path.join(root, `${name}.drawio`), "utf8"), xml);
+      const report = verifyFlowchartFile(path.join(root, `${name}.drawio`));
+      assert.equal(report.mechanicalOk, false, name);
+      assert.ok(report.checks.some((check) => check.rule === "F12" && check.status === "fail" && check.message.includes(`bad-${name}`)), name);
+    }
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+test("合法单引号属性和科学计数几何同义，科学计数宽度仍检查容器边界", () => {
+  const root = fixture();
+  try {
+    const original = fs.readFileSync(path.join(root, "input.drawio"), "utf8");
+    const equivalent = original.replace(/\b(x|y|width|height)="(-?\d+(?:\.\d+)?)"/g, (_, key, value) => `${key}="${Number(value).toExponential()}"`).replace(/="([^"]*)"/g, (_, value) => `='${value.replace(/'/g, "&apos;")}'`);
+    fs.writeFileSync(path.join(root, "equivalent.drawio"), equivalent);
+    assert.deepEqual(parseDrawio(path.join(root, "equivalent.drawio")).cells, parseDrawio(path.join(root, "input.drawio")).cells);
+    assert.equal(verifyFlowchartFile(path.join(root, "equivalent.drawio")).mechanicalOk, true);
+    assert.doesNotThrow(() => layout.layoutXml(equivalent));
+    const at = original.lastIndexOf("</root>");
+    const overflow = original.slice(0, at) + '<mxCell id="scientific-wide" vertex="1" parent="lane-a"><mxGeometry x="20" y="700" width="1e3" height="20" as="geometry"/></mxCell>' + original.slice(at);
+    fs.writeFileSync(path.join(root, "overflow.drawio"), overflow);
+    const report = verifyFlowchartFile(path.join(root, "overflow.drawio"));
+    assert.equal(report.mechanicalOk, false);
+    assert.ok(report.checks.some((check) => check.rule === "F12" && check.status === "fail" && check.message.includes("节点越出容器")));
+    layout.layoutFile(root, "overflow.drawio", "expanded.drawio");
+    const parsed = parseDrawio(path.join(root, "expanded.drawio"));
+    const wide = parsed.cells.find((cell) => cell.id === "scientific-wide");
+    const lane = parsed.cells.find((cell) => cell.id === "lane-a");
+    assert.equal(wide.geometry.width, 1000);
+    assert.ok(lane.geometry.width >= wide.geometry.x + wide.geometry.width);
+    assert.equal(verifyFlowchartFile(path.join(root, "expanded.drawio")).mechanicalOk, true);
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
 test("普通三节点组合保持内部布局，不能仅凭三个子节点改为三行活动", () => {
   const xml = `<mxfile><diagram><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/><mxCell id="g" style="group;" vertex="1" parent="1"><mxGeometry width="400" height="60" as="geometry"/></mxCell>${["start", "decision", "end"].map((id, i) => `<mxCell id="${id}" value="${id}" style="${i === 1 ? "rhombus" : "ellipse"};" vertex="1" parent="g"><mxGeometry x="${i * 150}" y="0" width="80" height="60" as="geometry"/></mxCell>`).join("")}</root></mxGraphModel></diagram></mxfile>`;
   const adjusted = layout.layoutXml(xml);

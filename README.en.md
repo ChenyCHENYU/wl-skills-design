@@ -4,7 +4,7 @@ Product-design Agent Skills package: 9 design standards, 10 discoverable Skills,
 
 [中文说明](./README.md)
 
-Current version `1.0.0` commits to the documented [public API and compatibility boundaries](docs/public-api.md), complete model Schema validation, and package-owned structured execution. Validation coverage and host evidence remain explicit. Earlier routing updates correct routing for explicit everyday requests such as writing a poem or cooking: these return `not-applicable`. Vague requests still ask for context; matched design tasks, including OpenAPI design for a poetry search service, retain their design skill. This does not add a dependency on another WL package or harness.
+Current version `1.0.1` commits to the documented [public API and compatibility boundaries](docs/public-api.md), complete model Schema validation, and package-owned structured execution. Validation coverage and host evidence remain explicit. Earlier routing updates correct routing for explicit everyday requests such as writing a poem or cooking: these return `not-applicable`. Vague requests still ask for context; matched design tasks, including OpenAPI design for a poetry search service, retain their design skill. This does not add a dependency on another WL package or harness.
 
 ## Quick start
 
@@ -55,12 +55,13 @@ The `doc-intake` skill onboards half-finished documents: classify and place cont
 ## CLI
 
 ```
-init | update | status | doctor | validate-model | verify <spec|flowchart|db|api> | restore | uninstall
-Options: --editor <id[,id]|all> --target <dir> --file <path> --model <file>
-         --list --id <backupId> --purge --dry-run --force --json
+wl-skills-design --help
+wl-skills-design protocol describe --json
 ```
 
 Editor profiles: `agents` (default), `copilot`, `claude`, `cursor`, `windsurf`, `cline`, `kiro`, `qoder`, `trae`.
+
+All 14 native commands use the same [command catalog](lib/cli-catalog.js) for accepted names, real dispatch, help and public inventory. Each entry documents actual arguments and filesystem effects. `validate-model` and `verify` leave business documents unchanged and write real run receipts; dry-run and read-only routing do not write. Command discovery does not expand the package-owned protocol executor permissions. Mechanical success remains separate from semantic, rendering and host evidence.
 
 ## Development
 

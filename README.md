@@ -8,7 +8,7 @@
 
 独立与组合边界见 [机器能力声明](lib/capabilities.json)。设计技能和 CLI 不依赖其他 WL 包，`design-model` 仍是可选追溯增强。共享 Markdown 使用 `wl-skills-design` 托管区块；更新、切换编辑器、卸载和恢复只处理本包贡献。预存相同内容只引用，不自动认领；`--force` 只可更新已有归属的本包内容，不能覆盖用户或其他包内容。清理保留用户修改和引用记录，目录型编辑器规则及路由回归文件均采用包命名，避免共享文件碰撞。
 
-当前版本 `v1.0.0`：公开 CLI、模型 Schema、结构化执行与资产生命周期按 [公开 API 与兼容承诺](docs/public-api.md) 维护；Schema 与实际校验器一致。机械检查、业务语义与真实宿主证据分别报告，未验证项保持 `partial` / `unverified`。v0.18.0：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
+当前版本 `v1.0.1`：公开 CLI、模型 Schema、结构化执行与资产生命周期按 [公开 API 与兼容承诺](docs/public-api.md) 维护；Schema 与实际校验器一致。机械检查、业务语义与真实宿主证据分别报告，未验证项保持 `partial` / `unverified`。v0.18.0：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
 
 ## 流程图文字自适应
 
@@ -20,7 +20,9 @@ wl-skills-design layout-flowchart --file docs/flowchart/input.drawio --output do
 wl-skills-design verify flowchart --file docs/flowchart/layout.drawio --run-id <id> --json
 ```
 
-工具只接受未压缩 XML，拒绝坏 XML、DTD、重复 ID、外部路径/符号链接；输出必须是新文件。业务文字、ID、端点和分支标签保留，受影响连线移除旧折点以重新路由。F05 检查三段尺寸与文字空间，F12 在同父级坐标下检查重叠和容器边界。文字宽度是保守估算，实际字体/连线与业务语义仍需渲染和语义复核；命令成功不代表完整设计通过。
+工具只接受未压缩 XML，拒绝坏 XML、DTD、重复 ID、缺失引用、`parent` 包含关系成环、非法几何、外部路径/符号链接；输出必须是新文件。每页独立检查父关系，允许页间复用 ID，也允许业务流程连线形成回路。XML 属性按同一解析器读取，合法单引号属性和科学计数数值保留语义；普通顶点需要正宽高，`edgeLabel` 可省略宽高，负尺寸与非有限坐标不降级为缺省值。业务文字、ID、端点和分支标签保留，受影响连线移除旧折点以重新路由。F05 检查三段尺寸与文字空间，F12 检查有限数值、同父级重叠和容器边界。文字宽度是保守估算，实际字体/连线与业务语义仍需渲染和语义复核；命令成功不代表完整设计通过。
+
+触发提示中的规则名称直接来自本包标准正文；任务清单与验证覆盖共用同一解析，流程图包含 F01–F15 与 FC-01–FC-05 全部 20 项。FC-01–FC-03 的跨 spec 联查仍未实现，在回执与 `status.pendingChecks` 中明确保留未验证项；FC-04/FC-05 使用实际编码校验结果，不以“机械通过”隐藏联查缺口。
 
 布局与验证共同识别活动编码或 `code/name/dept` 三行身份，也支持 GROUP 样式 `wlActivity=1` 显式标记。普通起止/判定组合或未知 GROUP 不按活动三行改写。
 
@@ -69,7 +71,7 @@ npx @agile-team/wl-skills-design init --editor cursor --target ./my-project
 
 `doc-intake` 自动采集归位 → 机械+语义差距分析（含字典值漂移、名称近似漂移检测）→ 补全任务清单（P0/P1/P2）；授权后补结构缺口，业务事实只登记关键问题。会议记录、截图、参照系统说明等零散素材也可以直接丢给它归档分析。
 
-**场景 C · 机械验证已有产物**（纯只读，CI 可用）
+**场景 C · 机械验证已有产物**（业务文档只读，写本包检查回执，CI 可用）
 
 ```bash
 wl-skills-design verify spec --target ./my-project
@@ -92,6 +94,8 @@ npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 清
 ## 公开集成协议 v1
 
 供单包客户端、harness 或其他编排层以统一 JSON 入口调用本包判定、状态与受控执行能力；领域映射和验证器均由 Design 自己维护，不新增兄弟包依赖。
+
+14 个原生命令的实际分发、接受名称、`--help` 和 `describe.inventory.commands` 共用 [命令目录](lib/cli-catalog.js)，包含真实参数、只读状态和副作用。`validate-model` / `verify` 不改业务文档，但会记录本包 runs 回执；布局新建图，安装/恢复管理本包资产，预检和只读路由无写入。命令目录不授予协议额外执行或业务写入权限，受控执行仍以本包 `executors.json` 为准。
 
 ```bash
 wl-skills-design protocol describe --json                      # 能力目录、六操作映射、请求/响应 Schema、错误码
