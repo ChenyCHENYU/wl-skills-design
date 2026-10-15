@@ -1,321 +1,133 @@
-# wl-skills-design
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ChenyCHENYU/wl-skills-design/main/assets/wl-design-logo-dark.svg">
+    <img alt="WL · World Leading · skills-design" src="https://raw.githubusercontent.com/ChenyCHENYU/wl-skills-design/main/assets/wl-design-logo.svg" width="100%">
+  </picture>
+</p>
 
-> 项目范围：只对目标自身已接入且平台适用的项目判定规则；父工作区安装不启用子项目。移动端与未接入开源项目不套用。详见 [精准触发与范围配置](docs/project-scope.md)。
+<p align="center"><strong>把业务事实整理为相互对齐、可追溯、可机械校验的需求与设计交付物。</strong></p>
 
-产品设计 Agent Skills 包：9 份设计标准、10 个可发现 Skill、16 个 VS Code Prompt、机器+语义双轨验证（`[M]`/`[J]`）、机械验证 CLI、匿名合成样例和安全安装器。
+<p align="center">
+  <a href="https://www.npmjs.com/package/@agile-team/wl-skills-design"><img src="https://img.shields.io/npm/v/@agile-team/wl-skills-design?color=A45C2B" alt="npm" /></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@agile-team/wl-skills-design" alt="Node.js" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-64748b" alt="License" /></a>
+</p>
 
-[English README](./README.en.md)
+[English](README.en.md)
 
-独立与组合边界见 [机器能力声明](lib/capabilities.json)。设计技能和 CLI 不依赖其他 WL 包，`design-model` 仍是可选追溯增强。共享 Markdown 使用 `wl-skills-design` 托管区块；更新、切换编辑器、卸载和恢复只处理本包贡献。预存相同内容只引用，不自动认领；`--force` 只可更新已有归属的本包内容，不能覆盖用户或其他包内容。清理保留用户修改和引用记录，目录型编辑器规则及路由回归文件均采用包命名，避免共享文件碰撞。
+**业务事实 → 流程与需求 → 数据库与接口 → 跨文档评审 → 修复复验 → 开发交接**
 
-当前版本 `v1.0.1`：公开 CLI、模型 Schema、结构化执行与资产生命周期按 [公开 API 与兼容承诺](docs/public-api.md) 维护；Schema 与实际校验器一致。机械检查、业务语义与真实宿主证据分别报告，未验证项保持 `partial` / `unverified`。v0.18.0：明确的写诗、做饭等日常请求判定为职责外；缺少目标的模糊请求仍提示补充上下文。已明确命中的设计任务优先保留自身意图，例如诗词检索的 OpenAPI 设计。v0.14.0：公开集成协议 describe/request 统一信封（能力清单与路由语料按公开契约暴露）、falsy `projectRoot` 拒绝与真实 `skillPath` 回传。v0.13.0：独立任务判定、独有 Codex gateway 与真实工具回执让匹配、执行、覆盖缺口和证据过期可查；完整验证包含 `[M]`/`[J]` 未运行项时为 `partial`。安装与清理继续保护用户内容，`design-model` 保持可选。
+## 适用与能力
 
-## 流程图文字自适应
+面向需求分析、产品设计、技术设计与设计评审。可从零开始，也可接收既有文档；独立使用，无需先安装其他 WL 包。当前项目范围护栏排除移动端。
 
-活动继续使用编码/名称/岗位三层，宽度至少 132px、常用 140～260px；长名称换行后独立增高，不挤压岗位栏。所有高度按实际行数计算，不再固定 76.82×54。每段字号和 HTML 内联字号一致，泳道与画布随内容扩展。
+| 设计任务 | 主要产物 | 检查重点 |
+| --- | --- | --- |
+| 梳理流程与页面 | draw.io 泳道图、原型标注 | 活动编码、角色、分支、布局和页面动作 |
+| 编写需求说明书 | 分册说明书、按钮级 IPO 处理逻辑 | 输入输出、前置校验、状态变化与异常文案 |
+| 设计数据库与接口 | ER、数据字典、DDL、接口定义 | 字段一致性、类型、索引、响应与错误码 |
+| 接收半成品文档 | 差距报告、补全任务、待确认清单 | 结构缺口、术语与字典值漂移 |
+| 评审与变更分析 | 问题清单、追溯矩阵、影响与复验顺序 | 需求、流程、数据、接口是否对应 |
 
-```bash
-wl-skills-design layout-flowchart --file docs/flowchart/input.drawio --output docs/flowchart/layout.drawio --dry-run
-wl-skills-design layout-flowchart --file docs/flowchart/input.drawio --output docs/flowchart/layout.drawio --run-id <id> --json
-wl-skills-design verify flowchart --file docs/flowchart/layout.drawio --run-id <id> --json
-```
+规则包含 **[M] 机械检查**与 **[J] 语义判断**：CLI 执行已实现的机械项，Agent 辅助评审业务语义，负责人确认事实和交付结论。
 
-工具只接受未压缩 XML，拒绝坏 XML、DTD、重复 ID、缺失引用、`parent` 包含关系成环、非法几何、外部路径/符号链接；输出必须是新文件。每页独立检查父关系，允许页间复用 ID，也允许业务流程连线形成回路。XML 属性按同一解析器读取，合法单引号属性和科学计数数值保留语义；普通顶点需要正宽高，`edgeLabel` 可省略宽高，负尺寸与非有限坐标不降级为缺省值。业务文字、ID、端点和分支标签保留，受影响连线移除旧折点以重新路由。F05 检查三段尺寸与文字空间，F12 检查有限数值、同父级重叠和容器边界。文字宽度是保守估算，实际字体/连线与业务语义仍需渲染和语义复核；命令成功不代表完整设计通过。
+## 三步接入
 
-触发提示中的规则名称直接来自本包标准正文；任务清单与验证覆盖共用同一解析，流程图包含 F01–F15 与 FC-01–FC-05 全部 20 项。FC-01–FC-03 的跨 spec 联查仍未实现，在回执与 `status.pendingChecks` 中明确保留未验证项；FC-04/FC-05 使用实际编码校验结果，不以“机械通过”隐藏联查缺口。
+在**实际目标项目根目录**执行，需要 Node.js 20+。接入负责人配置一次，后续直接向已加载规则的 Agent 描述设计任务。
 
-布局与验证共同识别活动编码或 `code/name/dept` 三行身份，也支持 GROUP 样式 `wlActivity=1` 显式标记。普通起止/判定组合或未知 GROUP 不按活动三行改写。
-
-`verify <domain> --file <文件或目录>` 按指定范围执行：文件只检查该文件，目录检查目录本身（spec 可包含分册子目录，flowchart 可包含子目录）。不存在或类型不符的目标直接失败，不借兄弟文件返回通过。单文件的跨文档清单/完整分册验证明确标为未执行；需要这些检查时传目录。API 明细必须含真实接口定义；所选需求文档不属于当前支持的分册类型时，明确指出需要目标上下文或规则扩展，不能宣称机械通过；合法 API 总览仍可单独检查其自身结构。回执的 `checkedFiles` 列出实际读取的文件，Markdown 领域的 `reports[].verificationScope` 区分文件子集与完整目录。值参数支持 pair/等号形式，空 `--target=` 或 `--file=` 会在写入前拒绝。
-
-## 如何确认本包正在起作用
-
-每次适用任务先运行项目本地 `wl-skills-design task --input "修改目标文件" --file docs/design.md --json`。编辑前展示真实 `notice`：包名与版本、判定、选中 Skill 或基础约束、具体规则、目标、runId 和尚未执行的检查。普通修改也需要基础约束提醒；相关但未覆盖的意图显示 gap 与建议；没有目标依据显示 needs-context，职责外显示 not-applicable，不强行匹配。
-
-执行实际检查时复用 `--run-id`，结束读取 `wl-skills-design status --run-id <id> --json`，分别报告执行和验证、实际检查文件、过期证据与未执行项。`notice.displayEvidence=unverified` 表示工具回执不能证明聊天界面展示；安装、路由或模型自报不能证明宿主加载/模型读取。
-
-`wl-skills-design doctor-host --json` 对比已分发规范、本地执行器和正在运行的版本，漂移会显式报告。规范更新不会替代依赖升级：同步本包依赖、锁文件和受管入口；未使用的兄弟包无需安装。重开/刷新宿主加载后仍需观察真实任务调用，不能宣称所有 AI 自动触发。
-
-## 快速开始
-
-需要 Node.js 20 或更高版本。
-
-### 第一步 · 安装到你的项目
+### 1. 安装执行器与设计规则
 
 ```bash
-npx @agile-team/wl-skills-design init                              # 推荐：AGENTS.md 通用 profile
-npx @agile-team/wl-skills-design init --editor cursor --target ./my-project
+npm install -D @agile-team/wl-skills-design
+npx --no-install wl-skills-design init
 ```
 
-安装后项目获得 `.github/skills | standards | prompts`、一份编辑器规则文件和独有 `.agents/skills/wl-skills-design/SKILL.md` gateway。自然语言任务由 task 入口给出可查的路由判定；宿主是否发现入口、模型是否读取正文由独立证据确认，doctor-host 静态检查不会宣称已加载。
+默认使用 `AGENTS.md` 通用入口，Codex 原生入口位于 `.agents/skills/wl-skills-design/SKILL.md`。使用 Cursor 时，在 `init` 后加 `--editor cursor`；其他编辑器选项见 `--help`。
 
-### 第二步 · 选场景开工
+纯文档仓库也可用 `npx @agile-team/wl-skills-design init` 分发规则；持续校验与 CI 建议固定项目依赖和锁文件。
 
-**场景 A · 从零到一生成设计文档**（不需要任何既有文档）
-
-对 Agent 说：
-
-> 为 DEMO 设备点检模块生成需求说明书骨架。模块范围：点检单从录入到归档；不含维修派工。业务目标：点检记录数字化、异常自动触发报修。
-
-然后按 [输入准备清单](./files/.github/guides/inputs-checklist.md) 分层补事实：
-
-1. 最小启动集（项目代号 / 模块范围 / 业务目标）→ 先出骨架、流程清单和关键问题清单；
-2. 业务事实（岗位 / 业务对象 / 状态流 / **操作规则** / 报表需求）→ 展开 IPO 到按钮级、步骤级颗粒度；
-3. 技术画像（数据库方言、接口协议等）→ 生成数据库与接口设计。
-
-不必一次备齐：缺失项自动标 `【待补充】`+Pending，Agent 每次只追问一个最关键的问题，绝不编造。操作规则讲得越细（“只有未生产且未下达才允许下达，失败提示『…』”），IPO 颗粒度越深。
-
-**场景 B · 接入别人给的半拉子文档**
-
-> 评估 docs/legacy 下这批设计文档，输出差距报告和补全任务清单。
-
-`doc-intake` 自动采集归位 → 机械+语义差距分析（含字典值漂移、名称近似漂移检测）→ 补全任务清单（P0/P1/P2）；授权后补结构缺口，业务事实只登记关键问题。会议记录、截图、参照系统说明等零散素材也可以直接丢给它归档分析。
-
-**场景 C · 机械验证已有产物**（业务文档只读，写本包检查回执，CI 可用）
+### 2. 核对接入结果
 
 ```bash
-wl-skills-design verify spec --target ./my-project
-wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-示例.drawio
-wl-skills-design verify db --target ./my-project
-wl-skills-design verify api --target ./my-project
+npx --no-install wl-skills-design doctor
+npx --no-install wl-skills-design doctor-host --host codex --json
 ```
 
-### 第三步 · 日常管理
+`doctor` 检查安装与 Skill 清单；`doctor-host` 检查入口和版本是否对齐。编辑器刷新规则后，还需在一次真实任务中看到工具判定和检查结果。
+
+### 3. 给出一条具体任务
+
+> 为 DEMO 设备点检模块生成需求说明书骨架。范围是点检单录入到归档，不含维修派工；目标是记录数字化、异常可追溯。先列缺失事实，再展开流程和按钮级 IPO。
+
+最少给出**项目代号、模块范围、业务目标**就能起步。岗位、对象、状态、操作规则和技术画像逐步补齐；缺失业务事实标记“待补充”，不会靠猜测填完整。
+
+首次反馈应包含适用 Skill / 规则、目标、`runId` 和待检查项。安装完成只说明资产已分发，真实任务反馈才能用于确认本次是否调用了工具。
+
+## 一个场景：点检流程变更如何传到接口
+
+“确认点检单”增加前置条件后，需要同时更新流程、按钮处理、状态字段和接口约束。
+
+| 环节 | 如何处理 | 验收点 |
+| --- | --- | --- |
+| 先看影响 | 对 Agent 说“分析确认条件变化影响哪些设计文件” | 列出受影响文档、待确认事实和复验顺序 |
+| 确认后修改 | 授权后补齐流程 / IPO / 数据 / 接口 | 使用相同业务编码、状态值与错误文案 |
+| 脚本复验 | 分域运行 `verify` | 返回规则编号、实际检查文件和问题位置 |
+| 跨文档评审 | 检查业务含义与追溯关系，回查 `status` | 机械问题、语义问题、未覆盖项分别列明 |
+
+例如，复核已存在的接口文档，由 Agent 或 CI 使用同一任务编号执行：
 
 ```bash
-npx @agile-team/wl-skills-design status        # 查看受管文件与本地改动
-npx @agile-team/wl-skills-design update --dry-run   # 预检升级（有本地改动时不写入）
-npx @agile-team/wl-skills-design restore --list     # 列出备份
-npx @agile-team/wl-skills-design uninstall          # 安全卸载（--purge 清理本包快照）
+npx --no-install wl-skills-design task --input "检查接口设计结构" --file docs/api/01-inspection.md --run-id inspection-review --json
+npx --no-install wl-skills-design verify api --file docs/api/01-inspection.md --run-id inspection-review --json
+npx --no-install wl-skills-design status --run-id inspection-review --json
 ```
 
-`demo/` 目录是一套四域机械子集通过的交付样例（需求说明书 + 数据库 + 接口 + 评审报告），可作结构质量对照；完整验证中的语义和未覆盖项仍需补证据。VS Code Chat 中输入 `/` 可选用 16 个快捷 Prompt。
+授权修复后，用同一 `runId` 更新任务计划并再验，避免沿用修改前的检查结论。`status` 显示执行状态、检查范围、失效证据和待检查项；机械项通过仍可能是 `partial`，业务语义与最终图形渲染需要继续复核。
 
-## 公开集成协议 v1
+## 校验入口
 
-供单包客户端、harness 或其他编排层以统一 JSON 入口调用本包判定、状态与受控执行能力；领域映射和验证器均由 Design 自己维护，不新增兄弟包依赖。
+| 产物 | 命令 |
+| --- | --- |
+| 需求说明书 | `npx --no-install wl-skills-design verify spec --target .` |
+| 泳道流程图 | `npx --no-install wl-skills-design verify flowchart --file docs/flowchart/input.drawio` |
+| 数据库设计 | `npx --no-install wl-skills-design verify db --target .` |
+| 接口设计 | `npx --no-install wl-skills-design verify api --target .` |
+| 可选设计模型 | `npx --no-install wl-skills-design validate-model --model docs/design-model.json` |
 
-14 个原生命令的实际分发、接受名称、`--help` 和 `describe.inventory.commands` 共用 [命令目录](lib/cli-catalog.js)，包含真实参数、只读状态和副作用。`validate-model` / `verify` 不改业务文档，但会记录本包 runs 回执；布局新建图，安装/恢复管理本包资产，预检和只读路由无写入。命令目录不授予协议额外执行或业务写入权限，受控执行仍以本包 `executors.json` 为准。
+指定 `--file` 只检查该文件或目录，不借其他文件判通过。CI 调用同一 CLI，并归档输出与本次回执；跨文档评审不能被单文件检查替代。完整机械覆盖、未实现项和公开集成协议见[公开 API 与执行边界](docs/public-api.md)。
 
-```bash
-wl-skills-design protocol describe --json                      # 能力目录、六操作映射、请求/响应 Schema、错误码
-wl-skills-design protocol request --input-file request.json --json
-```
+流程图文字过长时，`layout-flowchart --file <原图> --output <新图> --dry-run` 可预览自适应布局；正式执行输出新文件，随后运行流程图验证并检查实际渲染。
 
-- 操作：`route` / `explain`（只读判定）、`task`（判定并持久化计划，尚未执行）、`status`（回查本包执行回执）、`doctor-host`（宿主入口静态诊断）、`execute`（按真实计划调用本包只读验证器）。旧五操作保持兼容；`features` 中的 `executor-invoke-v1` 表示支持稳定执行入口。
-- 判定请求字段：`protocolVersion`(1)、`operation`、`requestId`、`runId`、`projectRoot`、`task`、`targets`、`skill`、`host`；执行请求另用下方 `executorId` / `parameters` Schema。
-- 统一信封：`{ ok, result | error, diagnostics }`；机器结果与诊断分离；非法输入在触达执行器前判 `invalid-input`，不写入任何记录。
-- 完整输入 Schema、执行器参数与错误码以 `describe` 为准；请求失败（exit 2）时 stdout 仍为可解析 JSON 信封。
-- **`ok=true` 只表示协议调用成功，不代表业务验证通过**；业务状态以 `result` 内 `validationStatus` / `executionStatus` 为准（仅计划时为 `unverified` / `not-executed`）。
-- 副作用：`task` 写计划，`execute` 调用验证器并写本包 runs 回执；二者不因协议调用获得修改业务文档权限。其余操作只读，各操作以 `sideEffects` 明确声明。
-- 协议实现为本包内置的同源快照 `integration-protocol.cjs`，五包一致；跨包一致性由 conformance `integration-protocol.check.cjs` 验收。
+## 常用维护
 
-### 单包稳定执行入口
+| 需要做什么 | 命令 |
+| --- | --- |
+| 查看受管文件与本地改动 | `npx --no-install wl-skills-design status` |
+| 预检规则升级 | `npx --no-install wl-skills-design update --dry-run` |
+| 对齐执行器与规则 | 更新依赖和锁文件，审阅后执行 `update` |
+| 查看可恢复快照 | `npx --no-install wl-skills-design restore --list` |
+| 预览卸载 | `npx --no-install wl-skills-design uninstall --dry-run` |
 
-先对明确设计文档建立任务，再在项目外保存以下请求，使用同一个 runId：
+安装、升级和恢复按本包归属管理文件，保留用户及其他包内容；本地改动默认受保护。评审和影响分析默认只读，修改既有业务设计须在授权范围内执行。
 
-```bash
-wl-skills-design task --input "检查接口设计结构" --file docs/api/01-inspection.md --run-id api-review --json
-wl-skills-design protocol request --input-file /tmp/design-execute.json --json
-wl-skills-design status --run-id api-review --json
-```
+## 深入使用
 
-```json
-{
-  "operation": "execute",
-  "projectRoot": "/absolute/path/to/design-project",
-  "runId": "api-review",
-  "executorId": "verify-api",
-  "parameters": { "targets": ["docs/api/01-inspection.md"] }
-}
-```
+- [使用指南](files/.github/guides/usage.md)：创建、评审、修复与半成品接入。
+- [输入准备清单](files/.github/guides/inputs-checklist.md)：从最小输入逐步补齐业务和技术事实。
+- [设计模型](files/.github/guides/design-model.md)：需要跨文档稳定 ID 追溯时再启用。
+- [项目范围](docs/project-scope.md) · [公开 API](docs/public-api.md) · [维护契约](docs/maintenance-contract.md)。
 
-`projectRoot`、`runId`、`executorId`、`parameters` 必填；`execute` 不根据 cwd 或 `--target` 补猜缺失的项目根。目标需属于真实计划且位于项目内；缺计划、过期计划、规范/安装版本漂移、解释或禁止检查的任务、未知执行器与不合法参数都会拒绝。
+## WL · World Leading
 
-当前支持 `verify-spec` / `verify-flowchart` / `verify-db` / `verify-api`，每次检查一个文件或目录，准确范围与旧 `verify --file` 一致。新规则与 Skill 由本包维护；宿主不复制领域词、命令参数或校验规则。绘图生成、布局修改、安装/恢复不通过这个只读入口调用。
+六个包按职责独立使用，按需要组合；Design 产物可作为开发和测试输入，不强制安装兄弟包。
 
-结果保留原 `status`，附 `executorId` 与 `execution`（真实 `exitCode` / `signal` / stdout / stderr / 输出截断 / 取消）。`ok=true` 或 `mechanicalOk=true` 都不能替代语义与渲染验收；机械子集通过仍保留 `validationStatus=partial`。业务退出 1 作为真实失败结果返回；取消立即终止执行器进程树，本次已开始但未完成的检查记执行失败、验证未验证，不伪造问题或通过项。输出超过 4 MiB 明确失败。详细边界见 [公开 API 与兼容性](docs/public-api.md)。
+| 包 | 职责 |
+| --- | --- |
+| [skills-gate](https://github.com/ChenyCHENYU/wl-skills-gate) | 项目钩子、构建门禁与质量闭环编排 |
+| [skills-kit](https://github.com/ChenyCHENYU/wl-skills-kit) | PC Vue 管理端开发规范与工程约束 |
+| [skills-ui](https://github.com/ChenyCHENYU/wl-skills-ui) | 界面规范、布局与交互质量 |
+| [skills-bd](https://github.com/ChenyCHENYU/wl-skills-bd) | Java 后端规范、契约与校验 |
+| [skills-test](https://github.com/ChenyCHENYU/wl-skills-test) | 测试设计、执行、质量证据与交付 |
+| **skills-design** | 需求、流程、数据库与接口设计 |
 
-## 能力
-
-| Skill | 产物 | 验证 |
-|-------|------|------|
-| `requirements-flowchart` | draw.io 泳道流程图 | 20 项 |
-| `requirements-prototype` | D1–D3 原型标注 | 23 项 |
-| `requirements-spec-doc` | 需求说明书、IPO（含 GB 颗粒度基线） | 43 项 |
-| `data-database-design` | ER、数据字典、DDL | 34 项 |
-| `api-interface-design` | 集成报文、RESTful、可选 OpenAPI 3.1 | 38 项 |
-| `cross-glossary` | 术语、字段、枚举、编码注册 | 18 项 |
-| `cross-design-review` | 评分、问题、追溯矩阵 | D4 18 项 + RV 12 项 |
-| `cross-change-impact` | 影响矩阵、补丁任务、复验顺序 | 20 项 |
-| `doc-intake` | 半成品文档接入、差距报告、补全任务、draft design-model | 复用各域清单 |
-| `code-architecture` | 模块边界、分层、契约和质量门 | AC01–AC20 |
-
-Skill 采用原生 Agent Skills 结构：目录名与 frontmatter `name` 完全一致，只保留最小元数据，并通过相对链接按需加载标准、模板和匿名合成样例。
-
-## IPO 颗粒度基线
-
-需求说明书标准内置 GB 颗粒度基线（§5.1 按钮级覆盖、§5.2 GB1–GB8）：命令按钮处理逻辑按编号步骤书写，一步一事，写明数据对象与字段、字典稳定值、前置校验、审计与履历写入、联动与外部同步、异常文案原文和展示规则；执行类活动与命令按钮一一对应，作为后端命令端点的需求侧投影。匿名对照样例见 `requirements-spec-doc/examples/05-ipo-granularity.md`。
-
-## 从零到一生成
-
-无需既有文档。分层提供输入即可启动：最小启动集（项目代号、模块范围、业务目标）→ 业务事实（岗位、业务对象、状态流、操作规则、报表需求）→ 技术画像（数据库方言/租户/删除策略，接口协议/认证/响应包装/幂等等）。不必一次备齐——缺失项自动标记 `【待补充】`+Pending 并生成关键问题清单，每次只追问一个最关键问题；操作规则讲得越细，IPO 颗粒度越深。完整清单见 [输入准备清单](./files/.github/guides/inputs-checklist.md)（安装后位于 `.github/guides/inputs-checklist.md`）。
-
-## 机械验证（[M]/[J] 双轨）
-
-四份标准的验证清单均带执行方式标记：`[M]` 机械可判、`[J]` 语义判断。四域 [M] 项均由 CLI 直接执行，Agent 只判 [J] 项，两类结论按同一规则编号合并成一份报告：
-
-```bash
-wl-skills-design verify spec --target ./my-project        # 结构/编码/表格/追溯闭合等机械项
-wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-示例.drawio
-wl-skills-design verify db --target ./my-project          # 命名/字典10列/索引/DDL注释/字典↔DDL一致性/联动矩阵
-wl-skills-design verify api --target ./my-project         # 编码唯一/7列字段表/契约类型/示例JSON/错误码登记
-```
-
-验证器覆盖活动编码格式与连续性、对照表双向闭合、IPO 空单元格、draw.io 三层 GROUP/泳道色标/连线样式/几何重叠、表名后缀语义与保留字、索引前缀与 DDL 交叉核对、字典↔DDL 字段/类型/长度逐项一致、接口契约类型与示例可解析性等。`demo/` 目录是保持四域 verify 全绿的活样例。未覆盖的 [M] 项（如 OpenAPI 深度解析）显式输出 skip，不伪装通过。
-
-## 半成品文档接入
-
-`doc-intake` Skill 把别人提供的半拉子文档接进规范体系：采集归位（按编码体系分类 + 未归类区）→ 差距分析（机械验证 + 语义判断 + 字典值漂移/名称近似漂移检测）→ 补全计划（复用变更影响分析的补丁任务格式）→ 授权范围内补结构、业务事实只登记关键问题清单，绝不编造；并从既有编码铸造 draft design-model。
-
-## 安全行为
-
-- `validate`、`review`、`impact` 默认只读，不自动修改既有设计文件。
-- `repair` 需要用户明确授权；创建流程只可自动修复本轮新产物。
-- `init` 和 `update` 先全量预检。共享文件保留外部内容并追加或更新本包区块；未知独占文件冲突时退出码为 `2`，路径类型或符号链接不安全时退出码为 `1`，均不会留下半套文件。
-- 受管文件记录在 `.wl-skills-design/state.json`，本地改动默认受保护。
-- 变更前生成事务备份，通常保留最近 5 份；含用户修改或外来文件的快照不会被自动清除。`restore` 只恢复本包贡献，并生成安全快照，可再次 `restore` 撤销恢复。
-- 写入操作持有锁文件，防止并发安装互相破坏。
-- 默认只安装一个编辑器 profile，避免规则重复注入。
-
-## CLI
-
-```text
-wl-skills-design init       安装
-wl-skills-design update     安全升级
-wl-skills-design status     查看受管文件状态
-wl-skills-design doctor     检查安装和 Skill 清单
-wl-skills-design validate-model  只读校验设计模型和引用完整性
-wl-skills-design verify     机械执行 spec/flowchart 验证清单 [M] 项
-wl-skills-design restore    恢复最近一次变更（--list 查看，--id 指定）
-wl-skills-design uninstall  安全卸载（--purge 清理本包快照，保留外来内容）
-```
-
-通用选项：
-
-```text
---editor <id[,id]>  选择 profile
---target <dir>      指定目标项目
---dry-run           只预检
---force             仅更新已有归属的本包内容并备份；卸载仍保留用户修改
---list              restore：列出可用备份
---id <backupId>     restore：恢复指定备份
---purge             uninstall：清理本包快照；保留残留引用和外来文件
---json              机器可读输出
-```
-
-### 编辑器 profile
-
-| ID | 目标文件 | 激活方式 |
-|----|---------|---------|
-| `agents` | `AGENTS.md` | 通用，默认 |
-| `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
-| `claude` | `CLAUDE.md` | Claude Code |
-| `cursor` | `.cursor/rules/wl-skills-design.mdc` | Agent Requested |
-| `windsurf` | `.windsurf/rules/wl-skills-design.md` | Workspace Rule |
-| `cline` | `.clinerules/wl-skills-design.md` | 精简持久规则 |
-| `kiro` | `.kiro/steering/wl-skills-design.md` | `inclusion: auto` |
-| `qoder` | `.qoder/rules/wl-skills-design.md` | 项目规则 |
-| `trae` | `.trae/rules/wl-skills-design.md` | 项目规则 |
-
-兼容路径基于 2026-07-15 的官方实践：GitHub/VS Code Agent Skills、VS Code Prompt Files、Cursor Project Rules、Kiro Steering、Cline Rules 和 Qoder Rules。`.cursorrules`、`.windsurfrules` 等旧版单文件不再生成。
-
-## 路由
-
-机器路由源是 `.github/skills/_manifest.json`：
-
-1. 先识别 `impact → review → validate → repair → maintain → create`。
-2. 再匹配领域精确词和负向词。
-3. 候选达到 70 分且领先至少 15 分才运行；否则只问一个关键问题。
-4. 普通 code review、PR review、运行故障和依赖升级不会误入产品设计 Skill。
-
-路由语料保存在 `_route-evals.design.json` 并由 doctor 回归验证。
-
-## 资料分层
-
-```text
-SKILL.md       核心工作流，按需加载
-standards/     唯一规则源
-sub/           具体领域步骤
-templates/     纯结构占位符，禁止业务数据
-examples/      匿名合成场景，用于质量对照
-guides/        人读说明，不参与 Skill 发现
-```
-
-所有随包样例都应是匿名合成内容，不得出现组织、项目、地点、业务单号、线上地址、账号、令牌或其他可识别信息。`npm run check` 同时检查敏感词、模板纯净度，以及内部 DOCX 的作者元数据、修订标识、自定义属性和嵌入媒体。
-
-## 统一设计模型
-
-新项目可选择维护 `docs/design-model.json`，schema 位于 `.github/skills/_design-model.schema.json`。它使用稳定 ID 表达字段、功能、流程、页面、表、API 和追踪关系，供跨文档集合验证使用；Markdown、DDL、OpenAPI 和 draw.io 仍是交付层。
-
-它是可选增强，不是 kit/bd 的硬依赖。运行 `wl-skills-design validate-model --model docs/design-model.json` 使用随包分发的 JSON Schema 2020-12 完整检查结构，并检查稳定 ID 和引用；类型、枚举、const、未知属性违规返回 `DM019`，Schema 加载/编译失败返回 `DM020`，不降级为通过。空集合保留原警告，设计语义仍需复核。跨包默认约定见安装后的 `.github/guides/delivery-compatibility.md`。
-
-## 包结构
-
-```text
-files/
-├── .github/
-│   ├── standards/             9 份标准（验证清单带 [M]/[J] 标记）
-│   ├── skills/                10 个已发布 Skill + manifest/schema
-│   ├── prompts/               16 个 Prompt
-│   └── guides/                使用、架构和各 Skill 指南
-├── AGENTS.md / CLAUDE.md      适配器产物
-├── .cursor/ .windsurf/ ...    各 profile 产物
-bin/wl-skills-design.js        安全安装 CLI
-scripts/                       同步、doctor、发布验证
-tests/                         CLI、路由和结构测试
-```
-
-## 开发与发布
-
-```bash
-npm install
-npm run sync
-npm run verify
-npm pack --dry-run
-```
-
-`npm run verify` 会检查：Skill frontmatter/目录、Prompt 元数据、调度正文意图链与能力索引覆盖、相对链接、路由语料、检查项一致性、[M]/[J] 标记、隐私敏感词（归一化匹配）、draw.io 结构、编辑器漂移、CLI 事务行为、机械验证金样本回归和真实 npm 载荷安装冒烟。
-
-版本发布前必须保证工作区除明确提交内容外干净，并使用精简中文 Conventional Commit；发布由 CI（Publish 工作流 + OIDC provenance）完成。
-
-## 许可
-
-[Apache-2.0](./LICENSE)。随包分发的所有模板与样例均为匿名合成内容；贡献即表示接受 Apache-2.0 与本仓库贡献指南。
-
-
-每次任务用 `wl-skills-design task --input "<完整任务>" --json`取得 runId、判定、候选、适用规则和未验证项。`route`/`explain` 只读解释，不记录runId；相关任务使用 `task` 持久化判定与建议。发布内 `lib/router.js` 与路线 eval 共用实现；相关却缺能力/规则的任务记录 gap 建议，歧义保留候选。`.agents/skills/wl-skills-design/SKILL.md` 是本包独有 Codex gateway，只指向 canonical Skill，不复制业务规则；陌生入口安装时整批零写入，force 也不覆盖。
-
-`verify <domain> --run-id <runId> --json` 返回实际机械检查回执与完整 [M]/[J] 规则覆盖：语义、未实现机械项及跳过项保持未验证。`mechanicalOk` 只表示机械子集结果，`ok` 和 `receipt.validationStatus` 表示完整验证状态，子集通过仍为 partial。`status --run-id <runId> --json` 检查真实执行与输入新鲜度，`doctor --host codex --json` 仅诊断入口可用性；宿主发现、模型选中/读取不能由文件 SHA 推断，模型自述标“模型声明”。观测记录只写 `.wl-skills-design/runs/`，canonical Skill 的只读和修复授权边界继续生效。
-
-同一用户任务跨已安装且适用的包复用同一 `--run-id <id>` 或 `WL_TASK_RUN_ID`；本包仍可独立使用，无需安装其他 WL 包。
-
-### 当前请求、动作边界与 Harness 集成
-
-任务判定保留原始文本，并将当前请求、历史引用和明确否定分开。自然语言判定覆盖已公开语料与规则，不能承诺任意表述都自动命中；遇到歧义或缺口应补充目标/领域或显式指定本包能力，不能静默选择。编辑前显示真实 `notice`，包括版本、技能、规则、目标、runId、动作与待检查项。
-
-`protocol describe --json` 声明 `task-intent-v1`、`result-core-v1`、`executor-catalog-v1` 与 `executor-invoke-v1`；`schemas.resultCore` 与各操作 `schemas.results` 可供宿主验证。原有结果字段保留，`result.integration` 提供项目适用范围、动作模式、规则身份、目标、就绪状态、允许执行器和真实执行/验证状态。`execute` 将领域与 CLI 参数映射收回本包，宿主只传公开结构化参数。`ok` 只表示调用成功。判定操作未声明使用的输入字段进入 diagnostics，不会转成授权依据；执行参数按完整 Schema 拒绝不合法字段。
-
-`action.mode` 为 explain/plan/inspect/apply/unspecified；解释和规划不自动启动检查。`businessWritesAuthorized=false`，任务意图不能替代业务写入授权。`ruleRefs` 为包自有规则身份（包名、规则 ID、版本、来源、性质），自然语言约束有稳定 ID；原规则名称与列表保留。所有规则的机械/语义验证仍以实际回执为准。
-
-`inventory.executors` 声明本包业务只读检查器、目标与参数 Schema；其适用条件由本包判定。外部适配器须核对同项目、同包、同版本、同 runId 的真实计划、新鲜度与允许动作，指定一个目标，不能扩大范围；支持规则子集的执行器不得选择计划外规则。多目标需拆分调用。五包和 Harness 均为可选组合，不新增兄弟包或 Harness 运行时依赖；卸下适配器后原 CLI/MCP 继续独立使用。
-
-### 任务反馈与执行边界
-
-编辑前展示实际 `notice` 的包版本、判定、动作、技能/规则、目标、runId、待检查项与版本对齐信息；解释/规划和明确禁止检查时不自动执行检查。`runtime=mismatch/invalid` 或 `planStale=true` 必须先同步本包或重新判定。只读 `inspect` 输入变化后重新 `task`；`apply` 完成正常业务修改后可用同 runId 做实际复扫，但规则、配置或版本变化仍需重新判定。
-
-单包只读取自身公开能力；多包复用同 runId 并各存各的证据。`matched/ready/ok=true` 仅说明判定或调用成功，是否完成以实际 `executionStatus/validationStatus/checkedFiles` 为准。未接入或不适用的项目不借父目录规则；宿主发现、模型读取、反馈展示没有真实证据时继续标记未验证。
-
-维护边界、结构化执行和防漂移验收：[维护契约](docs/maintenance-contract.md)。
-
-1.0 评估与稳定公开面准入：[版本成熟度](docs/release-maturity.md)。
+[Apache-2.0](LICENSE)

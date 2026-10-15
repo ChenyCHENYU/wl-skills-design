@@ -1,90 +1,132 @@
-# wl-skills-design
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ChenyCHENYU/wl-skills-design/main/assets/wl-design-logo-dark.svg">
+    <img alt="WL · World Leading · skills-design" src="https://raw.githubusercontent.com/ChenyCHENYU/wl-skills-design/main/assets/wl-design-logo.svg" width="100%">
+  </picture>
+</p>
 
-Product-design Agent Skills package: 9 design standards, 10 discoverable Skills, 16 VS Code prompts, dual-track mechanical/semantic verification (`[M]`/`[J]`), a mechanical-verification CLI, anonymized synthetic examples, and a transactional installer.
+<p align="center"><strong>Turn business facts into aligned, traceable requirements and design deliverables with mechanical verification.</strong></p>
 
-[中文说明](./README.md)
+<p align="center">
+  <a href="https://www.npmjs.com/package/@agile-team/wl-skills-design"><img src="https://img.shields.io/npm/v/@agile-team/wl-skills-design?color=16827d" alt="npm" /></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@agile-team/wl-skills-design" alt="Node.js" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-64748b" alt="License" /></a>
+</p>
 
-Current version `1.0.1` commits to the documented [public API and compatibility boundaries](docs/public-api.md), complete model Schema validation, and package-owned structured execution. Validation coverage and host evidence remain explicit. Earlier routing updates correct routing for explicit everyday requests such as writing a poem or cooking: these return `not-applicable`. Vague requests still ask for context; matched design tasks, including OpenAPI design for a poetry search service, retain their design skill. This does not add a dependency on another WL package or harness.
+[中文](README.md)
 
-## Quick start
+**Business facts → Requirements and flows → Database and APIs → Cross-document review → Repair and recheck → Development handoff**
 
-Requires Node.js 20+.
+## Where it fits
 
-```bash
-npx @agile-team/wl-skills-design init            # AGENTS.md profile (default)
-npx @agile-team/wl-skills-design init --editor copilot
-npx @agile-team/wl-skills-design update --dry-run
-wl-skills-design verify spec --target ./my-project
-wl-skills-design verify flowchart --file docs/flowchart/REQ-A-01-demo.drawio
-wl-skills-design verify db --target ./my-project
-wl-skills-design verify api --target ./my-project
-```
+For requirements analysis, product design, technical design and design reviews. Start from scratch or bring existing documents. No sibling WL package is required. The current project-scope guard excludes mobile projects.
 
-## Capabilities
+| Task | Deliverables | Checks |
+| --- | --- | --- |
+| Model workflows and screens | draw.io swimlanes, prototype annotations | Activity codes, roles, branches, layout and actions |
+| Specify requirements | Structured documents, button-level IPO logic | Inputs, outputs, conditions, state changes and error messages |
+| Design data and APIs | ER, dictionaries, DDL, interface definitions | Fields, types, indexes, responses and error codes |
+| Intake unfinished documents | Gap report, patch tasks, open questions | Missing structure, terminology and enum drift |
+| Review and assess changes | Findings, traceability and impact matrices | Alignment across requirements, workflows, data and APIs |
 
-| Skill | Output | Checklist |
-|-------|--------|-----------|
-| `requirements-flowchart` | draw.io swimlane flowcharts | 20 items |
-| `requirements-prototype` | D1–D3 prototype annotations | 23 items |
-| `requirements-spec-doc` | Requirement specs with IPO tables (GB granularity baseline) | 43 items |
-| `data-database-design` | ER, data dictionary, DDL | 34 items |
-| `api-interface-design` | Integration messages, REST, optional OpenAPI 3.1 | 38 items |
-| `cross-glossary` | Terms, fields, enums, codes | 18 items |
-| `cross-design-review` | Scores, findings, traceability matrix | D4 18 + RV 12 |
-| `cross-change-impact` | Impact matrix, patch tasks, re-verification order | 20 items |
-| `doc-intake` | Intake existing/half-finished docs: gap report, patch tasks, draft design-model | reuses domain checklists |
-| `code-architecture` | Module boundaries, layering, contracts, quality gates | AC01–AC20 |
+Standards distinguish **[M] mechanical checks** from **[J] semantic judgment**. The CLI runs its implemented mechanical subset; the Agent assists with semantic review; owners confirm business facts and delivery decisions.
 
-## Dual-track verification
+## Get started in three steps
 
-Every checklist item is tagged `[M]` (mechanically decidable) or `[J]` (judgment). `wl-skills-design verify` covers the four domains through its implemented mechanical subset, including code formats and uniqueness, table shapes, draw.io structure, dictionary/DDL consistency and contract checks. Unimplemented `[M]` checks and `[J]` judgments remain explicitly skipped or unverified; mechanical success alone reports `partial`. Semantic review requires separate evidence and cannot be replaced by an agent's claim. The source repository's synthetic `demo/` samples pass the implemented subset; this does not prove complete semantic or rendering validation, and `demo/` is not distributed in the npm package.
+Run these commands in the actual target project root with Node.js 20+. Setup is a one-time integration task; daily work starts with a specific request to an Agent that has loaded the project rules.
 
-## Doc intake
-
-The `doc-intake` skill onboards half-finished documents: classify and place content by coding system, run mechanical + semantic gap analysis (including enum-value drift and near-name drift detection), produce a patch-task plan reusing the change-impact format, fill structural gaps within granted scope, and cast a draft design-model from existing codes — never inventing business facts.
-
-`validate-model` checks the complete distributed JSON Schema 2020-12 as well as stable IDs and references. Invalid types, enum values, constants, or unknown properties return `DM019`; schema loading or compilation failures return `DM020` and cannot fall back to a permissive pass. Empty collections retain existing warnings. Design semantics require separate review.
-
-## Safety
-
-- `validate` / `review` / `impact` are read-only by default; `repair` requires explicit authorization.
-- Install/update preflight all conflicts (exit code 2, no half-written trees); managed files are hash-tracked; local edits are protected; transactional backups keep the last 5; restore snapshots before overwriting and can be undone.
-- A lock file guards concurrent runs; `uninstall --purge` removes state when explicitly requested.
-- All shipped examples are anonymized synthetic content, enforced by CI privacy scans (separator-normalized matching).
-
-## CLI
-
-```
-wl-skills-design --help
-wl-skills-design protocol describe --json
-```
-
-Editor profiles: `agents` (default), `copilot`, `claude`, `cursor`, `windsurf`, `cline`, `kiro`, `qoder`, `trae`.
-
-All 14 native commands use the same [command catalog](lib/cli-catalog.js) for accepted names, real dispatch, help and public inventory. Each entry documents actual arguments and filesystem effects. `validate-model` and `verify` leave business documents unchanged and write real run receipts; dry-run and read-only routing do not write. Command discovery does not expand the package-owned protocol executor permissions. Mechanical success remains separate from semantic, rendering and host evidence.
-
-## Development
+### 1. Install the executor and rules
 
 ```bash
-npm ci --ignore-scripts
-npm run verify     # doctor + adapter drift + CLI tests + mechanical-verify tests + real npm payload smoke
+npm install -D @agile-team/wl-skills-design
+npx --no-install wl-skills-design init
 ```
 
-See the source repository’s [contribution guide](https://github.com/ChenyCHENYU/wl-skills-design/blob/main/CONTRIBUTING.md) for conventions (route-eval coverage for trigger changes, [M]/[J] consistency, anonymization gates).
+The default profile uses `AGENTS.md`. Codex's native gateway is `.agents/skills/wl-skills-design/SKILL.md`. For Cursor, add `--editor cursor` to `init`; see `--help` for other profiles.
 
-## License
+Document-only repositories may use `npx @agile-team/wl-skills-design init` to distribute rules. Pin the project dependency and lockfile for repeatable checks and CI.
 
-[Apache-2.0](./LICENSE). All templates and examples are anonymized synthetic data.
+### 2. Check the installation
 
-### Task and execution evidence
+```bash
+npx --no-install wl-skills-design doctor
+npx --no-install wl-skills-design doctor-host --host codex --json
+```
 
-Display the real notice before editing: package/version, decision, action, rules/skills, targets, runId, pending checks and runtime alignment. Explanations/plans and explicit check prohibitions do not run automatic checks. Version drift and stale plans require synchronization or replanning. Readonly inspection inputs must remain unchanged; apply tasks may recheck normal edits under the same runId. Empty checks cannot prove success, and host/model activity stays unverified without real evidence.
+`doctor` checks installed assets and the Skill catalog. `doctor-host` checks entry points and version alignment. Refresh the editor rules, then confirm actual tool calls through a real task.
 
-### Standalone executor invocation
+### 3. Give the Agent a concrete task
 
-`protocol describe --json` publishes six operations and the `executor-invoke-v1` feature. After planning a real task, call `protocol request --input-file /tmp/request.json --json` with `operation:"execute"`, an explicit absolute `projectRoot`, the same `runId`, a published `executorId`, and `parameters:{targets:["docs/api/01-inspection.md"]}`. The four executors are `verify-spec`, `verify-flowchart`, `verify-db`, and `verify-api`; each reuses this package's original verifier and exact file/directory scope. Neither DSH nor sibling WL packages are required.
+> Create a requirements skeleton for DEMO equipment inspections, from entry to archiving, excluding repair dispatch. The goals are digital records and traceable exceptions. List missing facts first, then develop the workflow and button-level IPO logic.
 
-The package checks the full parameter Schema and the real task state before invocation. Missing roots, unknown executors, changed targets, stale plans, version drift, and tasks that prohibit checks are refused. A completed call can return `ok:true` with a native business `execution.exitCode` of 1. Mechanical success remains partial validation; host/model loading and semantic/render review need their own evidence. See [public API boundaries](docs/public-api.md).
+Start with **project code, scope and goals**. Add roles, objects, states, business rules and technical profiles progressively. Missing facts stay pending rather than being invented.
 
-Maintenance, snapshot checks and standalone execution: [maintenance contract](docs/maintenance-contract.md).
-Version 1.0 readiness and supported public surfaces: [release maturity](docs/release-maturity.md).
+The first task response should show selected Skills/rules, targets, `runId` and pending checks. Installed assets alone do not prove that the editor or model used them.
+
+## Example: propagate an inspection-rule change
+
+A new condition for confirming an inspection affects the workflow, button logic, state fields and API constraints.
+
+| Stage | Action | What to verify |
+| --- | --- | --- |
+| Assess impact | Ask which design documents the condition affects | Affected files, open facts and recheck order |
+| Apply authorized changes | Update the workflow, IPO, data and API definitions | Consistent codes, state values and error messages |
+| Run deterministic checks | Use the corresponding `verify` domain | Rule IDs, actual checked files and findings |
+| Review alignment | Review semantics and traceability, then read `status` | Mechanical findings, semantic findings and unverified items |
+
+For an existing API document, the Agent or CI can run:
+
+```bash
+npx --no-install wl-skills-design task --input "Validate RESTful API design" --file docs/api/01-inspection.md --run-id inspection-review --json
+npx --no-install wl-skills-design verify api --file docs/api/01-inspection.md --run-id inspection-review --json
+npx --no-install wl-skills-design status --run-id inspection-review --json
+```
+
+After authorized repairs, refresh the task plan and recheck using the same `runId`. `status` distinguishes execution, checked scope, stale evidence and pending checks. Mechanical success can still report `partial`; semantics and final rendering need separate review.
+
+## Verification entry points
+
+| Deliverable | Command |
+| --- | --- |
+| Requirements | `npx --no-install wl-skills-design verify spec --target .` |
+| Swimlane diagram | `npx --no-install wl-skills-design verify flowchart --file docs/flowchart/input.drawio` |
+| Database design | `npx --no-install wl-skills-design verify db --target .` |
+| API design | `npx --no-install wl-skills-design verify api --target .` |
+| Optional design model | `npx --no-install wl-skills-design validate-model --model docs/design-model.json` |
+
+`--file` limits checks to the selected file or directory. A single-file check does not establish cross-document completeness. CI uses the same CLI and archives its output and receipts. See [public API boundaries](docs/public-api.md) for implemented checks, skips and structured integration.
+
+For long diagram labels, preview `layout-flowchart --file <source> --output <new-file> --dry-run`. Applying the layout creates a new file; verify the diagram and inspect the actual rendering afterward.
+
+## Maintenance
+
+| Need | Command |
+| --- | --- |
+| Managed files and local changes | `npx --no-install wl-skills-design status` |
+| Preview a rule update | `npx --no-install wl-skills-design update --dry-run` |
+| Align executor and rules | Update the dependency and lockfile, then review and run `update` |
+| List recovery snapshots | `npx --no-install wl-skills-design restore --list` |
+| Preview removal | `npx --no-install wl-skills-design uninstall --dry-run` |
+
+Asset lifecycle operations preserve user content and other packages' contributions. Reviews and impact analysis are read-only by default; repairs to existing designs stay within the authorized scope.
+
+## Guides
+
+- [Usage](files/.github/guides/usage.md) and [input checklist](files/.github/guides/inputs-checklist.md): creation, intake, review and incremental fact collection.
+- [Optional design model](files/.github/guides/design-model.md): stable IDs and cross-document references.
+- [Project scope](docs/project-scope.md), [public API](docs/public-api.md) and [maintenance contract](docs/maintenance-contract.md).
+
+## WL · World Leading
+
+Each package works independently. Combine only the capabilities your project needs.
+
+| Package | Responsibility |
+| --- | --- |
+| [skills-gate](https://github.com/ChenyCHENYU/wl-skills-gate) | Project hooks, build gates and quality workflow orchestration |
+| [skills-kit](https://github.com/ChenyCHENYU/wl-skills-kit) | PC Vue administration engineering conventions |
+| [skills-ui](https://github.com/ChenyCHENYU/wl-skills-ui) | Interface conventions, layout and interaction quality |
+| [skills-bd](https://github.com/ChenyCHENYU/wl-skills-bd) | Java backend conventions, contracts and checks |
+| [skills-test](https://github.com/ChenyCHENYU/wl-skills-test) | Test design, execution, evidence and delivery |
+| **skills-design** | Requirements, workflows, database and API design |
+
+[Apache-2.0](LICENSE)
