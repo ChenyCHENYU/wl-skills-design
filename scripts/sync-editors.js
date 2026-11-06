@@ -26,7 +26,7 @@ const VERSION = PKG.version;
 
 /** 把正文里的「版本：vX.Y.Z」统一为 package.json 的版本 */
 function normalizeVersion(text) {
-  return text.replace(/版本：v[0-9]+\.[0-9]+\.[0-9]+/g, `版本：v${VERSION}`);
+  return text.replace(/版本：v[0-9]+\.[0-9]+\.[0-9]+/g, `版本：v${VERSION}`).replace(/(--package\s+@agile-team\/wl-skills-design@)[0-9]+\.[0-9]+\.[0-9]+/g, `$1${VERSION}`);
 }
 
 function buildOutputs() {

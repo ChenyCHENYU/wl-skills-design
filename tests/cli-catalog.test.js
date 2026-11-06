@@ -71,7 +71,7 @@ test("every listed command reaches its real CLI handler in an isolated standalon
   fs.copyFileSync(SAMPLE, path.join(root, "input.drawio"));
   fs.writeFileSync(path.join(root, "model.json"), JSON.stringify({ schemaVersion: 1, projectCode: "CATALOG", fields: [], functions: [], traceLinks: [] }));
   const checks = {
-    init: () => assert.deepEqual(json(["init"], root).editors, ["agents"]),
+    init: () => assert.deepEqual(json(["init"], root).editors, ["codex"]),
     update: () => assert.equal(json(["update", "--dry-run"], root).dryRun, true),
     status: () => assert.equal(json(["status"], root).managed, true),
     doctor: () => assert.deepEqual(json(["doctor"], root).skillIssues, []),
@@ -94,7 +94,7 @@ test("every listed command reaches its real CLI handler in an isolated standalon
       const result = json(["task", "--input", "检查流程图", "--file", "input.drawio", "--run-id", "catalog-task"], root);
       assert.equal(result.runId, "catalog-task");
       assert.equal(result.executionStatus, "not-executed");
-      assert.ok(result.recordPath.startsWith(".wl-skills-design/runs/catalog-task/"));
+      assert.ok(result.recordPath.startsWith(".wl-skills/state/design/runs/catalog-task/"));
       assert.equal(fs.existsSync(path.join(root, result.recordPath)), true);
     },
     route: () => assert.equal(json(["route", "--input", "检查流程图", "--file", "input.drawio"], root).decision.status, "matched"),
@@ -121,7 +121,7 @@ test("catalog separates source-read-only checks from real run-record writes", ()
   assert.equal(result.runId, "model-real-write");
   const after = snapshot(root);
   const added = Object.keys(after).filter((file) => !Object.hasOwn(before, file));
-  assert.ok(added.some((file) => file.startsWith(".wl-skills-design/runs/")));
+  assert.ok(added.some((file) => file.startsWith(".wl-skills/state/design/runs/")));
   for (const [file, bytes] of Object.entries(before)) assert.equal(after[file], bytes, file);
   for (const name of ["validate-model", "verify", "task", "layout-flowchart", "protocol"]) assert.equal(COMMAND_CATALOG[name].readOnly, false);
   assert.match(COMMAND_CATALOG["validate-model"].sideEffects, /runs/);

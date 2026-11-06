@@ -17,6 +17,10 @@
 
 **Business facts → Requirements and flows → Database and APIs → Cross-document review → Repair and recheck → Development handoff**
 
+## Compact integration
+
+The default installation keeps canonical skills, standards, templates, examples, and adapter implementations inside the npm package. Projects receive only selected host entry points and `.wl-skills/state/design/` ownership and execution records. Use `init --hosts codex,zcode,kilo`; these agents share `.agents/skills`. `--hosts` takes precedence over the compatible `--editor` option. Explicit `--integration expanded` materializes legacy resources, and `--hosts all` opts into all supported hosts. The `wlSkills` configuration lives in existing `package.json`, or `.wl-skills/config.json` for projects without npm metadata. Routing returns actual readable resource paths, with project overrides taking precedence. Migration cleans only unchanged owned contributions and preserves user modifications, project contracts, and foreign files.
+
 ## Where it fits
 
 For requirements analysis, product design, technical design and design reviews. Start from scratch or bring existing documents. No sibling WL package is required. The current project-scope guard excludes mobile projects.
@@ -102,7 +106,7 @@ For long diagram labels, preview `layout-flowchart --file <source> --output <new
 
 | Need | Command |
 | --- | --- |
-| Managed files and local changes | `npx --no-install wl-skills-design status` |
+| Latest task receipt, managed files and local changes | `npx --no-install wl-skills-design status` |
 | Preview a rule update | `npx --no-install wl-skills-design update --dry-run` |
 | Align executor and rules | Update the dependency and lockfile, then review and run `update` |
 | List recovery snapshots | `npx --no-install wl-skills-design restore --list` |

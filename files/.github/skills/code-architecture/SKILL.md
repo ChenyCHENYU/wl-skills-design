@@ -19,7 +19,7 @@ description: Design or validate implementation-ready module boundaries, frontend
 
 1. 读取 [代码设计规范](../../standards/05-code-design.md) 和 [WL 交付兼容协议](../../guides/delivery-compatibility.md)。
 2. 建立模块职责、所有者、输入、输出、数据所有权和禁止依赖清单。
-3. 分别定义前端、后端、数据与集成边界；跨边界只通过显式契约通信。
+3. 分别定义前端、后端、数据与集成边界；跨边界只通过显式契约通信。按代码设计规范的“集成方案与复杂度”先比较复用现有接口的最小方案，新增异步投递、锁或开关须有实际需求依据和失败恢复验收，不把风险猜测升级为新业务门槛。
 4. 选择内置 `jh4j3-openapi3@1.0` 或显式自定义 profile；偏差必须登记。
 5. 使用 [架构设计模板](templates/architecture-design.md) 输出开发就绪设计。
 6. 对照 [匿名合成样例](examples/01-architecture-design.md) 做完整性自检。

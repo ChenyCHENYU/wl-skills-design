@@ -39,6 +39,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["流程图", "泳道图", "flowchart", "draw.io", "业务流程图", "流程节点"],
+        "combinations": [{ "verbs": ["画", "绘制"], "objects": ["流程", "审批流", "泳道", "状态流转", "退回分支"] }],
         "negative": ["代码流程", "算法流程", "ci workflow", "github actions"]
       },
       "context": {
@@ -60,6 +61,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["需求设计说明书", "功能设计", "ipo 表", "ipo表", "流程说明", "活动说明", "画面逻辑", "功能规格", "需求说明书"],
+        "combinations": [{ "verbs": ["写", "编写", "整理", "撰写"], "objects": ["需求", "详设"] }],
         "negative": ["openapi specification", "json schema", "代码规范"]
       },
       "context": {
@@ -81,6 +83,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["原型设计", "线框图", "prototype", "页面设计", "ui 草图", "页面标注", "原型标注", "页面清单"],
+        "combinations": [{ "verbs": ["设计", "做", "绘制", "生成", "画", "调整", "修改", "优化"], "objects": ["原型", "线框", "低保真"], "exclude": ["原型链", "prototype pattern"] }],
         "negative": ["原型链", "prototype pattern"]
       },
       "context": {
@@ -102,6 +105,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["数据库设计", "er 图", "表结构", "实体关系", "数据字典", "ddl", "database schema", "建表语句"],
+        "combinations": [{ "verbs": ["设计", "建模"], "objects": ["数据库", "数据表"], "exclude": ["数据库访问流程图", "数据库操作流程图"] }],
         "negative": ["内存数据库测试", "数据库连接报错", "orm bug"]
       },
       "context": {
@@ -123,6 +127,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["接口设计", "api 设计", "restful", "openapi", "接口文档", "接口报文", "集成接口", "swagger"],
+        "combinations": [{ "verbs": ["设计", "规划", "定义", "约定", "编写", "生成", "写"], "objects": ["接口", "api", "请求响应"], "exclude": ["接口调用流程图", "接口调用泳道图", "接口调用时序图", "接口调用链"] }],
         "negative": ["api 调用报错", "sdk bug", "网络抓包", "翻译"]
       },
       "context": {
@@ -228,6 +233,7 @@
       "intents": ["create", "validate", "review", "repair"],
       "triggers": {
         "exact": ["代码结构", "分层设计", "模块划分", "领域模型", "架构设计", "ddd"],
+        "combinations": [{ "verbs": ["设计", "规划", "组织", "划分"], "objects": ["代码目录", "模块职责", "依赖边界", "目录分层"] }],
         "negative": ["代码 review", "pr review", "依赖升级", "运行故障"]
       },
       "context": {

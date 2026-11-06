@@ -24,7 +24,7 @@ test("标准说明表不覆盖清单类别，复合规则 ID 和中文名称保�
 test("真实流程图 task/notice/verify/status 包含全部 20 项且联查未验证可见", () => {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "wl-design-rule-inventory-")));
   const run = (...args) => {
-    const result = spawnSync(process.execPath, [CLI, ...args, "--target", root, "--json"], { cwd: root, encoding: "utf8" });
+    const result = spawnSync(process.execPath, [CLI, ...args, "--integration", "expanded", "--target", root, "--json"], { cwd: root, encoding: "utf8" });
     assert.equal(result.status, 0, result.stderr + result.stdout);
     return JSON.parse(result.stdout);
   };
@@ -37,7 +37,7 @@ test("真实流程图 task/notice/verify/status 包含全部 20 项且联查未�
     for (const id of ["FC-01", "FC-02", "FC-03", "FC-04", "FC-05"]) assert.ok(task.decision.requiredChecks.includes(`requirements.flowchart:${id}`));
     const f05 = task.notice.rules.find((rule) => rule.id === "requirements.flowchart:F05");
     assert.ok(f05.name.includes("活动宽高按文字自适应"));
-    assert.equal(f05.source, ".github/standards/01-flowchart.md");
+    assert.equal(f05.source, path.join(root, ".github/standards/01-flowchart.md"));
     assert.equal(task.decision.applicableRules.find((rule) => rule.id === "requirements.flowchart:FC-01").kind, "mechanical");
     const report = verifyFlowchartFile(path.join(root, file));
     assert.equal(report.coverage.checks.length, 20);

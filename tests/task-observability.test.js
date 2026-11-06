@@ -18,7 +18,8 @@ function temp(fn) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "wl-design-observe-"));
   try { return fn(root); } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
-function run(root, ...args) { return spawnSync(process.execPath, [CLI, ...args, "--target", root, "--json"], { encoding: "utf8" }); }
+function runText(root, ...args) { return spawnSync(process.execPath, [CLI, ...args, "--integration", "expanded", "--target", root], { encoding: "utf8" }); }
+function run(root, ...args) { return runText(root, ...args, "--json"); }
 function json(output) { assert.ok(output.stdout, output.stderr); return JSON.parse(output.stdout); }
 
 test("发布路由和路线eval调用同一实现，边界与原因可解释", () => temp((root) => {
@@ -41,18 +42,21 @@ test("发布路由和路线eval调用同一实现，边界与原因可解释", (
   const host = json(run(root, "doctor", "--host", "codex"));
   assert.equal(host.hostDiscovery, "unverified");
   assert.equal(host.gateway.status, "present");
-  assert.equal(json(run(root, "doctor-host")).contentLoaded, "unverified");
-  const beforePure = fs.readdirSync(path.join(root, ".wl-skills-design/runs")).sort();
+  const unknownHost = run(root, "doctor-host");
+  assert.equal(unknownHost.status, 1);
+  assert.equal(json(unknownHost).contentLoaded, "unverified");
+  const beforePure = fs.readdirSync(path.join(root, ".wl-skills/state/design/runs")).sort();
   assert.equal(json(run(root, "route", "--input", "代码 review")).decision.status, "not-applicable");
   assert.equal(json(run(root, "explain", "--input", "设计用户旅程图")).decision.status, "gap");
   assert.equal(json(run(root, "explain", "--input", "设计用户旅程图")).runId, undefined);
-  assert.deepEqual(fs.readdirSync(path.join(root, ".wl-skills-design/runs")).sort(), beforePure);
+  assert.deepEqual(fs.readdirSync(path.join(root, ".wl-skills/state/design/runs")).sort(), beforePure);
   json(run(root, "task", "--input", "设计用户旅程图"));
   assert.ok(runtime.observation.listGaps(runtime.options(root)).length);
   assert.equal(json(run(root, "task", "--input", "创建流程图与数据库设计")).decision.status, "ambiguous");
   assert.equal(json(run(root, "task", "--input", "整理文档")).decision.status, "baseline");
 
   fs.unlinkSync(path.join(root, ".github/skills/data-database-design/SKILL.md"));
+  fs.mkdirSync(path.join(root, ".github/skills/data-database-design/SKILL.md"));
   const missing = json(run(root, "task", "--input", "数据库设计"));
   assert.equal(missing.decision.status, "gap");
   assert.equal(missing.ready, false);
@@ -61,6 +65,10 @@ test("发布路由和路线eval调用同一实现，边界与原因可解释", (
 
 test("真实verify回执包含未执行机械与语义项，输入修改使旧证据失效", () => temp((root) => {
   assert.equal(run(root, "init").status, 0);
+  const emptyStatus = runText(root, "status");
+  assert.equal(emptyStatus.status, 0, emptyStatus.stderr);
+  assert.match(emptyStatus.stdout, /(?:没有|尚无)任务记录/);
+  assert.match(emptyStatus.stdout, /已安装版本/);
   fs.cpSync(path.join(ROOT, "demo/docs/db"), path.join(root, "docs/db"), { recursive: true });
   fs.writeFileSync(path.join(root, "docs/db", "unchecked.txt"), "not a design document\n");
   const task = json(run(root, "task", "--input", "验证库存数据库设计", "--run-id", "db-real"));
@@ -79,12 +87,28 @@ test("真实verify回执包含未执行机械与语义项，输入修改使旧�
   assert.equal(current.stages.hostDiscovered, "unverified");
   assert.equal(current.stages.contentLoaded, "unverified");
   assert.ok(current.pendingChecks.length > 0);
+  const latestStatus = runText(root, "status");
+  assert.equal(latestStatus.status, 0, latestStatus.stderr);
+  assert.match(latestStatus.stdout, /db-real/);
+  assert.match(latestStatus.stdout, /data\.database/);
+  assert.match(latestStatus.stdout, /design-mechanical-validator/);
+  assert.ok(latestStatus.stdout.indexOf("design-mechanical-validator") < latestStatus.stdout.indexOf("已安装版本"));
+  const statusJson = json(run(root, "status"));
+  assert.equal(statusJson.managed, true);
+  assert.equal(statusJson.taskStatus.runId, task.runId);
+  assert.equal(statusJson.taskStatus.validationStatus, "partial");
   const document = fs.readdirSync(path.join(root, "docs/db")).find((name) => name.endsWith(".md"));
   fs.appendFileSync(path.join(root, "docs/db", document), "\nuser changed input\n");
   assert.equal(json(run(root, "status", "--run-id", task.runId)).validationStatus, "stale");
   const inputError = run(root, "verify", "api", "--run-id", "missing-input");
   assert.equal(inputError.status, 1);
   assert.equal(json(run(root, "status", "--run-id", "missing-input")).executionStatus, "failed");
+  assert.match(runText(root, "status").stdout, /missing-input/);
+  const selectedStatus = runText(root, "status", "--run-id", task.runId);
+  assert.equal(selectedStatus.status, 0, selectedStatus.stderr);
+  assert.match(selectedStatus.stdout, /db-real/);
+  assert.match(selectedStatus.stdout, /design-mechanical-validator/);
+  assert.doesNotMatch(selectedStatus.stdout, /missing-input|已安装版本/);
 }));
 
 test("canonical验证清单逐项覆盖，语义不以机械子集冒充通过", () => {

@@ -2,6 +2,8 @@
 
 业务规则、Skill、模板、检查器和参数语义由本包维护。Harness 通过公开 `protocol` 调用，不复制这些实现。本包不依赖 Harness，也不要求安装兄弟包；PC 接入、移动端排除和项目边界判断仍以本包真实 scope 判定为准。
 
+设计路由的短语与可选 `triggers.combinations` 都由 `_manifest.json` 管理；组合声明有序的 `verbs` 和 `objects`，支持“设计用户模块接口”“设计采购数据库”等动宾表达。组合只在同一分句、动词后40字符内匹配，并保留英文词边界；可选 `exclude` 仅排除本分句中的复合对象，防止把“接口调用流程图”当成接口定义设计，不压制其他分句的独立请求。配置不执行正则。组合沿用现有得分阈值、负向规则和领先分差；多个设计域、只解释或只列计划不会因此获得额外执行权限。公开 CLI 与协议共用发布路由器。
+
 ## 稳定结构化执行入口
 
 先用 `protocol request` 的 `task` 创建计划，再读取 `status.result.integration` 中的 `allowedExecutors`、`targets`、`ruleRefs`、准入和新鲜度。选定已允许的执行器后请求：

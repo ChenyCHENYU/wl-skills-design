@@ -7,21 +7,42 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { gatewayInstallPaths } = require("../lib/host-profiles.cjs");
 const ROOT = path.resolve(__dirname, "..");
 const CLI = path.join(ROOT, "bin/wl-skills-design.js");
 const foreign = "<!-- wl-skills-kit:begin -->\n前端包规则\n<!-- wl-skills-kit:end -->\n";
-const stateFile = (root) => path.join(root, ".wl-skills-design/state.json");
+const stateFile = (root) => path.join(root, ".wl-skills/state/design/manifest.json");
 const exactHash = (content) => crypto.createHash("sha256").update(content).digest("hex");
 
 function fixture(run) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "wl-design-shared-"));
   const cli = (...args) => {
-    const result = spawnSync(process.execPath, [CLI, ...args, "--json"], { cwd: root, encoding: "utf8" });
+    const result = spawnSync(process.execPath, [CLI, ...args, "--integration", "expanded", "--json"], { cwd: root, encoding: "utf8" });
     return { code: result.status, data: result.stdout ? JSON.parse(result.stdout) : null, stderr: result.stderr };
   };
   function put(rel, text) { const file = path.join(root, rel); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, text); }
   try { run({ root, cli, put }); } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
+
+test("宿主技能薄入口独立归属，编辑器选择不扩大全量规则，更新与卸载保留用户内容", () => fixture(({ root, cli, put }) => {
+  const canonical = fs.readFileSync(path.join(ROOT, "files/.agents/skills/wl-skills-design/SKILL.md"), "utf8").replaceAll("__WL_SKILLS_DESIGN_VERSION__", require("../package.json").version);
+  const preexisting = ".claude/skills/wl-skills-design/SKILL.md";
+  put(preexisting, canonical);
+  assert.equal(cli("init", "--hosts", "all").code, 0);
+  for (const rel of gatewayInstallPaths("@agile-team/wl-skills-design", { hosts: "all" })) assert.equal(fs.readFileSync(path.join(root, rel), "utf8"), canonical);
+  assert.ok(fs.existsSync(path.join(root, ".cursor/rules/wl-skills-design.mdc")), "expanded all 显式保留兼容规则");
+  const missing = ".kiro/skills/wl-skills-design/SKILL.md";
+  fs.unlinkSync(path.join(root, missing));
+  assert.equal(cli("update").code, 0);
+  assert.equal(fs.readFileSync(path.join(root, missing), "utf8"), canonical);
+  const customized = ".agents/skills/wl-skills-design/SKILL.md";
+  put(customized, canonical + "\nProject customization.\n");
+  assert.equal(cli("update").code, 2);
+  assert.equal(cli("uninstall", "--force").code, 0);
+  assert.equal(fs.readFileSync(path.join(root, customized), "utf8"), canonical + "\nProject customization.\n");
+  assert.equal(fs.readFileSync(path.join(root, preexisting), "utf8"), canonical);
+  assert.ok(!fs.existsSync(path.join(root, missing)));
+}));
 
 test("共享用户内容、其他包区块共存，重复 update 和卸载不改变外部内容", () => fixture(({ root, cli, put }) => {
   const original = "用户规则";
@@ -144,13 +165,13 @@ test("项目 Delivery Profile 不因 force 升级重置", () => fixture(({ root,
 test("purge 仅移除本包快照，不删除状态目录及备份中的用户附加文件", () => fixture(({ root, cli, put }) => {
   const installed = cli("init");
   assert.equal(installed.code, 0);
-  put(".wl-skills-design/user-note.txt", "状态目录的用户文件");
-  put(`.wl-skills-design/backups/${installed.data.backupId}/user-note.txt`, "快照目录的用户文件");
+  put(".wl-skills/state/design/user-note.txt", "状态目录的用户文件");
+  put(`.wl-skills/state/design/backups/${installed.data.backupId}/user-note.txt`, "快照目录的用户文件");
   const removed = cli("uninstall", "--purge");
   assert.equal(removed.code, 0);
   assert.equal(removed.data.purged, false);
-  assert.equal(fs.readFileSync(path.join(root, ".wl-skills-design/user-note.txt"), "utf8"), "状态目录的用户文件");
-  assert.equal(fs.readFileSync(path.join(root, `.wl-skills-design/backups/${installed.data.backupId}/user-note.txt`), "utf8"), "快照目录的用户文件");
+  assert.equal(fs.readFileSync(path.join(root, ".wl-skills/state/design/user-note.txt"), "utf8"), "状态目录的用户文件");
+  assert.equal(fs.readFileSync(path.join(root, `.wl-skills/state/design/backups/${installed.data.backupId}/user-note.txt`), "utf8"), "快照目录的用户文件");
 }));
 
 test("restore 只恢复本包区块，保留安装后追加的其他包和用户文本", () => fixture(({ root, cli, put }) => {
@@ -169,14 +190,14 @@ test("陌生独占文件在 force 下仍阻断且不产生半安装", () => fixt
   assert.equal(result.code, 2);
   assert.equal(fs.readFileSync(path.join(root, ".github/skills/doc-intake/SKILL.md"), "utf8"), "用户已有技能");
   assert.ok(!fs.existsSync(path.join(root, "AGENTS.md")));
-  assert.ok(!fs.existsSync(path.join(root, ".wl-skills-design")));
+  assert.ok(!fs.existsSync(path.join(root, ".wl-skills/state/design")));
 }));
 
 test("文件占用祖先目录时预检零写入", () => fixture(({ root, cli, put }) => {
   put(".github", "本地文件");
   assert.equal(cli("init", "--force").code, 1);
   assert.ok(!fs.existsSync(path.join(root, "AGENTS.md")));
-  assert.ok(!fs.existsSync(path.join(root, ".wl-skills-design")));
+  assert.ok(!fs.existsSync(path.join(root, ".wl-skills/state/design")));
   assert.equal(fs.readFileSync(path.join(root, ".github"), "utf8"), "本地文件");
 }));
 

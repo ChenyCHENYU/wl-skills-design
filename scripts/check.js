@@ -127,6 +127,9 @@ function checkManifestAndSkills() {
     if (!Array.isArray(skill.intents) || !skill.intents.length) errors.push(`[manifest] ${label} 缺少 intents`);
     if (!Array.isArray(skill.triggers?.exact) || !skill.triggers.exact.length) errors.push(`[manifest] ${label} 缺少 exact`);
     if (!Array.isArray(skill.triggers?.negative)) errors.push(`[manifest] ${label} 缺少 negative`);
+    if (skill.triggers?.combinations !== undefined && (!Array.isArray(skill.triggers.combinations) || !skill.triggers.combinations.every((item) => item && [item.verbs, item.objects].every((list) => Array.isArray(list) && list.length && list.every((value) => typeof value === "string" && value.trim())) && (item.exclude === undefined || Array.isArray(item.exclude) && item.exclude.every((value) => typeof value === "string" && value.trim()))))) {
+      errors.push(`[manifest] ${label} combinations 必须声明非空 verbs/objects 短语列表`);
+    }
     if (!skill.context?.blocking?.length) errors.push(`[manifest] ${label} 缺少 blocking context`);
     if (!Array.isArray(skill.context?.optional)) errors.push(`[manifest] ${label} 缺少 optional context`);
     if (!Array.isArray(skill.context?.signals) || !skill.context.signals.length) errors.push(`[manifest] ${label} 缺少 context signals`);

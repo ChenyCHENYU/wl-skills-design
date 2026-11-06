@@ -79,8 +79,8 @@ try {
   fs.mkdirSync(agents);
   runInstalled(["init", "--editor", "agents", "--json"], agents);
   assert.ok(fs.existsSync(path.join(agents, "AGENTS.md")));
-  assert.ok(fs.existsSync(path.join(agents, ".github", "skills", "requirements-flowchart", "SKILL.md")));
-  assert.ok(fs.existsSync(path.join(agents, ".wl-skills-design", "state.json")));
+  assert.ok(!fs.existsSync(path.join(agents, ".github", "skills")), "compact 资源保留包内");
+  assert.ok(fs.existsSync(path.join(agents, ".wl-skills/state/design", "manifest.json")));
   assert.ok(!fs.existsSync(path.join(agents, "CLAUDE.md")));
   assert.ok(!fs.existsSync(path.join(agents, ".github", "copilot-instructions.md")));
   runInstalled(["doctor", "--json"], agents);
@@ -103,16 +103,16 @@ try {
   runInstalled(["validate-model", "--json"], agents);
   runInstalled(["uninstall", "--json"], agents);
   assert.ok(!fs.existsSync(path.join(agents, "AGENTS.md")));
-  assert.ok(fs.existsSync(path.join(agents, ".wl-skills-design", "backups")));
+  assert.ok(fs.existsSync(path.join(agents, ".wl-skills/state/design", "backups")));
   runInstalled(["restore", "--json"], agents);
   assert.ok(fs.existsSync(path.join(agents, "AGENTS.md")), "restore 必须能撤销卸载");
 
   const cursor = path.join(tempRoot, "cursor");
   fs.mkdirSync(cursor);
   runInstalled(["init", "--editor", "cursor"], cursor);
-  assert.ok(fs.existsSync(path.join(cursor, ".cursor", "rules", "wl-skills-design.mdc")));
+  assert.ok(fs.existsSync(path.join(cursor, ".agents", "skills", "wl-skills-design", "SKILL.md")));
   assert.ok(!fs.existsSync(path.join(cursor, ".cursorrules")));
-  assert.ok(!fs.existsSync(path.join(cursor, "AGENTS.md")));
+  assert.ok(fs.existsSync(path.join(cursor, "AGENTS.md")));
 
   console.log("  ✔ package smoke 通过（真实 npm 载荷安装）");
 } finally {

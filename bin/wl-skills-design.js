@@ -13,6 +13,8 @@ const { validateDesignModelFile } = require(path.join(ROOT, "lib", "design-model
 const { verifySpecDir, verifyFlowchartFile, verifyDbDir, verifyApiDir } = require(path.join(ROOT, "lib", "verify.js"));
 const shared = require(path.join(ROOT, "lib", "shared-assets.js"));
 const { COMMAND_NAMES, getCommand, helpCommandLines } = require("../lib/cli-catalog.js");
+const { gatewayInstallPaths, hostProfiles } = require("../lib/host-profiles.cjs");
+const integrationSupport = require("../lib/project-integration.cjs");
 const OWNER = "wl-skills-design";
 const EDITORS_FILE = path.join(
   FILES_DIR,
@@ -21,8 +23,10 @@ const EDITORS_FILE = path.join(
   "_compat",
   "editors.json"
 );
-const STATE_DIR = ".wl-skills-design";
-const STATE_FILE = "state.json";
+const STATE_DIR = ".wl-skills/state/design";
+const STATE_FILE = "manifest.json";
+const LEGACY_STATE = ".wl-skills-design/state.json";
+const STATE_IGNORE = ".wl-skills/state/.gitignore";
 const EXIT_CONFLICT = 2;
 const MAX_BACKUPS = 5;
 const LOCK_STALE_MS = 5 * 60 * 1000;
@@ -71,7 +75,7 @@ function parseArgs(argv) {
     version: false,
   };
   const commands = new Set(COMMAND_NAMES);
-  const valueFlags = new Map(["editor", "target", "model", "output", "id", "input", "run-id", "host", "input-file", "file"].map((name) => [`--${name}`, name === "run-id" ? "runId" : name === "input-file" ? "inputFile" : name === "file" ? "files" : name]));
+  const valueFlags = new Map(["hosts", "integration", "editor", "target", "model", "output", "id", "input", "run-id", "host", "input-file", "file"].map((name) => [`--${name}`, name === "run-id" ? "runId" : name === "input-file" ? "inputFile" : name === "file" ? "files" : name]));
   let commandSeen = false;
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -104,8 +108,8 @@ function parseArgs(argv) {
   return result;
 }
 
-function helpText(editors) {
-  const ids = editors.map((item) => item.id).join(" | ");
+function helpText() {
+  const ids = hostProfiles.join(" | ");
   return `
 wl-skills-design v${PACKAGE.version}
 
@@ -116,7 +120,9 @@ wl-skills-design v${PACKAGE.version}
 ${helpCommandLines()}
 
 选项：
-  --editor <id[,id]>  选择适配器：${ids} | all
+  --hosts <id[,id]>   选择实际宿主，默认 codex（通用 .agents 入口）
+  --integration <mode> compact（默认）或 expanded（兼容资源展开）
+  --editor <id[,id]>  兼容宿主选择：${ids} | all
   --target <dir>      目标项目目录，默认当前目录
   --input <task>      task/route/explain 的完整任务描述
   --run-id <id>       关联任务与真实验证回执
@@ -277,7 +283,7 @@ function statePath(target) {
 }
 
 function readState(target) {
-  const file = statePath(target);
+  const file = fs.existsSync(statePath(target)) ? statePath(target) : path.join(target, LEGACY_STATE);
   if (!fs.existsSync(file)) return null;
   let parsed;
   try {
@@ -324,36 +330,23 @@ function ensureInside(target, rel) {
   return shared.preflight(target, rel);
 }
 
-function selectEditors(requested, editors, state, command) {
-  const known = new Set(editors.map((item) => item.id));
-  let fallback = command === "update" && state?.editors?.length ? state.editors : ["agents"];
-  const retired = fallback.filter((item) => !known.has(item));
-  if (retired.length) {
-    console.warn(`  ! 以下 profile 已在本版本停用并自动移除：${retired.join(", ")}`);
-    fallback = fallback.filter((item) => known.has(item));
-    if (!fallback.length) fallback = ["agents"];
+function buildSources(selection, editors) {
+  const adapterByPath = new Set(editors.map(item => normalizeRel(item.outputPath)));
+  const entries = new Set(selection.entryFiles.map(item => item.replaceAll("<skill>", OWNER)));
+  if (selection.integration === "expanded") {
+    for (const editor of editors) if (selection.hosts.includes(editor.id === "agents" ? "codex" : editor.id)) entries.add(normalizeRel(editor.outputPath));
   }
-  const raw = requested ? requested.split(",").map((item) => item.trim()).filter(Boolean) : fallback;
-  const selected = raw.includes("all") ? editors.map((item) => item.id) : [...new Set(raw)];
-  const unknown = selected.filter((item) => !known.has(item));
-  if (unknown.length) throw new Error(`未知编辑器 profile：${unknown.join(", ")}`);
-  return selected.sort();
-}
-
-function buildSources(selectedEditors, editors) {
-  const adapterByPath = new Map(
-    editors.map((item) => [normalizeRel(item.outputPath), item.id])
-  );
-  const selected = new Set(selectedEditors);
-  return getAllFiles(FILES_DIR)
-    .map((src) => {
-      const rel = normalizeRel(path.relative(FILES_DIR, src));
-      return { rel, src, hash: hashFile(src) };
-    })
-    .filter((item) => {
-      const adapter = adapterByPath.get(item.rel);
-      return !adapter || selected.has(adapter);
-    });
+  const sources = getAllFiles(FILES_DIR).map(src => ({ rel: normalizeRel(path.relative(FILES_DIR, src)), src, hash: hashFile(src) }))
+    .filter(item => entries.has(item.rel) || (selection.integration === "expanded" && !adapterByPath.has(item.rel) &&
+      !item.rel.endsWith(`/${OWNER}/SKILL.md`) && !item.rel.includes("/_compat/")));
+  const canonical = { src: path.join(FILES_DIR, `.agents/skills/${OWNER}/SKILL.md`) };
+  canonical.sourceHash = hashFile(canonical.src);
+  canonical.content = fs.readFileSync(canonical.src, "utf8").replaceAll("__WL_SKILLS_DESIGN_VERSION__", PACKAGE.version);
+  canonical.hash = hashBuffer(Buffer.from(canonical.content));
+  for (const rel of gatewayInstallPaths(PACKAGE.name, selection)) {
+    if (!sources.some(item => item.rel === rel)) sources.push({ ...canonical, rel });
+  }
+  return sources;
 }
 
 function buildInstallPlan(command, target, sources, state, force) {
@@ -415,15 +408,15 @@ function buildInstallPlan(command, target, sources, state, force) {
     operations.push({ type: "write", ...source, dest, existed: true, currentHash, recordBefore: old, recordAfter: record });
   }
 
-  if (command === "update") {
+  if (state) {
     for (const old of previous.values()) {
       if (wanted.has(old.path)) continue;
       const dest = ensureInside(target, old.path);
       if (!fs.existsSync(dest)) continue;
-      if (old.kind === "reference") { preserved.push(old.path); continue; }
+      if (old.kind === "reference" || old.projectOwned || old.path.startsWith(".github/contracts/")) { preserved.push(old.path); files.push(old.path.startsWith(".github/contracts/") ? { ...old, kind: "reference", projectOwned: true } : old); continue; }
       if (old.kind === "block") {
         const removed = shared.removeMarkdown(fs.readFileSync(dest, "utf8"), { ...old, installedHash: old.hash }, OWNER);
-        if (removed.preserved) { preserved.push(old.path); continue; }
+        if (removed.preserved) { preserved.push(old.path); files.push(old); continue; }
         operations.push({ type: removed.content || removed.keepFile ? "write" : "remove", rel: old.path, dest, existed: true,
           currentHash: hashFile(dest), content: removed.content, recordBefore: old, recordAfter: null });
         continue;
@@ -436,6 +429,7 @@ function buildInstallPlan(command, target, sources, state, force) {
       const currentHash = hashFile(dest);
       if (currentHash !== old.hash) {
         preserved.push(old.path);
+        files.push(old);
         continue;
       }
       operations.push({ type: "remove", rel: old.path, dest, existed: true, currentHash, recordBefore: old, recordAfter: null });
@@ -517,14 +511,17 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
   const backupId = timestamp();
   const backupRoot = path.join(target, STATE_DIR, "backups", backupId);
   const applied = [];
+  const stateFile = statePath(target);
+  const originalStateBytes = fs.existsSync(stateFile) ? fs.readFileSync(stateFile) : null;
 
   try {
+    if (JSON.stringify(readState(target)) !== JSON.stringify(previousState)) throw new Error("安装状态在预检后发生变化");
     // Revalidate the whole plan before making the first mutation.
     for (const operation of operations) {
       ensureInside(target, operation.rel);
       const actual = fs.existsSync(operation.dest) ? hashFile(operation.dest) : null;
       if (actual !== operation.currentHash) throw new Error(`目标文件在预检后发生变化：${operation.rel}`);
-      if (operation.src && hashFile(operation.src) !== operation.hash) throw new Error(`源文件在预检后发生变化：${operation.rel}`);
+      if (operation.src && hashFile(operation.src) !== (operation.sourceHash || operation.hash)) throw new Error(`源文件在预检后发生变化：${operation.rel}`);
     }
     for (const operation of operations) {
       const entry = {
@@ -547,6 +544,7 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
         continue;
       }
 
+      if (operation.type === "state-ignore") { integrationSupport.ensureStateIgnore(target); continue; }
       fs.mkdirSync(path.dirname(operation.dest), { recursive: true });
       const temp = `${operation.dest}.tmp-${process.pid}`;
       if (operation.content !== undefined) fs.writeFileSync(temp, operation.content, "utf8");
@@ -577,19 +575,21 @@ function applyOperations(target, operations, previousState, nextState, dryRun) {
     return { backupId: operations.length ? backupId : null, changed: operations.length };
   } catch (error) {
     rollback(applied, target);
-    if (previousState) writeJsonAtomic(statePath(target), previousState);
-    else if (fs.existsSync(statePath(target))) fs.rmSync(statePath(target), { force: true });
+    if (originalStateBytes !== null) { fs.mkdirSync(path.dirname(stateFile), { recursive: true }); fs.writeFileSync(stateFile, originalStateBytes); }
+    else if (fs.existsSync(stateFile)) fs.rmSync(stateFile, { force: true });
     throw new Error(`事务失败，已回滚：${error.message}`);
   }
 }
 
-function buildState(editors, files) {
+function buildState(selection, files) {
   return {
     schemaVersion: 1,
     package: PACKAGE.name,
     version: PACKAGE.version,
     installedAt: new Date().toISOString(),
-    editors,
+    editors: selection.hosts,
+    hosts: selection.hosts,
+    integration: selection.integration,
     files,
   };
 }
@@ -615,8 +615,9 @@ function printResult(value, json) {
 
 function runInstall(options, target, editors) {
   const state = readState(target);
-  const selected = selectEditors(options.editor, editors, state, options.command);
-  const sources = buildSources(selected, editors);
+  const selection = integrationSupport.resolveIntegration({ projectRoot: target, hosts: options.hosts, editor: options.editor || undefined, integration: options.integration, recorded: state });
+  const selected = selection.hosts;
+  const sources = buildSources(selection, editors);
   const plan = buildInstallPlan(options.command, target, sources, state, options.force);
   if (plan.conflicts.length) {
     const result = { ok: false, command: options.command, conflicts: plan.conflicts };
@@ -628,7 +629,26 @@ function runInstall(options, target, editors) {
     }
     return EXIT_CONFLICT;
   }
-  const nextState = buildState(selected, plan.files);
+  const nextState = buildState(selection, plan.files);
+  const configuration = integrationSupport.readProjectConfig(target);
+  const configRel = normalizeRel(path.relative(target, configuration.configPath));
+  const configFile = ensureInside(target, configRel);
+  const before = fs.existsSync(configFile) ? fs.readFileSync(configFile, "utf8") : null;
+  const document = before === null ? {} : JSON.parse(before);
+  const currentProfile = configuration.value;
+  const nextProfile = { ...currentProfile, schemaVersion: 1, integration: selection.integration, hosts: selection.hosts };
+  if (JSON.stringify(currentProfile) !== JSON.stringify(nextProfile)) {
+    plan.operations.push({ type: "write", rel: configRel, dest: configFile, existed: before !== null,
+      currentHash: before === null ? null : hashFile(configFile), content: JSON.stringify(configRel === "package.json" ? { ...document, wlSkills: nextProfile } : nextProfile, null, 2) + "\n" });
+  }
+  const ignoreFile = ensureInside(target, STATE_IGNORE);
+  const ignoreBefore = fs.existsSync(ignoreFile) ? fs.readFileSync(ignoreFile, "utf8") : null;
+  const previousIgnore = ignoreBefore || "";
+  const missingIgnores = ["*/runs/", "*/cache/", "*/backups/"].filter(entry => !previousIgnore.split(/\r?\n/).includes(entry));
+  if (missingIgnores.length) plan.operations.push({ type: "state-ignore", rel: STATE_IGNORE, dest: ignoreFile,
+    existed: ignoreBefore !== null, currentHash: ignoreBefore === null ? null : hashFile(ignoreFile) });
+  const legacyFile = ensureInside(target, LEGACY_STATE);
+  if (fs.existsSync(legacyFile)) plan.operations.push({ type: "remove", rel: LEGACY_STATE, dest: legacyFile, existed: true, currentHash: hashFile(legacyFile) });
   const lock = options.dryRun ? null : acquireLock(target);
   let applied;
   try {
@@ -662,8 +682,8 @@ function runStatus(options, target, doctor = false) {
   const runtime = require("../lib/task-runtime.js");
   if (options.host) {
     const result = runtime.doctorHost(target, options.host);
-    printResult(options.json ? result : JSON.stringify(result, null, 2), options.json);
-    return result.ok === false ? 1 : 0;
+    printResult(options.json ? result : runtime.observation.formatHostDiagnostic(result), options.json);
+    return result.entryReadiness === "ready" ? 0 : 1;
   }
   if (options.runId) {
     const result = runtime.status(target, { runId: options.runId });
@@ -672,7 +692,7 @@ function runStatus(options, target, doctor = false) {
   }
   const state = readState(target);
   const status = inspectState(target, state);
-  const manifest = path.join(target, ".github", "skills", "_manifest.json");
+  const manifest = integrationSupport.resolveResourcePath(target, ".github/skills/_manifest.json", ROOT);
   const skillIssues = [];
   if (doctor && status.managed) {
     if (!fs.existsSync(manifest)) skillIssues.push("缺少 .github/skills/_manifest.json");
@@ -680,7 +700,7 @@ function runStatus(options, target, doctor = false) {
       try {
         const data = JSON.parse(fs.readFileSync(manifest, "utf8"));
         for (const skill of (data.skills || []).filter((item) => item.status === "released")) {
-          if (!fs.existsSync(path.join(target, ".github", "skills", skill.skillPath))) {
+          if (!fs.existsSync(integrationSupport.resolveResourcePath(target, `.github/skills/${skill.skillPath}`, ROOT))) {
             skillIssues.push(`缺少 Skill：${skill.skillPath}`);
           }
         }
@@ -698,14 +718,17 @@ function runStatus(options, target, doctor = false) {
     hostDiscovery: "unverified",
   };
   if (options.json) printResult(result, true);
-  else if (!status.managed) console.log("\n  未发现 wl-skills-design 安装状态。\n");
   else {
-    console.log(`\n  wl-skills-design ${doctor ? "doctor" : "status"}`);
-    console.log(`  · 已安装版本：${status.version}`);
-    console.log(`  · profile：${(status.editors || []).join(", ")}`);
-    console.log(`  · 正常：${status.ok}，缺失：${status.missing.length}，本地改动：${status.modified.length}`);
-    [...status.missing, ...status.modified, ...skillIssues].forEach((item) => console.log(`     - ${item}`));
-    console.log("");
+    if (!doctor) console.log(runtime.observation.formatStatus(result.taskStatus));
+    if (!status.managed) console.log("\n  未发现 wl-skills-design 安装状态。\n");
+    else {
+      console.log(`\n  wl-skills-design ${doctor ? "doctor" : "安装状态"}`);
+      console.log(`  · 已安装版本：${status.version}`);
+      console.log(`  · profile：${(status.editors || []).join(", ")}`);
+      console.log(`  · 正常：${status.ok}，缺失：${status.missing.length}，本地改动：${status.modified.length}`);
+      [...status.missing, ...status.modified, ...skillIssues].forEach((item) => console.log(`     - ${item}`));
+      console.log("");
+    }
   }
   return result.ok ? 0 : 1;
 }
@@ -747,6 +770,7 @@ function runRestore(options, target) {
   const currentRecords = new Map((currentState?.files || []).map((item) => [item.path, item]));
   const nextState = manifest.previousState ? JSON.parse(JSON.stringify(manifest.previousState)) : null;
   for (const entry of manifest.entries) {
+    if (["package.json", ".wl-skills/config.json", LEGACY_STATE, STATE_IGNORE].includes(entry.path)) continue;
     const dest = ensureInside(target, entry.path);
     const current = fs.existsSync(dest) ? fs.readFileSync(dest, "utf8") : null;
     const originalBytes = entry.existed ? fs.readFileSync(ensureInside(root, entry.backup)) : null;
@@ -835,6 +859,7 @@ function runUninstall(options, target) {
   for (const item of state.files || []) {
     const dest = ensureInside(target, item.path);
     if (!fs.existsSync(dest)) continue;
+    if (item.projectOwned || item.path.startsWith(".github/contracts/")) { preserved.push(item.path); continue; }
     if (item.kind === "reference") { preserved.push(item.path); retained.push({ ...item, retained: true }); continue; }
     if (item.kind === "block") {
       try {
@@ -924,7 +949,7 @@ const COMMAND_HANDLERS = Object.freeze({
     return runInstall(options, target, editors);
   },
   taskDecision: runTaskDecision,
-  doctorHost: (options, target) => runStatus({ ...options, host: options.host || "codex" }, target, true),
+  doctorHost: (options, target) => runStatus({ ...options, host: options.host || "unspecified" }, target, true),
   validateModel: runValidateModel,
   layoutFlowchart: runLayoutFlowchart,
   verify: runVerify,

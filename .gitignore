@@ -37,3 +37,6 @@ Thumbs.db
 
 .wl-skills-design/runs/
 demo/.wl-skills-design/runs/
+
+# Unified local WL execution evidence and installation backups
+**/.wl-skills/state/

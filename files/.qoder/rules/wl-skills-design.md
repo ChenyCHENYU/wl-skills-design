@@ -10,13 +10,13 @@
 先确认目标项目自身的接入证据（本包安装清单、直接依赖或 `.wl-skills-scope.json` 显式启用），再判定任务。只在目标已接入且平台适用时读取规则；父目录安装、兄弟包、Vue 文件或触发词不能证明接入。未接入的开源项目不套用规则、不建议自动安装；UniApp/小程序/App/PDA/移动 H5 不适用。跨项目目标分别判定，沿最近项目边界停止，不能越过未接入子项目找父清单。工具返回 `scope` 作为静态范围证据，宿主加载仍需实际事件。
 
 
-> 版本：v1.0.2。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
+> 版本：v1.0.3。详细能力按需从 Agent Skill 加载，不要把全部规范注入无关任务。
 
 ## 调度入口
 
-1. 每次任务先执行 `wl-skills-design task --input "<完整任务>" --json`，记录实际 runId、matched/baseline/ambiguous/gap/not-applicable、理由和候选；相关却缺能力/规则必须显示 gap 并持久化规则建议。读取 `.github/skills/_manifest.json`，只选择 `status=released` 的能力。
+1. 每次任务先执行 `node node_modules/@agile-team/wl-skills-design/bin/wl-skills-design.js task --input "<完整任务>" --json`，本地文件缺失时仅可使用已有同版本离线缓存：`npx --offline --yes --package @agile-team/wl-skills-design@1.0.3 wl-skills-design task --input "<任务>" --json`；无缓存明确未执行，不自动联网安装。记录实际 runId、matched/baseline/ambiguous/gap/not-applicable、理由和候选；相关却缺能力/规则必须显示 gap 并持久化规则建议。读取 工具返回的包内或项目覆盖 `_manifest.json` 路径，只选择 `status=released` 的能力。
 
-编辑前必须展示实际 `notice`：包名/版本、判定、Skill 或基础约束、规则编号与名称、目标、runId 和尚未执行的检查；命令失败或版本不一致须明示，不能静默跳过。
+编辑前必须展示实际 `notice`：匹配技能或基础约束、实际工具、待检查项和 runId（版本在详情）；命令失败或版本不一致须明示，不能静默跳过。
 2. 先判定动作意图：`impact` → `review` → `validate` → `repair` → `maintain` → `create`。
 3. 再判定领域；普通代码 review、PR review 和代码重构不得进入产品设计评审。
 4. 应用 manifest 中的精确词、负向词、优先级和最小领先分差。并列或信息不足时只追问一个关键问题。
@@ -46,13 +46,13 @@
 - `doc-intake`：半成品文档接入、差距分析和补全任务
 - `code-architecture`：模块边界、分层依赖、契约和质量门设计
 
-人读索引见 `.github/skills/_registry.md`，使用说明见 `.github/guides/usage.md`。
+人读索引与使用指南随 npm 包提供；任务先按工具返回的真实路径读取所选技能和规范。
 
 ## 可观测性与证据
 
 - `.agents/skills/wl-skills-design/SKILL.md` 是 Codex 发现入口，按需读取 canonical Skill；安装存在不能证明宿主已经发现或模型已选中。
 - task/route/explain 只产生判定和计划。文件 SHA 是快照，模型自述读取或执行必须标“模型声明”。
 - 实际 `verify <domain> --run-id <runId> --json` 回执区分机械、语义、跳过及不适用；机械子集通过不能宣称完整规范验证通过。
-- `status --run-id <runId> --json` 检查真实执行、验证覆盖和输入新鲜度；`doctor --host codex --json` 仅静态诊断入口可用性。
+- `status --run-id <runId> --json` 检查真实执行、验证覆盖和输入新鲜度；静态入口诊断按当前实际宿主选择：ZCode 使用 `doctor-host --host zcode --json`，Codex 使用 `doctor-host --host codex --json`，均复用同版本执行器。入口存在不证明宿主已经加载。
 
 同一用户任务跨已安装且适用的包复用同一 `--run-id <id>` 或 `WL_TASK_RUN_ID`；本包仍可独立使用，无需安装其他 WL 包。

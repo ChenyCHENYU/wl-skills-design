@@ -105,6 +105,9 @@ test("机械验证：demo 接口设计全绿", () => {
   const report = verifyApiDir(DEMO_API);
   assert.strictEqual(report.ok, true, JSON.stringify(report.checks.filter((item) => item.status === "fail")));
   assert.ok(report.summary.pass >= 7);
+  for (const rule of ["A01", "A02", "B06"]) {
+    assert.deepStrictEqual(report.checks.filter((item) => item.rule === rule).map((item) => item.status), ["pass"]);
+  }
 });
 
 test("机械验证：数据库缺陷被检出", () => withTemp((dir) => {
@@ -129,12 +132,16 @@ test("机械验证：接口缺陷被检出", () => withTemp((dir) => {
   let text = fs.readFileSync(file, "utf8");
   text = text.replace('"total": 1,', '"total": 1,,');
   text = text.replace("| string | 可空 | 精确匹配过滤 |", "| String | 可空 | 精确匹配过滤 |");
+  text = text.replace("### EQM-IF-02", "### EQM-IF-01");
   text = text.replace("submitInspection", "queryInspectionPage");
   fs.writeFileSync(file, text, "utf8");
   const report = verifyApiDir(target);
   assert.strictEqual(report.ok, false);
   const fails = report.checks.filter((item) => item.status === "fail").map((item) => item.rule);
-  for (const rule of ["A02", "B04", "B06"]) assert.ok(fails.includes(rule), `应检出 ${rule}，实际：${fails.join(",")}`);
+  for (const rule of ["A01", "A02", "B04", "B06"]) assert.ok(fails.includes(rule), `应检出 ${rule}，实际：${fails.join(",")}`);
+  for (const rule of ["A01", "A02", "B06"]) {
+    assert.ok(!report.checks.some((item) => item.rule === rule && item.status === "pass"), `${rule} 存在缺陷时不得输出整体通过`);
+  }
 }));
 
 test("CLI verify db/api 端到端", () => {

@@ -12,7 +12,7 @@ const CLI = path.join(ROOT, "bin", "wl-skills-design.js");
 const PKG = require(path.join(ROOT, "package.json"));
 
 function runCli(args, cwd = ROOT) {
-  const result = spawnSync(process.execPath, [CLI, ...args], { cwd, encoding: "utf8" });
+  const result = spawnSync(process.execPath, [CLI, ...args, "--integration", "expanded"], { cwd, encoding: "utf8" });
   return { code: result.status ?? 1, stdout: result.stdout || "", stderr: result.stderr || "" };
 }
 
@@ -62,7 +62,7 @@ test("validate-model 不改模型，独立记录实际校验回执", () => withT
   const result = runCli(["validate-model", "--json"], dir);
   assert.strictEqual(result.code, 0, result.stderr);
   assert.strictEqual(JSON.parse(result.stdout).ok, true);
-  assert.deepStrictEqual(fs.readdirSync(dir).filter((name) => name !== ".wl-skills-design").sort(), before);
+  assert.deepStrictEqual(fs.readdirSync(dir).filter((name) => name !== ".wl-skills").sort(), before);
   const output = JSON.parse(result.stdout);
   assert.strictEqual(output.receipt.validationStatus, "passed");
   assert.ok(output.runId);
@@ -83,14 +83,14 @@ test("validate-model 对断链引用返回失败", () => withTemp((dir) => {
   assert.ok(JSON.parse(result.stdout).errors.some((item) => item.code === "DM008"));
 }));
 
-test("init 默认只安装 agents profile 并写状态", () => withTemp((dir) => {
+test("expanded 显式展开资源并默认使用通用 codex 宿主", () => withTemp((dir) => {
   const result = runCli(["init", "--json"], dir);
   assert.strictEqual(result.code, 0, result.stderr);
   const output = JSON.parse(result.stdout);
-  assert.deepStrictEqual(output.editors, ["agents"]);
+  assert.deepStrictEqual(output.editors, ["codex"]);
   assert.ok(fs.existsSync(path.join(dir, "AGENTS.md")));
   assert.ok(fs.existsSync(path.join(dir, ".github", "skills", "requirements-flowchart", "SKILL.md")));
-  assert.ok(fs.existsSync(path.join(dir, ".wl-skills-design", "state.json")));
+  assert.ok(fs.existsSync(path.join(dir, ".wl-skills/state/design", "manifest.json")));
   assert.ok(!fs.existsSync(path.join(dir, "CLAUDE.md")));
   assert.ok(!fs.existsSync(path.join(dir, ".github", "copilot-instructions.md")));
 }));
@@ -100,7 +100,7 @@ test("--editor cursor 只安装当前路径，不安装 legacy 文件", () => wi
   assert.strictEqual(result.code, 0, result.stderr);
   assert.ok(fs.existsSync(path.join(dir, ".cursor", "rules", "wl-skills-design.mdc")));
   assert.ok(!fs.existsSync(path.join(dir, ".cursorrules")));
-  assert.ok(!fs.existsSync(path.join(dir, "AGENTS.md")));
+  assert.ok(fs.existsSync(path.join(dir, "AGENTS.md")));
 }));
 
 test("init 保留共享 AGENTS 用户内容并追加本包区块", () => withTemp((dir) => {
@@ -141,7 +141,7 @@ test("update 切换 profile 时移除未修改旧适配器", () => withTemp((dir
   assert.strictEqual(runCli(["init", "--editor", "agents"], dir).code, 0);
   const result = runCli(["update", "--editor", "cursor"], dir);
   assert.strictEqual(result.code, 0, result.stderr);
-  assert.ok(!fs.existsSync(path.join(dir, "AGENTS.md")));
+  assert.ok(fs.existsSync(path.join(dir, "AGENTS.md")));
   assert.ok(fs.existsSync(path.join(dir, ".cursor", "rules", "wl-skills-design.mdc")));
 }));
 
@@ -197,5 +197,5 @@ test("uninstall --purge 清除状态与备份目录", () => withTemp((dir) => {
   assert.strictEqual(runCli(["init"], dir).code, 0);
   const purged = runCli(["uninstall", "--purge", "--json"], dir);
   assert.strictEqual(purged.code, 0, purged.stderr);
-  assert.ok(!fs.existsSync(path.join(dir, ".wl-skills-design")));
+  assert.ok(!fs.existsSync(path.join(dir, ".wl-skills/state/design")));
 }));
